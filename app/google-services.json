@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "338933794868",
+    "firebase_url": "https://digitalwellness-72800-default-rtdb.firebaseio.com",
+    "project_id": "digitalwellness-72800",
+    "storage_bucket": "digitalwellness-72800.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:338933794868:android:8b6d91d811e9ac4631e261",
+        "android_client_info": {
+          "package_name": "com.example.digitalwellness"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "338933794868-t4g7k6kqeeg33pi6cdm90d6hglllgqnd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdwnG75OKcLSiS0aFAzcco4yobDFvPwRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "338933794868-t4g7k6kqeeg33pi6cdm90d6hglllgqnd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

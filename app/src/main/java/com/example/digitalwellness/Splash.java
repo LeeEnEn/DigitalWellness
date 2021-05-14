@@ -11,7 +11,7 @@ public class Splash extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_main);
 
         Intent intent = new Intent(this, MainActivity.class);
         Handler handler = new Handler();
