@@ -1,81 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    app:statusBarBackground="@color/black">
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        tools:context=".MainActivity">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="297dp"
+            android:layout_height="275dp"
+            android:layout_marginTop="76dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/digitalwellnesslogo" />
+
+        <Button
+            android:id="@+id/dummy_google"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="28dp"
+            android:background="@layout/loginbuttons"
+            android:drawableLeft="@drawable/googlelogo"
+            android:text="Sign up with google"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+        <Button
+            android:id="@+id/dummy_facebook"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:background="@layout/loginbuttons"
+            android:drawableLeft="@drawable/facebook"
+            android:text="Sign up with facebook"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dummy_google" />
+
+        <Button
+            android:id="@+id/mainRegister"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:background="@layout/loginbuttons"
+            android:drawableLeft="@drawable/emailic"
+            android:text="sign up with email"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dummy_facebook" />
+
+        <Button
+            android:id="@+id/mainLogin"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="32dp"
+            android:background="@layout/loginbuttons"
+            android:text="Already have an account?"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainRegister"
+            app:layout_constraintVertical_bias="0.01" />
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="297dp"
-        android:layout_height="275dp"
-        android:layout_marginTop="96dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/digitalwellnesslogo" />
-
-
-    <Button
-        android:id="@+id/dummy_google"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="28dp"
-        android:background="@layout/loginbuttons"
-        android:drawableLeft="@drawable/googlelogo"
-        android:text="Sign up with google"
-        android:textColor="@color/black"
-        app:backgroundTint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-    <Button
-        android:id="@+id/dummy_facebook"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="12dp"
-        android:background="@layout/loginbuttons"
-        android:drawableLeft="@drawable/facebook"
-        android:text="Sign up with facebook"
-        android:textColor="@color/black"
-        app:backgroundTint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dummy_google" />
-
-    <Button
-        android:id="@+id/mainRegister"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="12dp"
-        android:background="@layout/loginbuttons"
-        android:drawableLeft="@drawable/emailic"
-        android:text="sign up with email"
-        android:textColor="@color/black"
-        app:backgroundTint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dummy_facebook" />
-
-    <Button
-        android:id="@+id/mainLogin"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="12dp"
-        android:background="@layout/loginbuttons"
-        android:text="Already have an account?"
-        android:textColor="@color/black"
-        app:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainRegister"
-        app:layout_constraintVertical_bias="0.01" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
