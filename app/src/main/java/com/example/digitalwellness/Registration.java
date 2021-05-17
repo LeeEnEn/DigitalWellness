@@ -17,6 +17,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Registration extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -37,7 +40,20 @@ public class Registration extends AppCompatActivity {
             public void onClick(View v) {
                 String regEmail = editEmail.getText().toString();
                 String regPassword = editPassword.getText().toString();
-                createAccount(regEmail, regPassword);
+
+                String emailRegSample = "^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,4}$";
+                Pattern pattern = Pattern.compile(emailRegSample);
+                Matcher matcher = pattern.matcher(regEmail);
+
+                if (!matcher.find()) {
+                    Toast.makeText(Registration.this, "Please enter a valid email!",
+                            Toast.LENGTH_LONG).show();
+                } else if (regPassword.isEmpty() || regPassword.length() < 8) {
+                    Toast.makeText(Registration.this, "Password should contain at least 8 characters!",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    createAccount(regEmail, regPassword);
+                }
             }
         });
     }
