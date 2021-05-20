@@ -1,6 +1,7 @@
 package com.example.digitalwellness;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,7 +23,7 @@ import java.util.regex.Pattern;
 public class FirebaseHelper {
     private final FirebaseAuth auth;
     private DatabaseReference ref;
-    private Date date = Calendar.getInstance().getTime();
+    private final Date date = Calendar.getInstance().getTime();
 
     public FirebaseHelper() {
         this.auth = FirebaseAuth.getInstance();
@@ -76,9 +77,10 @@ public class FirebaseHelper {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Send to main page
                             Toast.makeText(context, "Login Successful!", Toast.LENGTH_LONG).show();
                             ref.push().child(date.toString()).setValue(username + " has logged in.");
+                            Intent intent = new Intent(context, MainActivity.class);
+                            context.startActivity(intent);
                         } else {
                             Toast.makeText(context, "Username and password does not match!", Toast.LENGTH_LONG).show();
                             ref.push().child(date.toString()).setValue(username + " entered a wrong password ");

@@ -12,7 +12,7 @@ public class Registration extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration2);
+        setContentView(R.layout.activity_registration);
         FirebaseHelper firebase = new FirebaseHelper();
         firebase.setRef("Registration");
 

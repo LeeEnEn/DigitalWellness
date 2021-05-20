@@ -2,4 +2,8 @@
     <string name="app_name">DigitalWellness</string>
     <string name="facebook_app_id">153989346621942</string>
     <string name="fb_login_protocol_scheme">fb153989346621942</string>
+    <string name="facebook_sign_up">Sign up with Facebook</string>
+    <string name="google_sign_up">Sign up with Google</string>
+    <string name="email_sign_up">Sign up with email</string>
+    <string name="login">Already have an account?</string>
 </resources>
