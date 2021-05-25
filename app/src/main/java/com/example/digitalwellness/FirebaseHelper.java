@@ -25,14 +25,29 @@ public class FirebaseHelper {
     private DatabaseReference ref;
     private final Date date = Calendar.getInstance().getTime();
 
+    /**
+     * Public constructor.
+     */
     public FirebaseHelper() {
         this.auth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Set database reference.
+     *
+     * @param child The child to update value.
+     */
     public void setRef(String child) {
         ref = FirebaseDatabase.getInstance().getReference(child);
     }
 
+    /**
+     * Register user through valid email and password.
+     *
+     * @param username Username of user.
+     * @param password Password of user.
+     * @param context Current context.
+     */
     public void registerEmailAndPassword(String username, String password, Context context) {
         String emailRegSample = "^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,4}$";
         Pattern pattern = Pattern.compile(emailRegSample);
@@ -49,6 +64,13 @@ public class FirebaseHelper {
         }
     }
 
+    /**
+     * Create user in Firebase.
+     *
+     * @param email User's email.
+     * @param password User's password.
+     * @param context Current context.
+     */
     private void createAccount(String email, String password, Context context) {
         // [START create_user_with_email]
         this.auth.createUserWithEmailAndPassword(email, password)
@@ -71,6 +93,13 @@ public class FirebaseHelper {
                 });
     }
 
+    /**
+     * Sign in using email and password.
+     *
+     * @param username Username of user.
+     * @param password Password of user.
+     * @param context Current context.
+     */
     public void login(String username, String password, Context context) {
         auth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
