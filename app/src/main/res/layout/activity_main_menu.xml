@@ -14,16 +14,14 @@
         android:background="@color/black"
         tools:context=".StartMenu">
 
-        //Hiding the official facebook button cause ugly
+
         <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebook_reg"
+            android:id="@+id/facebook_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            tools:ignore="MissingConstraints"
-            android:visibility="gone"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/imageView"

@@ -93,6 +93,7 @@ public class FirebaseHelper {
                 });
     }
 
+
     /**
      * Sign in using email and password.
      *
