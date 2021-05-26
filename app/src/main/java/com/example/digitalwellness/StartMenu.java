@@ -103,9 +103,6 @@ public class StartMenu extends AppCompatActivity {
          * Facebook Button Initialisation
          */
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
-
-
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d("FACEBOOK", "facebook:onSuccess:" + loginResult);
@@ -125,11 +122,10 @@ public class StartMenu extends AppCompatActivity {
         });
 
 
-
         facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                facebookLoginButton.performClick();
             }
         });
 
