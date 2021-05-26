@@ -29,6 +29,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -36,10 +37,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Arrays;
 
 public class StartMenu extends AppCompatActivity {
+
+    private static final int RC_SIGN_IN = 9001;
 
     /**
      * For Facebook Implementation
@@ -97,9 +101,6 @@ public class StartMenu extends AppCompatActivity {
 
         //mAuth = FirebaseAuth.getInstance();
 
-        /**
-         * Note: Facebook Button currently not in use. Currently using Facebook's implementation
-         */
         final Button regButton = findViewById(R.id.mainRegister);
         final Button loginButton = findViewById(R.id.mainLogin);
         final Button facebookButton = findViewById(R.id.facebookreg);
@@ -161,7 +162,8 @@ public class StartMenu extends AppCompatActivity {
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
     }
@@ -181,8 +183,25 @@ public class StartMenu extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Pass the activity result back to the facebook SDK
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        //Google
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d("GOOGLE", "firebaseAuthWithGoogle:" + account.getId());
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w("GOOGLE", "Google sign in failed", e);
+            }
+
+        }
+        //FACEBOOK
+        else {
+            // Pass the activity result back to the facebook SDK
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     // Disables user to go back to splash screen.
@@ -215,6 +234,26 @@ public class StartMenu extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("FACEBOOK", "signInWithCredential:failure", task.getException());
+                            //updateUI(null);
+                        }
+                    }
+                });
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        firebaseHelper.getFirebaseAuth().signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("GOOGLE", "signInWithCredential:success");
+                            FirebaseUser user = firebaseHelper.getUser();
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("GOOGLE", "signInWithCredential:failure", task.getException());
                             //updateUI(null);
                         }
                     }
