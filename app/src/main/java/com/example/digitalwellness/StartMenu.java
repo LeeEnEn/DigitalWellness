@@ -138,7 +138,7 @@ public class StartMenu extends AppCompatActivity {
                 Log.d("FACEBOOK", "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 //firebaseHelper.registerEmailAndPassword(firebaseHelper.getUser().getEmail(), "12345", StartMenu.this);
-                Toast.makeText(getApplicationContext(),"User signed in successfully",Toast. LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
                 Intent intent = new Intent(StartMenu.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -178,6 +178,7 @@ public class StartMenu extends AppCompatActivity {
         FirebaseUser currentUser = firebaseHelper.getUser();
         if (firebaseHelper.isLoggedIn()) {
             Intent intent = new Intent(this, MainActivity.class);
+            Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
             this.startActivity(intent);
         }
         //updateUI(currentUser);
@@ -253,7 +254,7 @@ public class StartMenu extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("GOOGLE", "signInWithCredential:success");
                             FirebaseUser user = firebaseHelper.getUser();
-                            Toast.makeText(getApplicationContext(),"User signed in successfully",Toast. LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(),"Welcome back, " + user.getDisplayName(),Toast. LENGTH_SHORT).show();
                             Intent intent = new Intent(StartMenu.this, MainActivity.class);
                             startActivity(intent);
                             //updateUI(user);
