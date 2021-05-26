@@ -137,7 +137,10 @@ public class StartMenu extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 Log.d("FACEBOOK", "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
-                firebaseHelper.registerEmailAndPassword(firebaseHelper.getUser().getEmail(), "12345", StartMenu.this);
+                //firebaseHelper.registerEmailAndPassword(firebaseHelper.getUser().getEmail(), "12345", StartMenu.this);
+                Toast.makeText(getApplicationContext(),"User signed in successfully",Toast. LENGTH_SHORT).show();
+                Intent intent = new Intent(StartMenu.this, MainActivity.class);
+                startActivity(intent);
             }
 
             @Override
@@ -250,6 +253,9 @@ public class StartMenu extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("GOOGLE", "signInWithCredential:success");
                             FirebaseUser user = firebaseHelper.getUser();
+                            Toast.makeText(getApplicationContext(),"User signed in successfully",Toast. LENGTH_SHORT).show();
+                            Intent intent = new Intent(StartMenu.this, MainActivity.class);
+                            startActivity(intent);
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
