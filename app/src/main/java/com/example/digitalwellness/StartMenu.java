@@ -48,7 +48,7 @@ public class StartMenu extends AppCompatActivity {
     /**
      * Firebase Authentication
      */
-    private FirebaseAuth mAuth;
+    //private FirebaseHelper firebaseHelper;
 
     /**
      * Firebase Helper
@@ -66,7 +66,8 @@ public class StartMenu extends AppCompatActivity {
          */
         callbackManager = CallbackManager.Factory.create();
 
-        mAuth = FirebaseAuth.getInstance();
+        firebaseHelper = new FirebaseHelper();
+        //mAuth = FirebaseAuth.getInstance();
 
         /**
          * Note: Facebook Button currently not in use. Currently using Facebook's implementation
@@ -107,7 +108,7 @@ public class StartMenu extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 Log.d("FACEBOOK", "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
-                firebaseHelper.registerEmailAndPassword(mAuth.getCurrentUser().getEmail(), "12345", StartMenu.this);
+                firebaseHelper.registerEmailAndPassword(firebaseHelper.getUser().getEmail(), "12345", StartMenu.this);
             }
 
             @Override
@@ -141,7 +142,10 @@ public class StartMenu extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = firebaseHelper.getUser();
+        if (firebaseHelper.isLoggedIn()) {
+            Toast.makeText(getApplicationContext(), "User is logged in", Toast.LENGTH_SHORT).show();
+        }
         //updateUI(currentUser);
     }
 
@@ -170,14 +174,14 @@ public class StartMenu extends AppCompatActivity {
         Log.d("FACEBOOK", "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
+        firebaseHelper.getFirebaseAuth().signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("FACEBOOK", "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = firebaseHelper.getUser();
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

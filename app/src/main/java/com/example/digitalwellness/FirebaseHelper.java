@@ -32,6 +32,10 @@ public class FirebaseHelper {
         this.auth = FirebaseAuth.getInstance();
     }
 
+    public FirebaseAuth getFirebaseAuth() {
+        return this.auth;
+    }
+
     /**
      * Set database reference.
      *
@@ -117,5 +121,20 @@ public class FirebaseHelper {
                         }
                     }
                 });
+    }
+    /**
+     * Method called to get user data
+     * @return Firebase User, containing users email etc
+     */
+    public FirebaseUser getUser() {
+        return auth.getCurrentUser();
+    }
+
+    /**
+     * Method called to check status of user logged in
+     * @return boolean to check if user is logged in
+     */
+    public boolean isLoggedIn() {
+        return this.getUser() != null ;
     }
 }
