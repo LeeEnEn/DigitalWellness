@@ -23,6 +23,12 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -55,6 +61,14 @@ public class StartMenu extends AppCompatActivity {
      */
     private FirebaseHelper firebaseHelper;
 
+    /**
+     * Google Sign In Options
+     *
+     */
+    private GoogleSignInOptions gso;
+    private GoogleSignInClient mGoogleSignInClient;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,11 +76,25 @@ public class StartMenu extends AppCompatActivity {
         getSupportActionBar().hide();
 
         /**
+         * Initialise Firebase helper
+         */
+        firebaseHelper = new FirebaseHelper();
+
+        /**
          * CallbackManager for Facebook Login
          */
         callbackManager = CallbackManager.Factory.create();
 
-        firebaseHelper = new FirebaseHelper();
+        /**
+         * Implementation for Google Login
+         */
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         //mAuth = FirebaseAuth.getInstance();
 
         /**
@@ -144,7 +172,8 @@ public class StartMenu extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = firebaseHelper.getUser();
         if (firebaseHelper.isLoggedIn()) {
-            Toast.makeText(getApplicationContext(), "User is logged in", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            this.startActivity(intent);
         }
         //updateUI(currentUser);
     }
