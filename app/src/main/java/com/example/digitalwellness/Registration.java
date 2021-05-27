@@ -14,18 +14,19 @@ public class Registration extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         FirebaseHelper firebase = new FirebaseHelper();
-        firebase.setRef("Registration");
+        //firebase.setRef("Registration");
 
         EditText editEmail = (EditText) findViewById(R.id.regEmail);
-
         EditText editPassword = (EditText) findViewById(R.id.regPassword);
-
-        final Button regButton = findViewById(R.id.regButton);
+        EditText firstName = (EditText) findViewById(R.id.regFirstName);
+        EditText lastName = (EditText) findViewById(R.id.regLastName);
+        Button regButton = findViewById(R.id.regButton);
 
         regButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                String name = firstName.getText().toString() + " " + lastName.getText().toString();
                 firebase.registerEmailAndPassword(editEmail.getText().toString(),
-                        editPassword.getText().toString(), Registration.this);
+                        editPassword.getText().toString(), name, Registration.this);
             }
         });
     }

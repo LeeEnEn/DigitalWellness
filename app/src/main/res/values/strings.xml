@@ -6,4 +6,9 @@
     <string name="google_sign_up">Sign up with Google</string>
     <string name="email_sign_up">Sign up with email</string>
     <string name="login">Already have an account?</string>
+    <string name="first_name_prompt">First Name</string>
+    <string name="last_name_prompt">Last Name</string>
+    <string name="email_prompt">Email</string>
+    <string name="password_prompt">Password</string>
+    <string name="create_account">Create Account</string>
 </resources>
