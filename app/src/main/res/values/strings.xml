@@ -11,4 +11,8 @@
     <string name="email_prompt">Email</string>
     <string name="password_prompt">Password</string>
     <string name="create_account">Create Account</string>
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
 </resources>
