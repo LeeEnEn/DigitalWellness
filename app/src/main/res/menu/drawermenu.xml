@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/db" android:title="dashboard" />
-    <item android:id="@+id/db1" android:title="dashboard 1" />
-    <item android:id="@+id/logout" android:title="logout" />
+    <item android:id="@+id/db"
+        android:title="Activity 1"
+        android:icon="@mipmap/logout"/>
+
+    <item android:id="@+id/db1"
+        android:title="Activity 2"
+        android:icon="@mipmap/logout"/>
+    <item
+        android:id="@+id/logout"
+        android:icon="@mipmap/logout"
+        android:title="Logout" />
 
 
 </menu>

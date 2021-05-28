@@ -7,20 +7,23 @@
     android:padding="20dp">
     
     <ImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:src="@drawable/facebook"/>
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/userblank"
+        android:id="@+id/user_display"/>
     
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tiew Wei Jian"
+        android:text="User Name"
+        android:id="@+id/user_name"
         android:layout_marginTop="5dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="twj1998@gmail.com"/>
+        android:id="@+id/user_email"
+        android:text="User Email"/>
 
 </LinearLayout>
     

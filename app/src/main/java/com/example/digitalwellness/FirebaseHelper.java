@@ -95,6 +95,12 @@ public class FirebaseHelper {
     }
 
     /**
+     * Method to sign out this instance of firebase.
+     */
+    public void logoutUser() {
+        this.auth.signOut();
+    }
+    /**
      * Register user through valid email and password.
      *
      * @param username Username of user.

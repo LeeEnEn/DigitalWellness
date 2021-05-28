@@ -8,21 +8,31 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+    private NavigationView navView;
     private int keyCount = 0;
     private MyPermissions myPermissions;
     private MyPreference myPreference;
+    private FirebaseHelper firebaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +44,46 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        navView = (NavigationView) findViewById(R.id.navigation);
 
+
+        firebaseHelper = new FirebaseHelper();
         Button stepTracker = (Button) findViewById(R.id.step_tracker);
         myPermissions = new MyPermissions(this, MainActivity.this);
         myPreference = new MyPreference(this);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+
+        /**
+         * Setting Email and Name on Navigation View
+         * Can put into a method in the future??
+         */
+        View headerView = navigationView.getHeaderView(0);
+        TextView userName = (TextView) headerView.findViewById(R.id.user_name);
+        TextView userEmail = (TextView) headerView.findViewById(R.id.user_email);
+        ImageView userPic = (ImageView) headerView.findViewById(R.id.user_display);
+        userName.setText(firebaseHelper.getUser().getDisplayName());
+        userEmail.setText(firebaseHelper.getUser().getEmail());
+        Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
+
+
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if(id == R.id.db) {
+                    Toast. makeText(getApplicationContext(),"First Option clicked",Toast. LENGTH_SHORT).show();
+                } else if(id == R.id.db1) {
+                    Toast. makeText(getApplicationContext(),"Second Option clicked",Toast. LENGTH_SHORT).show();
+                } else if(id == R.id.logout) {
+                    firebaseHelper.logoutUser();
+                    Intent i = new Intent(MainActivity.this, StartMenu.class);
+                    startActivity(i);
+                }
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
 
         stepTracker.setOnClickListener(new View.OnClickListener() {
             @Override
