@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private int keyCount = 0;
     private MyPermissions myPermissions;
+    private MyPreference myPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button stepTracker = (Button) findViewById(R.id.step_tracker);
         myPermissions = new MyPermissions(this, MainActivity.this);
+        myPreference = new MyPreference(this);
 
         stepTracker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, StepTracker.class);
                 startActivity(intent);
             } else {
-                int count = myPermissions.getSharedPreferenceValue();
-                myPermissions.putValue(++count);
+                int count = myPreference.getPhysicalActivityValue();
+                myPreference.setPhysicalActivityValue(++count);
                 Toast.makeText(getApplicationContext(), myPermissions.getRationale(), Toast.LENGTH_LONG).show();
             }
         }

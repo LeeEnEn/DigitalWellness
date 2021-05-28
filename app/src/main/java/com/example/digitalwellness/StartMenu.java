@@ -1,8 +1,5 @@
 package com.example.digitalwellness;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,11 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-//import com.facebook.CallbackManager;
-//import com.facebook.FacebookCallback;
-//import com.facebook.FacebookException;
-//import com.facebook.login.LoginResult;
-//import com.facebook.login.widget.LoginButton;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -27,19 +21,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-
-
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.Arrays;
 
 public class StartMenu extends AppCompatActivity {
 
@@ -56,11 +45,6 @@ public class StartMenu extends AppCompatActivity {
     private CallbackManager callbackManager;
 
     /**
-     * Firebase Authentication
-     */
-    //private FirebaseHelper firebaseHelper;
-
-    /**
      * Firebase Helper
      */
     private FirebaseHelper firebaseHelper;
@@ -71,7 +55,6 @@ public class StartMenu extends AppCompatActivity {
      */
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +81,6 @@ public class StartMenu extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        //mAuth = FirebaseAuth.getInstance();
 
         final Button regButton = findViewById(R.id.mainRegister);
         final Button loginButton = findViewById(R.id.mainLogin);
@@ -128,7 +109,6 @@ public class StartMenu extends AppCompatActivity {
             }
         });
 
-
         /**
          * Facebook Button Initialisation
          */
@@ -154,7 +134,6 @@ public class StartMenu extends AppCompatActivity {
             }
         });
 
-
         facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,8 +154,8 @@ public class StartMenu extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = firebaseHelper.getUser();
         if (firebaseHelper.isLoggedIn()) {
+            firebaseHelper.updateStepsToDB(this);
             Intent intent = new Intent(this, MainActivity.class);
             Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
             this.startActivity(intent);

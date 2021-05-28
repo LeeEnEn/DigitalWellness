@@ -2,7 +2,6 @@ package com.example.digitalwellness;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,14 +24,17 @@ import java.util.regex.Pattern;
 
 public class FirebaseHelper {
     private final FirebaseAuth auth;
-    private DatabaseReference ref;
-    private final Date date = Calendar.getInstance().getTime();
+    private final String currentDate;
+    private final String previousDate = "";
+
 
     /**
      * Public constructor.
      */
     public FirebaseHelper() {
         this.auth = FirebaseAuth.getInstance();
+        Date date = Calendar.getInstance().getTime();
+        this.currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
     }
 
     public FirebaseAuth getFirebaseAuth() {
@@ -46,18 +47,8 @@ public class FirebaseHelper {
      * @param child The child to update value.
      */
     public DatabaseReference setRef(String child) {
-        this.ref = FirebaseDatabase.getInstance().getReference(child);
-        return this.ref;
-    }
-
-    /**
-     * Set database reference to child.
-     *
-     * @param child Set database reference to child.
-     * @return Database reference to said child.
-     */
-    public DatabaseReference child(String child) {
-        return this.ref.child(child);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(child);
+        return ref;
     }
 
     /**
@@ -66,31 +57,41 @@ public class FirebaseHelper {
      * @return User id.
      */
     public String getUid() {
-        return getUser().getUid();
+        return this.auth.getUid();
     }
 
     /**
      * Returns current date in dd-MM-yyyy format.
+     *
      * @return current date.
      */
-    public String getDate() {
-        return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(this.date);
+    public String getSimpleDate() {
+        return this.currentDate;
+    }
+
+    public String getPreviousDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -1);
+        Date date = cal.getTime();
+        return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
     }
 
     /**
      * Method called to get user data
+     *
      * @return Firebase User, containing users email etc
      */
     public FirebaseUser getUser() {
-        return auth.getCurrentUser();
+        return this.auth.getCurrentUser();
     }
 
     /**
      * Method called to check status of user logged in
+     *
      * @return boolean to check if user is logged in
      */
     public boolean isLoggedIn() {
-        return this.getUser() != null ;
+        return this.getUser() != null;
     }
 
     /**
@@ -98,7 +99,7 @@ public class FirebaseHelper {
      *
      * @param username Username of user.
      * @param password Password of user.
-     * @param context Current context.
+     * @param context  Current context.
      */
     public void registerEmailAndPassword(String username, String password, String name, Context context) {
         String emailRegSample = "^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,4}$";
@@ -119,9 +120,9 @@ public class FirebaseHelper {
     /**
      * Create user in Firebase.
      *
-     * @param email User's email.
+     * @param email    User's email.
      * @param password User's password.
-     * @param context Current context.
+     * @param context  Current context.
      */
     private void createAccount(String email, String password, String name, Context context) {
         // [START create_user_with_email]
@@ -151,7 +152,7 @@ public class FirebaseHelper {
      *
      * @param username Username of user.
      * @param password Password of user.
-     * @param context Current context.
+     * @param context  Current context.
      */
     public void login(String username, String password, Context context) {
         auth.signInWithEmailAndPassword(username, password)
@@ -174,9 +175,9 @@ public class FirebaseHelper {
     /**
      * Update user's profile.
      *
-     * @param name Name to be updated.
+     * @param name      Name to be updated.
      * @param toastText Text to be displayed.
-     * @param context Current context.
+     * @param context   Current context.
      */
     public void updateProfile(String name, String toastText, Context context) {
         UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
@@ -194,5 +195,15 @@ public class FirebaseHelper {
                         }
                     }
                 });
+    }
+
+    public DatabaseReference getSomeRef(String ref) {
+        return setRef("Users").child(getUid()).child(getSimpleDate()).child(ref);
+    }
+
+    public void updateStepsToDB(Context context) {
+        DatabaseReference reference = getSomeRef("Steps");
+        MyPreference myPreference = new MyPreference(context);
+        reference.setValue(myPreference.getStepCount(getSimpleDate()));
     }
 }

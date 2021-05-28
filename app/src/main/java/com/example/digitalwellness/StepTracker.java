@@ -6,48 +6,77 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Arrays;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 
 public class StepTracker extends AppCompatActivity {
-    private SensorManager sensorManager;
-    private Sensor sensor;
-
-    private double MagnitudePrevious = 0;
-    private int stepCount = 0;
+    private FirebaseHelper firebase;
+    private MyPreference myPreference;
+    private TextView textView;
+    private long value = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steptracker);
 
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        FrameLayout progressLayout = (FrameLayout) findViewById(R.id.progress_overlay);
+        progressLayout.setVisibility(View.VISIBLE);
+        textView = (TextView) findViewById(R.id.number_of_steps);
 
-        TextView view = (TextView) findViewById(R.id.number_of_steps);
-        view.setText("Steps: " + 0);
+        firebase = new FirebaseHelper();
+        myPreference = new MyPreference(this);
+        DatabaseReference ref = firebase.getSomeRef("Steps");
 
-        SensorEventListener detector = new SensorEventListener() {
+        MyAlarms myAlarms = new MyAlarms(this);
+        myAlarms.startAlarm();
+
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    value = (long) task.getResult().getValue();
+                } else {
+                    ref.setValue(value);
+                }
+                progressLayout.setVisibility(View.GONE);
+                textView.setText(String.valueOf(value));
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+        SensorEventListener eventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                System.out.println(Arrays.toString(event.values));
                 if (event.values != null) {
-                    float a = event.values[0];
-                    System.out.println(a);
-                    view.setText("Steps: " + (int) a);
+                    value = (long) event.values[0] - myPreference.getPreviousTotal();
+                    myPreference.setStep(firebase.getSimpleDate(), value);
+                    textView.setText(String.valueOf(value));
                 }
             }
-            
+
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                System.out.println("accuracy changed: " + accuracy);
+
             }
         };
-        sensorManager.registerListener(detector, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-
+        sensorManager.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 }

@@ -17,11 +17,9 @@ public class MyPermissions {
     private final int ACTIVITY_RECOGNITION_CODE = 10;
     private final String ACTIVITY_RECOGNITION = Manifest.permission.ACTIVITY_RECOGNITION;
     private final String RATIONALE = "Physical activity Permission is required for Step Tracker to work.";
-    private final String PERMISSION = "activity_permission";
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-    private Context context;
-    private Activity activity;
+    private final MyPreference myPreference;
+    private final Context context;
+    private final Activity activity;
 
     /**
      * Public constructor for getting physical activities permission.
@@ -32,26 +30,7 @@ public class MyPermissions {
     public MyPermissions(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
-        sharedPreferences = context.getSharedPreferences(PERMISSION, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-    }
-
-    /**
-     * Returns the current value stored in shared preference, with default of -1.
-     *
-     * @return Current value.
-     */
-    public int getSharedPreferenceValue() {
-        return this.sharedPreferences.getInt(PERMISSION, -1);
-    }
-
-    /**
-     * Updates the value of shared preference.
-     *
-     * @param value The value to be updated.
-     */
-    public void putValue(int value) {
-        this.editor.putInt(PERMISSION, value).apply();
+        this.myPreference = new MyPreference(context);
     }
 
     /**
@@ -88,7 +67,7 @@ public class MyPermissions {
      * to allow permission.
      */
     public void requestPermission() {
-        int count = sharedPreferences.getInt(PERMISSION, -1);
+        int count = myPreference.getPhysicalActivityValue();
 
         if (count == -1) {
             runPermission();
