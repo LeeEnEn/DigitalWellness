@@ -4,30 +4,26 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class MyPreference {
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
 
-    public MyPreference(Context context) {
-        preferences = context.getSharedPreferences("Preference", Context.MODE_PRIVATE);
+    public MyPreference(Context context, String filename) {
+        this.preferences = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
     }
 
-    public long getStepCount(String key) {
+    public long getCurrentStepCount(String key) {
         return this.preferences.getLong(key, 0);
     }
 
-    public void setStep(String key, long value) {
+    public void setCurrentStepCount(String key, long value) {
         this.preferences.edit().putLong(key, value).apply();
     }
 
-    public long getPreviousTotal() {
-        return this.preferences.getLong("previous_total", 0);
+    public long getPreviousTotalStepCount() {
+        return this.preferences.getLong("previous_step_count", 0);
     }
 
-    public void setPreviousTotal(long value) {
-        this.preferences.edit().putLong("previous_total", value).apply();
-    }
-
-    public boolean exist(String key) {
-        return this.preferences.getLong(key, -1) != -1;
+    public void setPreviousTotalStepCount(long value) {
+        this.preferences.edit().putLong("previous_step_count", value).apply();
     }
 
     public int getPhysicalActivityValue() {

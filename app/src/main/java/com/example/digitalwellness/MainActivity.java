@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         firebaseHelper = new FirebaseHelper();
         Button stepTracker = (Button) findViewById(R.id.step_tracker);
         myPermissions = new MyPermissions(this, MainActivity.this);
-        myPreference = new MyPreference(this);
+        myPreference = new MyPreference(this, firebaseHelper.getUid());
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
         /**

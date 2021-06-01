@@ -15,7 +15,6 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         FirebaseHelper firebase = new FirebaseHelper();
-        firebase.setRef("Logs");
 
         EditText username = (EditText) findViewById(R.id.login_username);
         EditText password = (EditText) findViewById(R.id.login_password);

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,8 +22,14 @@ import com.google.firebase.database.DatabaseReference;
 public class StepTracker extends AppCompatActivity {
     private FirebaseHelper firebase;
     private MyPreference myPreference;
+    private SensorEventListener eventListener;
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private String key;
     private TextView textView;
-    private long value = 0L;
+
+    private long databaseValue;
+    private long currentSensorValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,49 +41,66 @@ public class StepTracker extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.number_of_steps);
 
         firebase = new FirebaseHelper();
-        myPreference = new MyPreference(this);
-        DatabaseReference ref = firebase.getSomeRef("Steps");
+        myPreference = new MyPreference(this, "Steps");
+        DatabaseReference ref = firebase.getStepsRef();
 
-        MyAlarms myAlarms = new MyAlarms(this);
-        myAlarms.startAlarm();
+        key = firebase.getCurrentDate() + firebase.getUid();
 
         ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    value = (long) task.getResult().getValue();
+                if (task.getResult().getValue() != null) {
+                    databaseValue = (long) task.getResult().getValue();
+                    startTracker();
                 } else {
-                    ref.setValue(value);
+                    ref.setValue(0);
                 }
                 progressLayout.setVisibility(View.GONE);
-                textView.setText(String.valueOf(value));
+                textView.setText(String.valueOf(databaseValue));
             }
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void startTracker() {
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
-        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-
-        SensorEventListener eventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                if (event.values != null) {
-                    value = (long) event.values[0] - myPreference.getPreviousTotal();
-                    myPreference.setStep(firebase.getSimpleDate(), value);
-                    textView.setText(String.valueOf(value));
+        if (sensor != null) {
+            eventListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+                    if (event.values != null) {
+                        currentSensorValue = (long) event.values[0];
+                        long displayValue = currentSensorValue + databaseValue - myPreference.getPreviousTotalStepCount();
+                        myPreference.setCurrentStepCount(key, displayValue);
+                        textView.setText(String.valueOf(displayValue));
+                    }
                 }
-            }
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-            }
-        };
+                }
+            };
+            sensorManager.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_FASTEST);
+        } else {
+            Toast.makeText(this, "No motion sensor detected!", Toast.LENGTH_LONG).show();
+        }
+    }
 
-        sensorManager.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sensorManager.unregisterListener(eventListener);
+        firebase.updateSteps(myPreference.getCurrentStepCount(key));
+        myPreference.setPreviousTotalStepCount(currentSensorValue);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(eventListener);
+        firebase.updateSteps(myPreference.getCurrentStepCount(key));
+        myPreference.setPreviousTotalStepCount(currentSensorValue);
     }
 }

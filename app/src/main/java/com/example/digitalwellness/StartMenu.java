@@ -155,7 +155,7 @@ public class StartMenu extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         if (firebaseHelper.isLoggedIn()) {
-            firebaseHelper.updateStepsToDB(this);
+//            firebaseHelper.updateStepsToDB(this);
             Intent intent = new Intent(this, MainActivity.class);
             Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
             this.startActivity(intent);

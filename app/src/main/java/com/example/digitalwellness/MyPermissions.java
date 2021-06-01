@@ -30,7 +30,7 @@ public class MyPermissions {
     public MyPermissions(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
-        this.myPreference = new MyPreference(context);
+        this.myPreference = new MyPreference(context, new FirebaseHelper().getUid());
     }
 
     /**

@@ -60,5 +60,6 @@ dependencies {
     //For displaying user picture
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-
+    // Displaying of graph
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

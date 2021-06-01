@@ -7,18 +7,18 @@ import android.content.Intent;
 public class MyBroadCastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        FirebaseHelper firebase = new FirebaseHelper();
+        MyPreference myPreference = new MyPreference(context, firebase.getUid());
+
         if (intent.getAction() != null) {
             if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
                 MyAlarms myAlarms = new MyAlarms(context);
                 myAlarms.startAlarm();
+                myPreference.setPreviousTotalStepCount(0);
             }
         }
-        FirebaseHelper firebase = new FirebaseHelper();
 
-        MyPreference myPreference = new MyPreference(context);
-        long previousStep = myPreference.getPreviousTotal() + myPreference.getStepCount(firebase.getPreviousDate());
-        myPreference.setPreviousTotal(previousStep);
-
-        firebase.updateStepsToDB(context);
+        String key = firebase.getPreviousDate() + firebase.getUid();
+        firebase.updateSteps(myPreference.getCurrentStepCount(key));
     }
 }

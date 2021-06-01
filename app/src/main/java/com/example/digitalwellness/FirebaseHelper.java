@@ -24,9 +24,8 @@ import java.util.regex.Pattern;
 
 public class FirebaseHelper {
     private final FirebaseAuth auth;
-    private final String currentDate;
-    private final String previousDate = "";
-
+    private static String currentDate = "";
+    private String Uid;
 
     /**
      * Public constructor.
@@ -34,93 +33,8 @@ public class FirebaseHelper {
     public FirebaseHelper() {
         this.auth = FirebaseAuth.getInstance();
         Date date = Calendar.getInstance().getTime();
-        this.currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
-    }
-
-    public FirebaseAuth getFirebaseAuth() {
-        return this.auth;
-    }
-
-    /**
-     * Set database reference.
-     *
-     * @param child The child to update value.
-     */
-    public DatabaseReference setRef(String child) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(child);
-        return ref;
-    }
-
-    /**
-     * Returns user id.
-     *
-     * @return User id.
-     */
-    public String getUid() {
-        return this.auth.getUid();
-    }
-
-    /**
-     * Returns current date in dd-MM-yyyy format.
-     *
-     * @return current date.
-     */
-    public String getSimpleDate() {
-        return this.currentDate;
-    }
-
-    public String getPreviousDate() {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, -1);
-        Date date = cal.getTime();
-        return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
-    }
-
-    /**
-     * Method called to get user data
-     *
-     * @return Firebase User, containing users email etc
-     */
-    public FirebaseUser getUser() {
-        return this.auth.getCurrentUser();
-    }
-
-    /**
-     * Method called to check status of user logged in
-     *
-     * @return boolean to check if user is logged in
-     */
-    public boolean isLoggedIn() {
-        return this.getUser() != null;
-    }
-
-    /**
-     * Method to sign out this instance of firebase.
-     */
-    public void logoutUser() {
-        this.auth.signOut();
-    }
-    /**
-     * Register user through valid email and password.
-     *
-     * @param username Username of user.
-     * @param password Password of user.
-     * @param context  Current context.
-     */
-    public void registerEmailAndPassword(String username, String password, String name, Context context) {
-        String emailRegSample = "^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,4}$";
-        Pattern pattern = Pattern.compile(emailRegSample);
-        Matcher matcher = pattern.matcher(username);
-
-        if (!matcher.find()) {
-            Toast.makeText(context, "Please enter a valid email!",
-                    Toast.LENGTH_LONG).show();
-        } else if (password.isEmpty() || password.length() < 8) {
-            Toast.makeText(context, "Password should contain at least 8 characters!",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            createAccount(username, password, name, context);
-        }
+        currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
+        this.Uid = this.auth.getUid();
     }
 
     /**
@@ -152,6 +66,67 @@ public class FirebaseHelper {
                 });
     }
 
+    /**
+     * Returns current date in dd-MM-yyyy format.
+     *
+     * @return current date.
+     */
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return this.auth;
+    }
+
+    public String getPreviousDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -1);
+        Date date = cal.getTime();
+        return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
+    }
+
+    public DatabaseReference getStepsRef() {
+        return FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(Uid)
+                .child(currentDate)
+                .child("Steps");
+    }
+
+    /**
+     * Returns user id.
+     *
+     * @return User id.
+     */
+    public String getUid() {
+        return this.auth.getUid();
+    }
+
+    /**
+     * Method called to get user data
+     *
+     * @return Firebase User, containing users email etc
+     */
+    public FirebaseUser getUser() {
+        return this.auth.getCurrentUser();
+    }
+
+    /**
+     * Method called to check status of user logged in
+     *
+     * @return boolean to check if user is logged in
+     */
+    public boolean isLoggedIn() {
+        return this.getUser() != null;
+    }
+
+    /**
+     * Method to sign out this instance of firebase.
+     */
+    public void logoutUser() {
+        this.auth.signOut();
+    }
 
     /**
      * Sign in using email and password.
@@ -179,6 +154,29 @@ public class FirebaseHelper {
     }
 
     /**
+     * Register user through valid email and password.
+     *
+     * @param username Username of user.
+     * @param password Password of user.
+     * @param context  Current context.
+     */
+    public void registerEmailAndPassword(String username, String password, String name, Context context) {
+        String emailRegSample = "^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,4}$";
+        Pattern pattern = Pattern.compile(emailRegSample);
+        Matcher matcher = pattern.matcher(username);
+
+        if (!matcher.find()) {
+            Toast.makeText(context, "Please enter a valid email!",
+                    Toast.LENGTH_LONG).show();
+        } else if (password.isEmpty() || password.length() < 8) {
+            Toast.makeText(context, "Password should contain at least 8 characters!",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            createAccount(username, password, name, context);
+        }
+    }
+
+    /**
      * Update user's profile.
      *
      * @param name      Name to be updated.
@@ -203,13 +201,12 @@ public class FirebaseHelper {
                 });
     }
 
-    public DatabaseReference getSomeRef(String ref) {
-        return setRef("Users").child(getUid()).child(getSimpleDate()).child(ref);
-    }
-
-    public void updateStepsToDB(Context context) {
-        DatabaseReference reference = getSomeRef("Steps");
-        MyPreference myPreference = new MyPreference(context);
-        reference.setValue(myPreference.getStepCount(getSimpleDate()));
+    public void updateSteps(long value) {
+        FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(Uid)
+                .child(currentDate)
+                .child("Steps")
+                .setValue(value);
     }
 }
