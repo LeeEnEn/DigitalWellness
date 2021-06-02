@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private MyPermissions myPermissions;
     private MyPreference myPreference;
     private FirebaseHelper firebaseHelper;
+    private Button testButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseHelper = new FirebaseHelper();
         Button stepTracker = (Button) findViewById(R.id.step_tracker);
+        testButton = (Button) findViewById(R.id.testButton);
         myPermissions = new MyPermissions(this, MainActivity.this);
         myPreference = new MyPreference(this, firebaseHelper.getUid());
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
@@ -65,7 +67,21 @@ public class MainActivity extends AppCompatActivity {
         userEmail.setText(firebaseHelper.getUser().getEmail());
         Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
 
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(new Intent(MainActivity.this, ScreenTimeService.class));
+                    Toast.makeText(MainActivity.this, "Button  Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
 
+
+                } else {
+                    startService(new Intent(MainActivity.this, ScreenTimeService.class));
+                    Toast.makeText(MainActivity.this, "Button  Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
