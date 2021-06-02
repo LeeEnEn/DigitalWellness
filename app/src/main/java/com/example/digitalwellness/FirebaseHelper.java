@@ -33,7 +33,7 @@ public class FirebaseHelper {
     public FirebaseHelper() {
         this.auth = FirebaseAuth.getInstance();
         Date date = Calendar.getInstance().getTime();
-        currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
+        currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(date);
         this.Uid = this.auth.getUid();
     }
 
@@ -75,17 +75,32 @@ public class FirebaseHelper {
         return currentDate;
     }
 
+    /**
+     * Returns firebase auth.
+     *
+     * @return Firebase auth.
+     */
     public FirebaseAuth getFirebaseAuth() {
         return this.auth;
     }
 
+    /**
+     * Returns yesterday's date in dd-MM-yyyy format.
+     *
+     * @return Yesterday's date.
+     */
     public String getPreviousDate() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -1);
         Date date = cal.getTime();
-        return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
+        return new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(date);
     }
 
+    /**
+     * Returns a database reference corresponding to current user's step of the day.
+     *
+     * @return Firebase database reference.
+     */
     public DatabaseReference getStepsRef() {
         return FirebaseDatabase.getInstance()
                 .getReference("Users")
@@ -201,6 +216,11 @@ public class FirebaseHelper {
                 });
     }
 
+    /**
+     * Update steps from phone's shared preference to database.
+     *
+     * @param value The amount of steps to be updated.
+     */
     public void updateSteps(long value) {
         FirebaseDatabase.getInstance()
                 .getReference("Users")
