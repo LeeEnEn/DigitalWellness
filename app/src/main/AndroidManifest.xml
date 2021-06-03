@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalWellness">
 
-        <activity android:name=".Splash">
+        <activity
+            android:name=".Splash"
+            android:theme="@style/Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
