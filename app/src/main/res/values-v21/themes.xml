@@ -15,4 +15,11 @@
 
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Splash" parent="Theme.DigitalWellness">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">false</item>
+    </style>
+
 </resources>
