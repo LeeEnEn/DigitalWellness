@@ -29,19 +29,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="72dp"
-            android:text="TEST"
+            android:text="On Service"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/step_tracker" />
 
         <Button
-            android:id="@+id/upload"
+            android:id="@+id/screenTimeTracker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="upload"
-            app:layout_constraintTop_toBottomOf="@+id/testButton"
-            tools:layout_editor_absoluteX="158dp" />
+            android:text="Screen time tracker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/testButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

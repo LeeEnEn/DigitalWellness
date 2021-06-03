@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseHelper = new FirebaseHelper();
         Button stepTracker = (Button) findViewById(R.id.step_tracker);
+        Button screenTracker = (Button) findViewById(R.id. screenTimeTracker);
         testButton = (Button) findViewById(R.id.testButton);
         myPermissions = new MyPermissions(this, MainActivity.this);
         myPreference = new MyPreference(this, firebaseHelper.getUid());
@@ -69,6 +70,14 @@ public class MainActivity extends AppCompatActivity {
         userEmail.setText(firebaseHelper.getUser().getEmail());
         Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
 
+
+        screenTracker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, ScreenTimeTracker.class);
+                startActivity(i);
+            }
+        });
 
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,11 +99,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if(id == R.id.db) {
+                if(id == R.id.stepDrawer) {
+                    Intent i = new Intent(MainActivity.this, StepTracker.class);
+                    startActivity(i);
+                } else if(id == R.id.screemDrawer) {
                     Intent i = new Intent(MainActivity.this, ScreenTimeTracker.class);
                     startActivity(i);
-                } else if(id == R.id.db1) {
-                    Toast. makeText(getApplicationContext(),"Second Option clicked",Toast. LENGTH_SHORT).show();
                 } else if(id == R.id.logout) {
                     firebaseHelper.logoutUser();
                     Intent i = new Intent(MainActivity.this, StartMenu.class);
