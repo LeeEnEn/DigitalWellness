@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class MyPreference {
+    private final String KEY_SCREEN = "Screen";
     private final SharedPreferences preferences;
 
     public MyPreference(Context context, String filename) {
@@ -32,5 +33,15 @@ public class MyPreference {
 
     public void setPhysicalActivityValue(int value) {
         this.preferences.edit().putInt("physical_activity", value).apply();
+    }
+
+    public long getScreenTime(String date) {
+        return this.preferences.getLong(date + KEY_SCREEN, 0);
+    }
+
+    public void updateScreenTime(String date, long value) {
+        long existing = getScreenTime(date);
+        long newvalue = existing + value;
+        this.preferences.edit().putLong(date + KEY_SCREEN, newvalue).apply();
     }
 }

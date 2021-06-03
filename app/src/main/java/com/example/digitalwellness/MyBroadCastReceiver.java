@@ -20,5 +20,7 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
 
         String key = firebase.getPreviousDate() + firebase.getUid();
         firebase.updateSteps(myPreference.getCurrentStepCount(key));
+        firebase.updateScreen(firebase.getPreviousDate(), myPreference.getScreenTime(firebase.getPreviousDate()));
+
     }
 }

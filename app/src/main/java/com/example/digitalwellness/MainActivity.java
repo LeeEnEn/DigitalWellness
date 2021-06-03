@@ -88,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if(id == R.id.db) {
-                    Toast. makeText(getApplicationContext(),"First Option clicked",Toast. LENGTH_SHORT).show();
+                    Intent i = new Intent(MainActivity.this, ScreenTimeTracker.class);
+                    startActivity(i);
                 } else if(id == R.id.db1) {
                     Toast. makeText(getApplicationContext(),"Second Option clicked",Toast. LENGTH_SHORT).show();
                 } else if(id == R.id.logout) {

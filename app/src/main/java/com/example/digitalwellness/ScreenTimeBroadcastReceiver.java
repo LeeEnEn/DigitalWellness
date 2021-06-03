@@ -13,14 +13,22 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.concurrent.TimeUnit;
+
 public class ScreenTimeBroadcastReceiver extends BroadcastReceiver {
 
+    private String KEY_SCREEN = "Screen";
     private long startTimer;
     private long endTimer;
     private long screenOnTimeSingle;
     private long screenOnTime;
-    private final long TIME_ERROR = 1000;
+    private final long TIME_ERROR = 10;
     private NotificationCompat.Builder builder;
+    private FirebaseHelper firebaseHelper;
+    private MyPreference myPreference;
+
 
     public void onReceive(Context context, Intent intent) {
         //Log.i("SCREEN TIME RECEIVER", "ScreenTimeService onReceive");
@@ -30,6 +38,9 @@ public class ScreenTimeBroadcastReceiver extends BroadcastReceiver {
                 .setContentText("This function is working")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);*/
 
+        firebaseHelper = new FirebaseHelper();
+        myPreference = new MyPreference(context, KEY_SCREEN);
+
         if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             Log.i("SCREEN TIME RECEIVER", "ScreenTimeService ON");
             startTimer = System.currentTimeMillis();
@@ -37,9 +48,17 @@ public class ScreenTimeBroadcastReceiver extends BroadcastReceiver {
             Log.i("SCREEN TIME RECEIVER", "ScreenTimeService OFF");
             endTimer = System.currentTimeMillis();
             screenOnTimeSingle = endTimer - startTimer;
-            if (screenOnTimeSingle < TIME_ERROR) {
-                screenOnTime += screenOnTime;
+            //screenOnTime = screenOnTime + screenOnTimeSingle;
+            Log.i("SCREEN TIME RECEIVER", "Time spent: " +
+                    String.format("%d sec", TimeUnit.MILLISECONDS.toSeconds(screenOnTimeSingle)));
+
+            long screenOnTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(screenOnTimeSingle);
+
+            if (screenOnTimeSeconds < 86400) {
+                myPreference.updateScreenTime(firebaseHelper.getCurrentDate(), screenOnTimeSeconds);
             }
+
+            Log.i("SCREEN TIME RECEIVER", String.valueOf(myPreference.getScreenTime(firebaseHelper.getCurrentDate())));
         }
     }
 }

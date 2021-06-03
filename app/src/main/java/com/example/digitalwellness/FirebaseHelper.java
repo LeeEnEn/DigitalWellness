@@ -26,6 +26,7 @@ public class FirebaseHelper {
     private final FirebaseAuth auth;
     private static String currentDate = "";
     private String Uid;
+    private String KEY_SCREEN = "Screen";
 
     /**
      * Public constructor.
@@ -107,6 +108,17 @@ public class FirebaseHelper {
                 .child(Uid)
                 .child(currentDate)
                 .child("Steps");
+    }
+
+    /**
+     * Returns a database reference corresponding to the current screen time of the day.
+     */
+    public DatabaseReference getScreenRef(String date) {
+        return FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(Uid)
+                .child(date)
+                .child(KEY_SCREEN);
     }
 
     /**
@@ -228,5 +240,14 @@ public class FirebaseHelper {
                 .child(currentDate)
                 .child("Steps")
                 .setValue(value);
+    }
+
+    /**
+     * Update screen time from the shared preference to database
+     *
+     * @param value the amount of time spent on screen
+     */
+    public void updateScreen(String date, long value) {
+        this.getScreenRef(date).setValue(value);
     }
 }
