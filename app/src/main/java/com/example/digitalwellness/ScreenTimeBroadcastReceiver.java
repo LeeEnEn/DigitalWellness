@@ -39,7 +39,7 @@ public class ScreenTimeBroadcastReceiver extends BroadcastReceiver {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);*/
 
         firebaseHelper = new FirebaseHelper();
-        myPreference = new MyPreference(context, KEY_SCREEN);
+        myPreference = new MyPreference(context, firebaseHelper.getUid());
 
         if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             Log.i("SCREEN TIME RECEIVER", "ScreenTimeService ON");

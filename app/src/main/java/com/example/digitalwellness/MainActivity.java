@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         testButton = (Button) findViewById(R.id.testButton);
         myPermissions = new MyPermissions(this, MainActivity.this);
         myPreference = new MyPreference(this, firebaseHelper.getUid());
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
         /**
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         userName.setText(firebaseHelper.getUser().getDisplayName());
         userEmail.setText(firebaseHelper.getUser().getEmail());
         Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
+
 
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override

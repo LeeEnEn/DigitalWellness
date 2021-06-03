@@ -22,6 +22,8 @@ public class MyAlarms {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, 10);
+        calendar.set(Calendar.SECOND,0);
 
         Intent alarmIntent = new Intent(this.context, MyBroadCastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.context, 0, alarmIntent, 0);
