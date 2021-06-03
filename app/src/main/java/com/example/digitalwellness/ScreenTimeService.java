@@ -43,7 +43,7 @@ public class ScreenTimeService extends Service {
             startForeground(1, notification);
         }
 
-        Log.d("SERVICE", "Service Started");
+        //Log.d("SERVICE", "Service Started");
         screenTimeBroadcastReceiver = new ScreenTimeBroadcastReceiver();
         IntentFilter lockFilter = new IntentFilter();
         lockFilter.addAction(Intent.ACTION_SCREEN_ON);
@@ -52,9 +52,9 @@ public class ScreenTimeService extends Service {
     }
 
     @Override
-    public void onDestroy() {
-        unregisterReceiver(screenTimeBroadcastReceiver);
-        Log.d("SERVICE", "Service Stopped");
+        public void onDestroy() {
+            unregisterReceiver(screenTimeBroadcastReceiver);
+            Log.d("SERVICE", "Service Stopped");
 
     }
 
