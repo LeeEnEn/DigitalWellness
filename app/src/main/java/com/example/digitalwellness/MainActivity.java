@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private MyPreference myPreference;
     private FirebaseHelper firebaseHelper;
     private TextView userdisplay;
+    private MyAlarms myAlarms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         userEmail.setText(firebaseHelper.getUser().getEmail());
         Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
 
-
         screenTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,8 +101,11 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         startService(new Intent(MainActivity.this, ScreenTimeService.class));
                         Toast.makeText(MainActivity.this, "Button  Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
-
                     }
+
+                    myAlarms = new MyAlarms(MainActivity.this);
+                    myAlarms.startAlarm();
+
                 } else if(id == R.id.logout) {
                     firebaseHelper.logoutUser();
                     Intent i = new Intent(MainActivity.this, StartMenu.class);
@@ -161,10 +165,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
         if (mToggle.onOptionsItemSelected(item)) {
             return true;
+        } else if (id == R.id.setting) {
+            Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.options_logout) {
+            firebaseHelper.logoutUser();
+            Intent i = new Intent(MainActivity.this, StartMenu.class);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //inflate menu
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return true;
     }
 
 }

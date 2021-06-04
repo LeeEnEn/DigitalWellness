@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DigitalWellness</string>
+    <string name="app_name">Digital Wellness</string>
     <string name="facebook_app_id">153989346621942</string>
     <string name="fb_login_protocol_scheme">fb153989346621942</string>
     <string name="facebook_sign_up">Continue with Facebook</string>

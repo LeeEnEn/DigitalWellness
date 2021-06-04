@@ -21,8 +21,8 @@ public class MyAlarms {
         // Set the alarm to start at approximately 1:00 a.m.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 1);
-        calendar.set(Calendar.MINUTE, 10);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 45);
         calendar.set(Calendar.SECOND,0);
 
         Intent alarmIntent = new Intent(this.context, MyBroadCastReceiver.class);
