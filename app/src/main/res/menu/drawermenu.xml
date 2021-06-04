@@ -5,9 +5,13 @@
         android:title="Steps Tracker"
         android:icon="@mipmap/logout"/>
 
-    <item android:id="@+id/screemDrawer"
+    <item android:id="@+id/screenDrawer"
         android:title="Screen Time Tracker"
         android:icon="@mipmap/logout"/>
+    <item
+        android:id="@+id/test"
+        android:icon="@mipmap/logout"
+        android:title="On Service" />
     <item
         android:id="@+id/logout"
         android:icon="@mipmap/logout"

@@ -14,8 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private MyPermissions myPermissions;
     private MyPreference myPreference;
     private FirebaseHelper firebaseHelper;
-    private Button testButton;
+    private TextView userdisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +52,13 @@ public class MainActivity extends AppCompatActivity {
         navView = (NavigationView) findViewById(R.id.navigation);
 
 
+        CardView stepTracker = (CardView) findViewById(R.id.stepsTracker);
+        CardView screenTracker = (CardView) findViewById(R.id.screenTracker);
+        userdisplay = (TextView) findViewById(R.id.userdisplayname);
         firebaseHelper = new FirebaseHelper();
-        Button stepTracker = (Button) findViewById(R.id.step_tracker);
-        Button screenTracker = (Button) findViewById(R.id. screenTimeTracker);
-        testButton = (Button) findViewById(R.id.testButton);
         myPermissions = new MyPermissions(this, MainActivity.this);
         myPreference = new MyPreference(this, firebaseHelper.getUid());
+        userdisplay.setText(firebaseHelper.getUser().getDisplayName());
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
@@ -79,22 +83,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(new Intent(MainActivity.this, ScreenTimeService.class));
-                    Toast.makeText(MainActivity.this, "Button  Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
-
-
-                } else {
-                    startService(new Intent(MainActivity.this, ScreenTimeService.class));
-                    Toast.makeText(MainActivity.this, "Button  Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        });
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -102,9 +90,18 @@ public class MainActivity extends AppCompatActivity {
                 if(id == R.id.stepDrawer) {
                     Intent i = new Intent(MainActivity.this, StepTracker.class);
                     startActivity(i);
-                } else if(id == R.id.screemDrawer) {
+                } else if(id == R.id.screenDrawer) {
                     Intent i = new Intent(MainActivity.this, ScreenTimeTracker.class);
                     startActivity(i);
+                } else if (id == R.id.test) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(new Intent(MainActivity.this, ScreenTimeService.class));
+                        Toast.makeText(MainActivity.this, "Button  Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
+                    } else {
+                        startService(new Intent(MainActivity.this, ScreenTimeService.class));
+                        Toast.makeText(MainActivity.this, "Button  Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
+
+                    }
                 } else if(id == R.id.logout) {
                     firebaseHelper.logoutUser();
                     Intent i = new Intent(MainActivity.this, StartMenu.class);
@@ -169,4 +166,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
