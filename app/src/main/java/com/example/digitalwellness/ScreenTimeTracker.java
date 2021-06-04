@@ -25,9 +25,10 @@ public class ScreenTimeTracker extends AppCompatActivity {
         myPreference = new MyPreference(this, firebaseHelper.getUid());
 
 
-        long progress = (myPreference.getScreenTime(firebaseHelper.getCurrentDate()) / NUM_OF_SECONDS_PER_DAY) * 100;
-        Toast.makeText(ScreenTimeTracker.this, String.valueOf(myPreference.getScreenTime(firebaseHelper.getCurrentDate())), Toast.LENGTH_SHORT).show();
+        long currenttime = myPreference.getScreenTime(firebaseHelper.getCurrentDate());
+        long progress = (currenttime * 100) / NUM_OF_SECONDS_PER_DAY;
         Toast.makeText(ScreenTimeTracker.this, String.valueOf(progress), Toast.LENGTH_SHORT).show();
+        Toast.makeText(ScreenTimeTracker.this, String.valueOf((int)progress), Toast.LENGTH_SHORT).show();
 
         ProgressBar bar = (ProgressBar) findViewById(R.id.progressBarToday);
         TextView text = (TextView) findViewById(R.id.displayStatus);
