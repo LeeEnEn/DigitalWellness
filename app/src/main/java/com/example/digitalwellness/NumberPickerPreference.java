@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +26,17 @@ public class NumberPickerPreference extends DialogPreference {
     private NumberPicker picker;
     private int value;
 
+    private MyPreference myPreference;
+    private FirebaseHelper firebaseHelper = new FirebaseHelper();
+
     public NumberPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        myPreference = new MyPreference(context, firebaseHelper.getUid());
     }
 
     public NumberPickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        myPreference = new MyPreference(context, firebaseHelper.getUid());
     }
 
     @Override
@@ -38,6 +44,7 @@ public class NumberPickerPreference extends DialogPreference {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
+
 
         picker = new NumberPicker(getContext());
         picker.setLayoutParams(layoutParams);
@@ -64,6 +71,9 @@ public class NumberPickerPreference extends DialogPreference {
             int newValue = picker.getValue();
             if (callChangeListener(newValue)) {
                 setValue(newValue);
+                myPreference.setScreenLimit(newValue);
+                Log.d("Preferences", "Uploaded to MyPreferences");
+                Log.d("Preferences", String.valueOf(myPreference.getScreenLimit()));
             }
         }
     }

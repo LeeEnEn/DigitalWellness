@@ -44,4 +44,12 @@ public class MyPreference {
         long newvalue = existing + value;
         this.preferences.edit().putLong(date + KEY_SCREEN, newvalue).apply();
     }
+
+    public void setScreenLimit(int value) {
+        this.preferences.edit().putInt("screenLimit", value).apply();
+    }
+
+    public int getScreenLimit() {
+        return this.preferences.getInt("screenLimit", 0);
+    }
 }
