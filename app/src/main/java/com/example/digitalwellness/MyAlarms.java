@@ -22,7 +22,7 @@ public class MyAlarms {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 45);
+        calendar.set(Calendar.MINUTE, 30);
         calendar.set(Calendar.SECOND,0);
 
         Intent alarmIntent = new Intent(this.context, MyBroadCastReceiver.class);

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Notifications">
+
+        <CheckBoxPreference
+            android:title = "Notification"
+            android:key = "KEY"
+            android:defaultValue="false"
+            android:summary="Enable app to send notifications">
+        </CheckBoxPreference>
+
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        android:title="Screen Time Manager">
+
+        <com.example.digitalwellness.NumberPickerPreference
+            android:key="screen_time_setting"
+            android:title="Set Screen Time Limit"
+            android:summary="App will send notifications once you passed this amount of screen time."
+            android:defaultValue="3" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Screen Orientation">
+        <ListPreference
+            android:title="Orientation"
+            android:key="ORIENTATION"
+            android:entries="@array/items_name"
+            android:entryValues="@array/items_value"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

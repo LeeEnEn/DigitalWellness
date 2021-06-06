@@ -169,7 +169,8 @@ public class MainActivity extends AppCompatActivity {
         if (mToggle.onOptionsItemSelected(item)) {
             return true;
         } else if (id == R.id.setting) {
-            Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(MainActivity.this, Settings.class);
+            startActivity(i);
         } else if (id == R.id.options_logout) {
             firebaseHelper.logoutUser();
             Intent i = new Intent(MainActivity.this, StartMenu.class);
