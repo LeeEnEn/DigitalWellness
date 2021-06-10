@@ -13,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalWellness">
-        <activity android:name=".ScreenTimeTracker"></activity>
         <activity
             android:name=".Splash"
             android:theme="@style/Splash">
@@ -23,11 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Registration" />
-        <activity android:name=".StartMenu" />
+
         <activity android:name=".Login" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".StepTracker" /> <!-- Facebook Implementation -->
+        <activity android:name=".PasswordReset" />
+        <activity android:name=".Registration" />
+        <activity android:name=".Settings" />
+        <activity android:name=".ScreenTimeTracker" />
+        <activity android:name=".StartMenu" />
+        <activity android:name=".StepTracker" />
+
+        <!-- Facebook Implementation -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -49,8 +54,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Settings"/>
-
         <receiver
             android:name=".MyBroadCastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
@@ -62,7 +65,7 @@
             </intent-filter>
         </receiver>
 
-
+        <service android:name=".StepTrackerService" />
 
         <receiver android:name=".ScreenTimeBroadcastReceiver" />
 

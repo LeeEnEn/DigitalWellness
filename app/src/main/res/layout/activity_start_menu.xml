@@ -90,6 +90,17 @@
             app:layout_constraintTop_toBottomOf="@+id/mainRegister"
             app:layout_constraintVertical_bias="0.01" />
 
+        <Button
+            android:id="@+id/forget_password"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="@string/forget_password"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/black"
+            app:layout_constraintEnd_toEndOf="@+id/mainLogin"
+            app:layout_constraintTop_toBottomOf="@+id/mainLogin" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

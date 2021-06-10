@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -24,10 +25,20 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        navView = (NavigationView) findViewById(R.id.navigation);
 
 
         CardView stepTracker = (CardView) findViewById(R.id.stepsTracker);
@@ -59,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         userdisplay = (TextView) findViewById(R.id.userdisplayname);
         firebaseHelper = new FirebaseHelper();
         myPermissions = new MyPermissions(this, MainActivity.this);
-        myPreference = new MyPreference(this, firebaseHelper.getUid());
+        myPreference = new MyPreference(this, "permissions");
         userdisplay.setText(firebaseHelper.getUser().getDisplayName());
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
@@ -102,13 +112,12 @@ public class MainActivity extends AppCompatActivity {
                         startService(new Intent(MainActivity.this, ScreenTimeService.class));
                         Toast.makeText(MainActivity.this, "Button  Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
                     }
-
-                    myAlarms = new MyAlarms(MainActivity.this);
-                    myAlarms.startAlarm();
-
                 } else if(id == R.id.logout) {
                     firebaseHelper.logoutUser();
                     Intent i = new Intent(MainActivity.this, StartMenu.class);
+                    startActivity(i);
+                } else if (id == R.id.settings) {
+                    Intent i = new Intent(MainActivity.this, Settings.class);
                     startActivity(i);
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -134,8 +143,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (myPermissions.checkActivityRecognitionCode(requestCode)) {
             if (grantResults[0] == 0) {
-                Intent intent = new Intent(MainActivity.this, StepTracker.class);
-                startActivity(intent);
+                myPermissions.displayServiceDialog();
             } else {
                 int count = myPreference.getPhysicalActivityValue();
                 myPreference.setPhysicalActivityValue(++count);

@@ -59,7 +59,7 @@ public class StartMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
+        setContentView(R.layout.activity_start_menu);
         getSupportActionBar().hide();
 
         /**
@@ -88,6 +88,7 @@ public class StartMenu extends AppCompatActivity {
         final Button googleButton = findViewById(R.id.googlereg);
         final LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_login);
         facebookLoginButton.setReadPermissions("email", "public_profile");
+        final Button forgetPassword = findViewById(R.id.forget_password);
 
         /**
          * Button listener for users who are already registered
@@ -99,9 +100,7 @@ public class StartMenu extends AppCompatActivity {
             }
         });
 
-        /**
-         * Button listener for users signing up with EMAIL.
-         */
+        // Button listener for users signing up with EMAIL.
         regButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), Registration.class);
@@ -109,9 +108,7 @@ public class StartMenu extends AppCompatActivity {
             }
         });
 
-        /**
-         * Facebook Button Initialisation
-         */
+        // Facebook Button Initialisation
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -148,6 +145,14 @@ public class StartMenu extends AppCompatActivity {
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
+
+        forgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resetPasswordIntent = new Intent(StartMenu.this, PasswordReset.class);
+                startActivity(resetPasswordIntent);
+            }
+        });
     }
 
     @Override
@@ -155,7 +160,6 @@ public class StartMenu extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         if (firebaseHelper.isLoggedIn()) {
-//            firebaseHelper.updateStepsToDB(this);
             Intent intent = new Intent(this, MainActivity.class);
             Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
             this.startActivity(intent);

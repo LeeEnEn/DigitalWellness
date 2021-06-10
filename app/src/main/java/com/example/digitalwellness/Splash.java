@@ -1,5 +1,6 @@
 package com.example.digitalwellness;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,15 +8,19 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class Splash extends AppCompatActivity {
+public class Splash extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, StartMenu.class);
-        // Do stuff (e.g. load data from db)
-        startActivity(intent);
-        finish();
+        FirebaseHelper firebase = new FirebaseHelper();
+
+        if (firebase.isLoggedIn()) {
+            firebase.getData(this, new Intent(this, MainActivity.class));
+        } else {
+            Intent intent = new Intent(this, StartMenu.class);
+            startActivity(intent);
+        }
     }
 }

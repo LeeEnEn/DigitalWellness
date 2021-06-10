@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.Settings;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +18,8 @@ import androidx.core.app.ActivityCompat;
 public class MyPermissions {
     private final int ACTIVITY_RECOGNITION_CODE = 10;
     private final String ACTIVITY_RECOGNITION = Manifest.permission.ACTIVITY_RECOGNITION;
+    private final String ALLOW = "Allow";
+    private final String DENY = "Deny";
     private final String RATIONALE = "Physical activity Permission is required for Step Tracker to work.";
     private final MyPreference myPreference;
     private final Context context;
@@ -30,7 +34,7 @@ public class MyPermissions {
     public MyPermissions(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
-        this.myPreference = new MyPreference(context, new FirebaseHelper().getUid());
+        this.myPreference = new MyPreference(context, "permissions");
     }
 
     /**
@@ -68,7 +72,7 @@ public class MyPermissions {
      */
     public void requestPermission() {
         int count = myPreference.getPhysicalActivityValue();
-
+        System.out.println(count + " Count");
         if (count == -1) {
             runPermission();
         } else if (count == 0){
@@ -89,20 +93,24 @@ public class MyPermissions {
 
     /**
      * Shows reasoning for needing said permission. In this dialog, user can deny permission as many
-     * times as they want. However, upon clicking allow and then deny, user will have to go to app's
+     * times as they want. However, upon clicking allow then deny, user will have to go to app's
      * settings to manually change permission.
      */
     private void displayAnotherDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        View customView = inflater.inflate(R.layout.testlayout, null);
+//        alertDialogBuilder.setView(customView);
+//        alertDialogBuilder.setIcon(R.drawable.digitalwellnesslogo);
         alertDialogBuilder.setTitle("Permission needed: ");
         alertDialogBuilder.setMessage(RATIONALE);
-        alertDialogBuilder.setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton(ALLOW, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 runPermission();
             }
         });
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(DENY, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(context, "Permission denied!", Toast.LENGTH_SHORT).show();
@@ -118,9 +126,10 @@ public class MyPermissions {
      */
     private void displayChangeSettingsDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setTitle("Permission needed: ");
+
+        alertDialogBuilder.setTitle("Permission needed:");
         alertDialogBuilder.setMessage("Go to settings and change permission?");
-        alertDialogBuilder.setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton(ALLOW, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent();
@@ -130,10 +139,39 @@ public class MyPermissions {
                 context.startActivity(intent);
             }
         });
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(DENY, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(context, "Action denied!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
+    }
+
+    /**
+     * Shows user an option to allow step tracker to run as a service.
+     */
+    public void displayServiceDialog() {
+        Intent intent = new Intent(context, StepTracker.class);
+        MyAlarms myAlarms = new MyAlarms(context);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setTitle("Permission needed:");
+        alertDialogBuilder.setMessage("Allow Step Tracker to run in the background?");
+        alertDialogBuilder.setPositiveButton(ALLOW, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                myPreference.setService(true);
+                myAlarms.startServiceAlarm();
+                context.startActivity(intent);
+            }
+        });
+        alertDialogBuilder.setNegativeButton(DENY, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                myPreference.setService(false);
+                myAlarms.cancelServiceAlarm();
+                context.startActivity(intent);
             }
         });
         AlertDialog dialog = alertDialogBuilder.create();

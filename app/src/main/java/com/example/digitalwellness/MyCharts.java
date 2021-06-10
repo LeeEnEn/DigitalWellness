@@ -1,0 +1,71 @@
+package com.example.digitalwellness;
+
+import android.app.Activity;
+import android.content.Context;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.zxing.BarcodeFormat;
+
+import java.util.ArrayList;
+
+public class MyCharts {
+    private Activity context;
+    private BarChart stepChart;
+    private BarChart screenChart;
+    private FirebaseHelper firebase;
+
+    public MyCharts(Activity context) {
+        this.context = context;
+    }
+
+    public void showStepGraph(ArrayList<BarEntry> values) {
+        stepChart = (BarChart) context.findViewById(R.id.chart);
+        // Disable all zooming.
+        stepChart.setScaleEnabled(false);
+
+        // Disable legend.
+        stepChart.getLegend().setEnabled(false);
+
+        // Remove grid lines on the x-axis.
+        XAxis xAxis = stepChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        stepChart.getAxisLeft().setDrawGridLines(false);
+
+        // Remove grid lines on the right side.
+        stepChart.getAxisRight().setEnabled(false);
+
+        // Set animation duration for y-axis.
+        stepChart.animateY(1000);
+
+        // Set x-axis value.
+        final String[] weekdays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(weekdays));
+
+        // Load data.
+        BarDataSet dataSet = new BarDataSet(values, null);
+
+        // Remove chart description.
+        stepChart.getDescription().setEnabled(false);
+
+        // Set color
+        dataSet.setColors(ColorTemplate.getHoloBlue());
+
+        // x-axis data
+        BarData data = new BarData(dataSet);
+        stepChart.setData(data);
+        stepChart.setFitBars(true);
+        stepChart.setVisibleXRangeMaximum(10);
+        stepChart.setDragEnabled(false);
+    }
+}

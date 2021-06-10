@@ -29,7 +29,7 @@ public class ScreenTimeTracker extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         firebaseHelper = new FirebaseHelper();
-        myPreference = new MyPreference(this, firebaseHelper.getUid());
+        myPreference = new MyPreference(this, "Screen");
 
         NUM_OF_SECONDS_PER_DAY = myPreference.getScreenLimit();
         NUM_OF_SECONDS_PER_DAY = NUM_OF_SECONDS_PER_DAY * 60 * 60;

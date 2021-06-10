@@ -8,10 +8,13 @@
             android:title = "Notification"
             android:key = "KEY"
             android:defaultValue="false"
-            android:summary="Enable app to send notifications">
-        </CheckBoxPreference>
+            android:summary="Enable app to send notifications." />
 
-
+        <CheckBoxPreference
+            android:title="Step Tracker"
+            android:key="trackerCheckBox"
+            android:defaultValue="false"
+            android:summary="Enable step tracker to run in the background." />
     </PreferenceCategory>
 
 
