@@ -25,33 +25,29 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
 
         switch (intent.getIntExtra("code", 0)) {
             case 1:
-                case1(intent.getStringExtra("uid"));
+                dailyUpdates(intent.getStringExtra("uid"));
                 break;
             case 2:
-                case2(intent.getStringExtra("uid"));
+                serviceUpdates(intent.getStringExtra("uid"));
                 context.startService(new Intent(context, StepTrackerService.class));
                 break;
         }
     }
 
-    private void case1(String uid) {
+    private void dailyUpdates(String uid) {
         String previousDate = firebase.getPreviousDate();
         String key = previousDate + uid;
         firebase.updateSteps(previousDate, myPreference.getCurrentStepCount(key));
         firebase.updateScreen(previousDate, myPreference.getScreenTime(firebase.getPreviousDate()));
-        System.out.println("case1: \n" + key);
-        System.out.println(myPreference.getCurrentStepCount(key));
+
         System.out.println("normal updates done");
     }
 
-    private void case2(String uid) {
+    private void serviceUpdates(String uid) {
         String currentDate = firebase.getCurrentDate();
         String key = currentDate + uid;
-        StepTrackerService service = new StepTrackerService();
-        myPreference.setCurrentStepCount(key, service.getStepCount());
-        System.out.println("case2: \n" + key);
-        System.out.println(service.getStepCount());
-        firebase.updateSteps(currentDate, service.getStepCount());
+        firebase.updateSteps(currentDate, myPreference.getCurrentStepCount(key));
+
         System.out.println("alarm service done");
     }
 }

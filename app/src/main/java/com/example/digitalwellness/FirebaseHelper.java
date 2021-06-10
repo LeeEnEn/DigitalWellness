@@ -35,7 +35,7 @@ public class FirebaseHelper {
     private static ArrayList<BarEntry> screen;
 
     private static String currentDate = "";
-    private String Uid = null;
+    private String Uid;
 
     /**
      * Public constructor.
@@ -65,6 +65,9 @@ public class FirebaseHelper {
                             // ref.push().child(date.toString()).setValue("Account created under: " + email);
                             updateProfile(name, "Account created!", activity);
                             createBasicData();
+                            MyAlarms myAlarms = new MyAlarms(activity);
+                            myAlarms.startServiceAlarm();
+                            myAlarms.startUpdateAlarm();
                             getData(activity, new Intent(activity, Login.class));
                         } else {
                             // If sign in fails, display a message to the user.
@@ -121,9 +124,11 @@ public class FirebaseHelper {
     public void getData(Activity activity, Intent intent) {
         steps = new ArrayList<>();
         screen = new ArrayList<>();
+
         if (Uid == null) {
             Uid = new FirebaseHelper().getUid();
         }
+
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(Uid);
@@ -157,11 +162,11 @@ public class FirebaseHelper {
     }
 
     public ArrayList<BarEntry> getSteps() {
-        return this.steps;
+        return steps;
     }
 
     public ArrayList<BarEntry> getScreen() {
-        return this.screen;
+        return screen;
     }
 
     /**

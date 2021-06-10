@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 public class StepTrackerService extends Service {
     private static long stepCount;
+    private static String key;
 
     @Nullable
     @Override
@@ -23,12 +24,16 @@ public class StepTrackerService extends Service {
     @Override
     public void onCreate() {
         System.out.println("Service started");
+        FirebaseHelper firebase = new FirebaseHelper();
+        key = firebase.getCurrentDate() + firebase.getUid();
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
         SensorEventListener eventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 stepCount = (long) event.values[0];
+                getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, stepCount).apply();
             }
 
             @Override
@@ -46,6 +51,7 @@ public class StepTrackerService extends Service {
 
     @Override
     public void onDestroy() {
+        getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, stepCount).apply();
         System.out.println("Service destroyed");
     }
 

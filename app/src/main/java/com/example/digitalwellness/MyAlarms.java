@@ -26,8 +26,8 @@ public class MyAlarms {
         // Set the alarm to start at approximately 1:00 a.m.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 14);
-        calendar.set(Calendar.MINUTE, 31);
+        calendar.set(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND,0);
 
         AlarmManager alarmManager = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
@@ -37,7 +37,7 @@ public class MyAlarms {
         alarmIntent.putExtra("uid", firebase.getUid());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.context, 0, alarmIntent, 0);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendingIntent);
 //        alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 60000, pendingIntent);
         System.out.println("Update alarm started");
@@ -47,11 +47,11 @@ public class MyAlarms {
      * An alarm that wakes the phone to update current day's step to shared preference.
      */
     public void startServiceAlarm() {
-        // Set the alarm to start at exactly 11.59
+        // Set the alarm to start at exactly 11.55
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 14);
-        calendar.set(Calendar.MINUTE, 31);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 55);
         calendar.set(Calendar.SECOND, 0);
 
         alarmManagerForService = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
@@ -74,6 +74,5 @@ public class MyAlarms {
     public void cancelServiceAlarm() {
         System.out.println("alarm service cancelled");
         alarmManagerForService.cancel(intentForService);
-        
     }
 }
