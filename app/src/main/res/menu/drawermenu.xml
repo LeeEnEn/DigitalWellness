@@ -6,7 +6,9 @@
         android:title="Distance Tracker" />
 
     <item android:id="@+id/stepDrawer"
-        android:title="Steps Tracker" />
+        android:title="Steps Tracker"
+        android:icon="@mipmap/shoe_round"
+        />
 
     <item android:id="@+id/screenDrawer"
         android:title="Screen Time Tracker" />

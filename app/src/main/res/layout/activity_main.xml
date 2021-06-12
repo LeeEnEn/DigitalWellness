@@ -26,7 +26,7 @@
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="1dp"
             android:layout_marginBottom="1dp"
@@ -45,39 +45,28 @@
                 android:layout_margin="7dp"
                 android:layout_weight="1"
                 app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="30dp">
+                app:cardCornerRadius="20dp">
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:fontFamily="sans-serif-black"
-                    android:text="STEPS TRACKER"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="10sp" />
-            </androidx.cardview.widget.CardView>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="7dp"
-                app:cardBackgroundColor="@color/grey"
-                android:layout_weight="1"
-                app:cardCornerRadius="30dp">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/shoe"></ImageView>
 
-                <TextView
-                    android:id="@+id/randomtext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:fontFamily="sans-serif-black"
-                    android:text="COMING SOON"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="10sp" />
-
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="100dp"
+                        android:text="STEPS TRACKER"
+                        android:fontFamily="sans-serif-black"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/black"
+                        android:textAlignment="center">
+                    </TextView>
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -87,18 +76,29 @@
                 android:layout_margin="7dp"
                 android:layout_weight="1"
                 app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="30dp">
+                app:cardCornerRadius="20dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:fontFamily="sans-serif-black"
-                    android:text="SCREEN TRACKER"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="10sp" />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:paddingTop="10dp"
+                        android:src="@mipmap/screen">
+                    </ImageView>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="100dp"
+                        android:text="SCREEN TRACKER"
+                        android:fontFamily="sans-serif-black"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/background_dark"
+                        android:textAlignment="center">
+                    </TextView>
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
