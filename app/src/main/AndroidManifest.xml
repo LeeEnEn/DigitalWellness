@@ -54,6 +54,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ScreenTimeGraph"></activity>
+
         <receiver
             android:name=".MyBroadCastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">

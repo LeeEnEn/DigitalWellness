@@ -2,6 +2,7 @@ package com.example.digitalwellness;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -67,5 +68,49 @@ public class MyCharts {
         stepChart.setFitBars(true);
         stepChart.setVisibleXRangeMaximum(10);
         stepChart.setDragEnabled(false);
+    }
+
+    public void showScreenGraph (ArrayList<BarEntry> values) {
+        screenChart = (BarChart) context.findViewById(R.id.screenchart);
+        Log.e("LOG", "Screen graph entered");
+        Log.e("LOG", values.toString());
+
+        // Disable all zooming.
+        screenChart.setScaleEnabled(false);
+
+        // Disable legend.
+        screenChart.getLegend().setEnabled(false);
+
+        // Remove grid lines on the x-axis.
+        XAxis xAxis = screenChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        screenChart.getAxisLeft().setDrawGridLines(false);
+
+        // Remove grid lines on the right side.
+        screenChart.getAxisRight().setEnabled(false);
+
+        // Set animation duration for y-axis.
+        screenChart.animateY(1000);
+
+        // Set x-axis value.
+        final String[] weekdays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(weekdays));
+
+        // Load data.
+        BarDataSet dataSet = new BarDataSet(values, null);
+
+        // Remove chart description.
+        screenChart.getDescription().setEnabled(false);
+
+        // Set color
+        dataSet.setColors(ColorTemplate.getHoloBlue());
+
+        // x-axis data
+        BarData data = new BarData(dataSet);
+        screenChart.setData(data);
+        screenChart.setFitBars(true);
+        screenChart.setVisibleXRangeMaximum(10);
+        screenChart.setDragEnabled(false);
     }
 }

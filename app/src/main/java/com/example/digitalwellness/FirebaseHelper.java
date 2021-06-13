@@ -3,6 +3,7 @@ package com.example.digitalwellness;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -146,6 +147,7 @@ public class FirebaseHelper {
                         for (DataSnapshot s: snap.getChildren()) {
                             if (counter % 2 == 0) {
                                 screen.add(new BarEntry(i, (Long) s.getValue()));
+                                Log.e("LOG", "Screen data entered");
                                 i++;
                             } else {
                                 steps.add(new BarEntry(j, (Long) s.getValue()));

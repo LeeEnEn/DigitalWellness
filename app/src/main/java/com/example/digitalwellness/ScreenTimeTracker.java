@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ public class ScreenTimeTracker extends AppCompatActivity {
     private MyPreference myPreference;
     private FirebaseHelper firebaseHelper;
     private int NUM_OF_SECONDS_PER_DAY ;
+    private Button moreDetailsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,8 @@ public class ScreenTimeTracker extends AppCompatActivity {
         firebaseHelper = new FirebaseHelper();
         myPreference = new MyPreference(this, "Screen");
 
+        moreDetailsButton = (Button) findViewById(R.id.moreDetails);
+
         NUM_OF_SECONDS_PER_DAY = myPreference.getScreenLimit();
         NUM_OF_SECONDS_PER_DAY = NUM_OF_SECONDS_PER_DAY * 60 * 60;
 
@@ -42,6 +47,15 @@ public class ScreenTimeTracker extends AppCompatActivity {
         TextView text = (TextView) findViewById(R.id.displayStatus);
         bar.setProgress((int)progress);
         text.setText(String.valueOf(progress) + "%");
+
+
+        moreDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ScreenTimeTracker.this, ScreenTimeGraph.class);
+                startActivity(i);
+            }
+        });
     }
 
     @Override
