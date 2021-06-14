@@ -1,6 +1,7 @@
 package com.example.digitalwellness;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,14 @@ import com.google.android.exoplayer2.ui.PlayerView;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
-    private final String[] data;
     private final Context context;
+    private final String[] titles;
+    private final Uri[] data;
 
-    public CustomAdapter(String[] data, Context context) {
-        this.data = data;
+    public CustomAdapter(Uri[] data, String[] titles, Context context) {
         this.context = context;
+        this.data = data;
+        this.titles = titles;
     }
 
     @NonNull
@@ -34,7 +37,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SimpleExoPlayer exoPlayer = new SimpleExoPlayer.Builder(context).build();
         holder.playerView.setPlayer(exoPlayer);
-        holder.textView.setText(String.valueOf(position));
+        holder.textView.setText(titles[position]);
         MediaItem mediaItem = MediaItem.fromUri(data[position]);
         exoPlayer.setMediaItem(mediaItem);
         exoPlayer.setPlayWhenReady(false);
@@ -44,18 +47,18 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 2;
+        return data.length;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private PlayerView playerView;
-        private TextView textView;
+        private final PlayerView playerView;
+        private final TextView textView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.playerView = (PlayerView) itemView.findViewById(R.id.test_video_id);
-            this.textView = (TextView) itemView.findViewById(R.id.test_text_id);
+            this.playerView = (PlayerView) itemView.findViewById(R.id.video);
+            this.textView = (TextView) itemView.findViewById(R.id.video_title);
         }
     }
 }
