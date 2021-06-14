@@ -31,6 +31,7 @@
         <activity android:name=".ScreenTimeTracker" />
         <activity android:name=".StartMenu" />
         <activity android:name=".StepTracker" />
+        <activity android:name=".Video" />
 
         <!-- Facebook Implementation -->
         <meta-data

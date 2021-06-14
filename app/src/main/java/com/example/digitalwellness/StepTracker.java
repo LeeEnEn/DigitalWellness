@@ -65,13 +65,13 @@ public class StepTracker extends AppCompatActivity {
         // Update step count if user enables service.
         shouldServiceBeOn = new MyPreference(this, "permissions").getService();
         service = new StepTrackerService();
-        if (shouldServiceBeOn) {
-            myPreference.setCurrentStepCount(key, service.getStepCount());
-        }
+//        if (shouldServiceBeOn) {
+//            myPreference.setCurrentStepCount(key, service.getStepCount());
+//        }
 
         // Load data
         MyCharts myCharts = new MyCharts(this);
-        myCharts.showStepGraph(firebase.getSteps());
+        myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
 
         ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -101,6 +101,7 @@ public class StepTracker extends AppCompatActivity {
                         long displayValue = currentSensorValue + databaseValue - myPreference.getPreviousTotalStepCount();
                         myPreference.setCurrentStepCount(key, displayValue);
                         textView.setText(String.valueOf(displayValue));
+                        System.out.println(currentSensorValue);
                     }
                 }
 

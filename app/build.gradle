@@ -62,4 +62,7 @@ dependencies {
 
     // Displaying of graph
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // Media player
+    implementation 'com.google.android.exoplayer:exoplayer:2.14.0'
 }

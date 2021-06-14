@@ -86,6 +86,17 @@ public class MainActivity extends AppCompatActivity {
         userEmail.setText(firebaseHelper.getUser().getEmail());
         Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
 
+        // Video button here
+        Button videoButton = (Button) findViewById(R.id.video_button);
+
+        videoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Video.class);
+                startActivity(intent);
+            }
+        });
+
         screenTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

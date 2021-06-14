@@ -29,7 +29,7 @@ public class MyCharts {
         this.context = context;
     }
 
-    public void showStepGraph(ArrayList<BarEntry> values) {
+    public void showStepGraph(ArrayList<BarEntry> values, String[] axis) {
         stepChart = (BarChart) context.findViewById(R.id.chart);
         // Disable all zooming.
         stepChart.setScaleEnabled(false);
@@ -50,8 +50,7 @@ public class MyCharts {
         stepChart.animateY(1000);
 
         // Set x-axis value.
-        final String[] weekdays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(weekdays));
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(axis));
 
         // Load data.
         BarDataSet dataSet = new BarDataSet(values, null);
@@ -66,7 +65,7 @@ public class MyCharts {
         BarData data = new BarData(dataSet);
         stepChart.setData(data);
         stepChart.setFitBars(true);
-        stepChart.setVisibleXRangeMaximum(10);
+        stepChart.setVisibleXRangeMaximum(7);
         stepChart.setDragEnabled(false);
     }
 

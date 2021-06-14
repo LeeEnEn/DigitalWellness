@@ -30,8 +30,11 @@ import java.util.regex.Pattern;
 public class FirebaseHelper {
     private final FirebaseAuth auth;
     private final String KEY_SCREEN = "Screen";
+    private final String KEY_STEP = "Steps";
     private final String PATTERN = "MM-dd-yyyy";
+    private final int RANGE = 7;
 
+    private static String[] axis = null;
     private static ArrayList<BarEntry> steps;
     private static ArrayList<BarEntry> screen;
 
@@ -69,7 +72,7 @@ public class FirebaseHelper {
                             MyAlarms myAlarms = new MyAlarms(activity);
                             myAlarms.startServiceAlarm();
                             myAlarms.startUpdateAlarm();
-                            getData(activity, new Intent(activity, Login.class));
+                            activity.startActivity(new Intent(activity, Login.class));
                         } else {
                             // If sign in fails, display a message to the user.
                             // Log.w("Failure", "createUserWithEmail:failure", task.getException());
@@ -92,6 +95,37 @@ public class FirebaseHelper {
         reference.child("Steps").setValue(0);
         reference.child("Screen").setValue(0);
     }
+
+    public String[] getAxis() {
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        switch (day) {
+            case Calendar.SUNDAY:
+                axis = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+                break;
+            case Calendar.MONDAY:
+                axis = new String[]{"Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon"};
+                break;
+            case Calendar.TUESDAY:
+                axis = new String[]{"Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"};
+                break;
+            case Calendar.WEDNESDAY:
+                axis = new String[]{"Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed"};
+                break;
+            case Calendar.THURSDAY:
+                axis = new String[]{"Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thu"};
+                break;
+            case Calendar.FRIDAY:
+                axis = new String[]{"Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"};
+                break;
+            case Calendar.SATURDAY:
+                axis = new String[]{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+                break;
+        }
+        return axis;
+    }
+
     /**
      * Returns current date in dd-MM-yyyy format.
      *
@@ -139,15 +173,25 @@ public class FirebaseHelper {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
                     DataSnapshot snapshot = task.getResult();
+
+                    long entriesToAdd = RANGE - snapshot.getChildrenCount();
                     int counter = 0;
                     int i = 0;
                     int j = 0;
+
+                    while (entriesToAdd > 0) {
+                        steps.add(new BarEntry(i, 0));
+                        screen.add(new BarEntry(j, 0));
+                        i++;
+                        j++;
+                        counter += 2;
+                        entriesToAdd--;
+                    }
 
                     for (DataSnapshot snap: snapshot.getChildren()) {
                         for (DataSnapshot s: snap.getChildren()) {
                             if (counter % 2 == 0) {
                                 screen.add(new BarEntry(i, (Long) s.getValue()));
-                                Log.e("LOG", "Screen data entered");
                                 i++;
                             } else {
                                 steps.add(new BarEntry(j, (Long) s.getValue()));
@@ -181,7 +225,7 @@ public class FirebaseHelper {
                 .getReference("Users")
                 .child(Uid)
                 .child(date)
-                .child("Steps");
+                .child(KEY_STEP);
     }
 
     /**
@@ -333,15 +377,8 @@ public class FirebaseHelper {
                 .getReference("Users")
                 .child(Uid)
                 .child(date)
-                .child("Steps")
-                .setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    System.out.println("update complete");
-                }
-            }
-        });
+                .child(KEY_STEP)
+                .setValue(value);
     }
 
     /**
