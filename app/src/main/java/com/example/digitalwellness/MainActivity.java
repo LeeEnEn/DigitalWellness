@@ -1,10 +1,13 @@
 package com.example.digitalwellness;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -89,6 +93,11 @@ public class MainActivity extends AppCompatActivity {
         // Video button here
         CardView videoButton = (CardView) findViewById(R.id.video_button);
 
+        //Lockdown Button here
+        CardView lockdownButton = (CardView) findViewById(R.id.lockdownbutton);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +105,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        lockdownButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                    startActivity(intent);
+                } else {
+                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+                }
+            }
+        });
+
 
         screenTracker.setOnClickListener(new View.OnClickListener() {
             @Override
