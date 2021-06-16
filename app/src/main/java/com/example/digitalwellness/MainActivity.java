@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
 
         // Video button here
-        Button videoButton = (Button) findViewById(R.id.video_button);
+        CardView videoButton = (CardView) findViewById(R.id.video_button);
 
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
