@@ -216,16 +216,16 @@
 
                     <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="110dp"
                         android:paddingTop="10dp"
-                        android:src="@mipmap/screen">
+                        android:src="@mipmap/dnd">
                     </ImageView>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingTop="100dp"
-                        android:text="SCREEN TRACKER"
+                        android:text="FOCUS MODE"
                         android:fontFamily="sans-serif-black"
                         android:textSize="12sp"
                         android:textColor="@android:color/background_dark"
