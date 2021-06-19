@@ -54,7 +54,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ScreenTimeGraph" />
-        <service android:name=".ClockBroadcastService"/>
 
         <receiver
             android:name=".MyBroadCastReceiver"
@@ -67,6 +66,7 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".AlarmBroadcastManager"/>
         <service android:name=".StepTrackerService" />
 
         <receiver android:name=".ScreenTimeBroadcastReceiver" />

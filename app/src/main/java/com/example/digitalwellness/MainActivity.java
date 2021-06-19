@@ -107,15 +107,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         lockdownButton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-                    startActivity(intent);
-                } else {
-                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
-                }
+                startActivity(new Intent(MainActivity.this, FocusMode.class));
             }
         });
 
@@ -153,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.settings) {
                     Intent i = new Intent(MainActivity.this, Settings.class);
                     startActivity(i);
-                } else if (id == R.id.testing) {
+                } else if (id == R.id.focusmodedrawer) {
                     startActivity(new Intent(MainActivity.this, FocusMode.class));
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);

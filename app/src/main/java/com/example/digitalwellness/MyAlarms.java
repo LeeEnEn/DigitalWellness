@@ -68,6 +68,21 @@ public class MyAlarms {
 //        alarmManagerForService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 60000, intentForService);
     }
 
+    public void startAlarmAtTime(int hour, int minute) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+
+        alarmManagerForService = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent alarmIntent = new Intent(this.context, MyBroadCastReceiver.class);
+        intentForService = PendingIntent.getBroadcast(this.context, 1, alarmIntent, 0);
+        alarmManagerForService.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), intentForService);
+    }
+
     /**
      * Cancel alarm if user decides not to allow step tracker to run in the background.
      */
@@ -75,4 +90,6 @@ public class MyAlarms {
         System.out.println("alarm service cancelled");
         alarmManagerForService.cancel(intentForService);
     }
+
+
 }
