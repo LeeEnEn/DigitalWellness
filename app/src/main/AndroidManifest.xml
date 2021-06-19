@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalWellness">
+        <activity android:name=".FocusMode"></activity>
         <activity
             android:name=".Splash"
             android:theme="@style/Splash">
@@ -23,7 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".Login" />
         <activity android:name=".MainActivity" />
         <activity android:name=".PasswordReset" />
@@ -32,9 +32,7 @@
         <activity android:name=".ScreenTimeTracker" />
         <activity android:name=".StartMenu" />
         <activity android:name=".StepTracker" />
-        <activity android:name=".Video" />
-
-        <!-- Facebook Implementation -->
+        <activity android:name=".Video" /> <!-- Facebook Implementation -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -55,8 +53,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ScreenTimeGraph"></activity>
+        <activity android:name=".ScreenTimeGraph" />
+        <service android:name=".ClockBroadcastService"/>
 
         <receiver
             android:name=".MyBroadCastReceiver"
