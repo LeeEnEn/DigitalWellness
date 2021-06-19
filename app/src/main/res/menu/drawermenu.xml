@@ -3,11 +3,12 @@
 
     <item
         android:id="@+id/distance_tracker"
-        android:title="Distance Tracker" />
+        android:title="Distance Tracker"
+        android:icon="@drawable/ic_action_planet_4"/>
 
     <item android:id="@+id/stepDrawer"
         android:title="Steps Tracker"
-        android:icon="@drawable/ic_action_planet_5"
+        android:icon="@drawable/ic_action_bars_4"
         />
 
     <item android:id="@+id/screenDrawer"
@@ -16,7 +17,8 @@
 
     <item
         android:id="@+id/focusmodedrawer"
-        android:title="Focus Mode"/>
+        android:title="Focus Mode"
+        android:icon="@drawable/ic_action_alarm_2"/>
 
     <item
         android:id="@+id/test"
