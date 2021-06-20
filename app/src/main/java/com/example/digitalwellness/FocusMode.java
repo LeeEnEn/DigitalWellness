@@ -60,9 +60,11 @@ public class FocusMode extends AppCompatActivity {
                     startActivity(intent);
                 } else {
                     mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+                    Intent i = new Intent(FocusMode.this, LockedActivity.class);
+                    i.putExtra("hours", timePicker.getHour());
+                    i.putExtra("minutes", timePicker.getMinute());
+                    startActivity(i);
                 }
-
-                finish();
             }
         });
     }

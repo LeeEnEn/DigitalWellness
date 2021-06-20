@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalWellness">
-        <activity android:name=".FocusMode"></activity>
+        <activity android:name=".LockedActivity"></activity>
+        <activity android:name=".FocusMode" />
         <activity
             android:name=".Splash"
             android:theme="@style/Splash">
@@ -65,8 +66,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".AlarmBroadcastManager" />
 
-        <receiver android:name=".AlarmBroadcastManager"/>
         <service android:name=".StepTrackerService" />
 
         <receiver android:name=".ScreenTimeBroadcastReceiver" />

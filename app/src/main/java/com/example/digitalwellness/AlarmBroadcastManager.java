@@ -18,12 +18,7 @@ public class AlarmBroadcastManager extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-
-        //MediaPlayer mediaPlayer=MediaPlayer.create(context,Settings.System.DEFAULT_RINGTONE_URI);
-        //mediaPlayer.start();
         Toast.makeText(context,"Focus Mode will now turn off",Toast.LENGTH_SHORT).show();
         mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
-
-
     }
 }
