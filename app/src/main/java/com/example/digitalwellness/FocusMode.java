@@ -16,12 +16,14 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class FocusMode extends AppCompatActivity {
 
@@ -61,13 +63,18 @@ public class FocusMode extends AppCompatActivity {
                 } else {
                     mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
                     Intent i = new Intent(FocusMode.this, LockedActivity.class);
-                    i.putExtra("hours", timePicker.getHour());
-                    i.putExtra("minutes", timePicker.getMinute());
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
+                    cal.set(Calendar.MINUTE, timePicker.getMinute());
+                    cal.set(Calendar.SECOND, 0);
+                    i.putExtra("calendar", cal.getTimeInMillis());
                     startActivity(i);
                 }
             }
         });
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public  void start_alarm_event(){

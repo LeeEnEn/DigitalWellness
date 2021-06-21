@@ -1,11 +1,16 @@
 package com.example.digitalwellness;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,46 +22,56 @@ import java.util.Date;
 
 public class LockedActivity extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false;
-    Date currentTime;
+    Calendar currentTime;
     TextView countdownTimer;
-    private int toHours, toMinutes;
+    private int toHours, toMinutes, toSeconds, total;
     private int hoursLeft, minutesLeft;
-
+    private ImageView backdoor;
     final int MILLIS_PER_HOUR = 3600000;
-
+    private HomeKeyLocker mHomeKeyLocker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locked);
         countdownTimer = (TextView) findViewById(R.id.lockdowntimer);
-        currentTime = Calendar.getInstance().getTime();
+        currentTime = Calendar.getInstance();
         //Toast.makeText(this, String.valueOf(currentTime.getHours()), Toast.LENGTH_SHORT).show();
+        backdoor = (ImageView) findViewById(R.id.backdoor);
 
-        Intent intent = getIntent();
-        toHours = intent.getIntExtra("hours", 0);
-        toMinutes = intent.getIntExtra("minutes", 0);
+        backdoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-        setClock(toHours - currentTime.getHours(), toMinutes - currentTime.getMinutes());
+        long toTime = getIntent().getLongExtra("calendar", 0);
+        setClock(toTime - currentTime.getTimeInMillis());
     }
 
-    public void setClock(long hours, long minutes) {
-        long total = hours * MILLIS_PER_HOUR + minutes * 60000;
-        new CountDownTimer(total, 1000) {
+    public void setClock(long duration) {
+
+        new CountDownTimer(duration, 1000) {
             DecimalFormat form = new DecimalFormat("00");
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             public void onTick(long millisUntilFinished) {
-                //Toast.makeText(LockedActivity.this, String.valueOf(millisUntilFinished), Toast.LENGTH_SHORT).show();
-                if (millisUntilFinished < MILLIS_PER_HOUR) {
-                    countdownTimer.setText("00:" + form.format(millisUntilFinished/60000));
+
+                long hours = Math.floorDiv(millisUntilFinished, MILLIS_PER_HOUR);
+                long minutes = Math.floorDiv(millisUntilFinished - (hours * MILLIS_PER_HOUR), 60000);
+                long seconds = (millisUntilFinished - (hours * MILLIS_PER_HOUR) - (minutes * 60000)) / 1000;
+
+                if (hours > 0) {
+                    countdownTimer.setText(String.valueOf(hours) + ":" + form.format(minutes) + ":" + form.format(seconds));
                 } else {
-                    long numofHours = total / MILLIS_PER_HOUR;
-                    countdownTimer.setText(form.format(numofHours) + ":" + form.format((total - numofHours)/60000));
+                    countdownTimer.setText(form.format(minutes) + ":" + form.format(seconds));
                 }
+
             }
 
             public void onFinish() {
-                countdownTimer.setText("FOCUS MODE COMPLETED");
+                //countdownTimer.setText("FOCUS MODE COMPLETED");
                 finish();
             }
 
@@ -71,8 +86,8 @@ public class LockedActivity extends AppCompatActivity {
             return;
         }
 
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        this.doubleBackToExitPressedOnce = false;
+        Toast.makeText(this, "Focus Mode is enabled. Exiting is not allowed", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 
