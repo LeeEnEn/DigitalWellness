@@ -4,28 +4,43 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.os.Handler;
+import android.service.notification.StatusBarNotification;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -39,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private MyPreference myPreference;
     private FirebaseHelper firebaseHelper;
     private TextView userdisplay;
+    private MyAlarms myAlarms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,13 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 } else if(id == R.id.screenDrawer) {
                     Intent i = new Intent(MainActivity.this, ScreenTimeTracker.class);
                     startActivity(i);
-                } else if (id == R.id.test) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(new Intent(MainActivity.this, ScreenTimeService.class));
-                    } else {
-                        startService(new Intent(MainActivity.this, ScreenTimeService.class));
-                    }
-                    Toast.makeText(MainActivity.this, "Button Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
                 } else if(id == R.id.logout) {
                     // Update steps when user logs out
                     String currentDate = firebaseHelper.getCurrentDate();

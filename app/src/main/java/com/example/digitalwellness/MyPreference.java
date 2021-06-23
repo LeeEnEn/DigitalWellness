@@ -122,7 +122,7 @@ public class MyPreference {
     }
 
     /**
-     * Set to true if user allows step tracker to work in the background. False otherwise.
+     * Set to true if user allows screen tracker to work in the background. False otherwise.
      *
      * @param bool The value to be updated.
      */

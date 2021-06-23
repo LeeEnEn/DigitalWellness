@@ -15,6 +15,12 @@
             android:key="trackerCheckBox"
             android:defaultValue="false"
             android:summary="Enable step tracker to run in the background." />
+
+
+        <CheckBoxPreference
+            android:title="Screen Tracker"
+            android:key="screenCheckBox"
+            android:summary="Enable app to track your screen usage" />
     </PreferenceCategory>
 
 
