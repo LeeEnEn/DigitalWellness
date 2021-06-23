@@ -17,24 +17,27 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 public class StepTracker extends AppCompatActivity {
-    private Boolean shouldServiceBeOn = false;
+
     private FirebaseHelper firebase;
     private MyPreference myPreference;
+    private MyPreference preference = null;
     private SensorEventListener eventListener;
     private SensorManager sensorManager;
     private String key;
     private String currentDate;
-    private StepTrackerService service;
     private TextView textView;
+    private static long displayValue;
     private long databaseValue = 0L;
-    private long currentSensorValue;
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +47,6 @@ public class StepTracker extends AppCompatActivity {
         // Display back button.
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // Stop service.
-        this.intent = new Intent(StepTracker.this, StepTrackerService.class);
-        stopService(intent);
 
         // Show loading screen.
         FrameLayout progressLayout = (FrameLayout) findViewById(R.id.progress_overlay);
@@ -59,48 +58,50 @@ public class StepTracker extends AppCompatActivity {
         myPreference = new MyPreference(this, "Steps");
 
         currentDate = firebase.getCurrentDate();
-        DatabaseReference ref = firebase.getStepsRef(currentDate);
         key = currentDate + firebase.getUid();
-
-        // Update step count if user enables service.
-        shouldServiceBeOn = new MyPreference(this, "permissions").getService();
-        service = new StepTrackerService();
-//        if (shouldServiceBeOn) {
-//            myPreference.setCurrentStepCount(key, service.getStepCount());
-//        }
+        ArrayList<BarEntry> entry = firebase.getSteps();
 
         // Load data
         MyCharts myCharts = new MyCharts(this);
-        myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
-
-        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        DatabaseReference reference = firebase.getStepsRef(currentDate);
+        reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful() && task.getResult().getValue() != null) {
+                if (task.isSuccessful()) {
                     databaseValue = (long) task.getResult().getValue();
-                } else {
-                    ref.setValue(0);
+                    long temp = myPreference.getCurrentStepCount(key);
+                    if (databaseValue < temp) {
+                        entry.get(6).setY(temp);
+                    }
+                    myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
+                    progressLayout.setVisibility(View.GONE);
+                    startTracker();
                 }
-                progressLayout.setVisibility(View.GONE);
-                startTracker();
             }
         });
     }
 
-    // Replaces service. Enables real time updates.
+    // Enables real time updates.
     private void startTracker() {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        long previousStepCount = myPreference.getPreviousTotalStepCount();
 
         if (sensor != null) {
             eventListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
                     if (event.values != null) {
-                        currentSensorValue = (long) event.values[0];
-                        long displayValue = currentSensorValue + databaseValue - myPreference.getPreviousTotalStepCount();
+                        long currentSensorValue = (long) event.values[0];
+                        displayValue = currentSensorValue + databaseValue - previousStepCount;
                         myPreference.setCurrentStepCount(key, displayValue);
                         textView.setText(String.valueOf(displayValue));
+
+                        if (preference == null && currentSensorValue >= 10000) {
+                            preference = new MyPreference(StepTracker.this, "Streak");
+                            preference.setMilestone(String.valueOf(Calendar.DAY_OF_WEEK), true);
+                        }
+
                         System.out.println(currentSensorValue);
                     }
                 }
@@ -119,25 +120,15 @@ public class StepTracker extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (shouldServiceBeOn) {
-            startService(this.intent);
-        } else {
-//            sensorManager.unregisterListener(eventListener);
-        }
-        firebase.updateSteps(currentDate, myPreference.getCurrentStepCount(key));
-        myPreference.setPreviousTotalStepCount(currentSensorValue);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (shouldServiceBeOn) {
-            startService(this.intent);
-        } else {
-//            sensorManager.unregisterListener(eventListener);
-        }
-        firebase.updateSteps(currentDate, myPreference.getCurrentStepCount(key));
-        myPreference.setPreviousTotalStepCount(currentSensorValue);
+    }
+
+    public long getCurrentStepValue() {
+        return displayValue;
     }
 
     // Enables back button to be usable. Brings user back one page.

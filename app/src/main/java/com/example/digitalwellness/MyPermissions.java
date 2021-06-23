@@ -5,11 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.Settings;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -154,23 +151,22 @@ public class MyPermissions {
      */
     public void displayServiceDialog() {
         Intent intent = new Intent(context, StepTracker.class);
-        MyAlarms myAlarms = new MyAlarms(context);
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Permission needed:");
         alertDialogBuilder.setMessage("Allow Step Tracker to run in the background?");
         alertDialogBuilder.setPositiveButton(ALLOW, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                myPreference.setService(true);
-                myAlarms.startServiceAlarm();
+                // Start service
+                context.startService(new Intent(context, StepTrackerService.class));
                 context.startActivity(intent);
             }
         });
         alertDialogBuilder.setNegativeButton(DENY, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                myPreference.setService(false);
-                myAlarms.cancelServiceAlarm();
+                // Do nothing
                 context.startActivity(intent);
             }
         });

@@ -9,11 +9,24 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.Calendar;
+
 public class StepTrackerService extends Service {
-    private static long stepCount;
+    private static long val;
     private static String key;
+    private FirebaseHelper firebase;
+    private MyPreference myPreference = null;
+    private long databaseVal = 0L;
+    private SensorManager sensorManager;
+    private Sensor sensor;
 
     @Nullable
     @Override
@@ -24,24 +37,24 @@ public class StepTrackerService extends Service {
     @Override
     public void onCreate() {
         System.out.println("Service started");
-        FirebaseHelper firebase = new FirebaseHelper();
-        key = firebase.getCurrentDate() + firebase.getUid();
-        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        firebase = new FirebaseHelper();
+        String currentDate = firebase.getCurrentDate();
+        key = currentDate + firebase.getUid();
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
-        SensorEventListener eventListener = new SensorEventListener() {
+        DatabaseReference ref = firebase.getStepsRef(currentDate);
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            public void onSensorChanged(SensorEvent event) {
-                stepCount = (long) event.values[0];
-                getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, stepCount).apply();
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    databaseVal = (long) task.getResult().getValue();
+                    startTracker();
+                }
             }
+        });
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-            }
-        };
-        sensorManager.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
@@ -51,11 +64,32 @@ public class StepTrackerService extends Service {
 
     @Override
     public void onDestroy() {
-        getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, stepCount).apply();
+        getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, val).apply();
         System.out.println("Service destroyed");
     }
 
-    public long getStepCount() {
-        return stepCount;
+    private void startTracker() {
+        long previousCount = getSharedPreferences("Steps", MODE_PRIVATE).getLong(key, 0);
+        SensorEventListener eventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                long stepCount = (long) event.values[0];
+                val = stepCount + databaseVal - previousCount;
+                getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, val).apply();
+
+                if (myPreference == null && val >= 10000) {
+                    getSharedPreferences("Streak", MODE_PRIVATE)
+                            .edit()
+                            .putBoolean(String.valueOf(Calendar.DAY_OF_WEEK), true)
+                            .apply();
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+        sensorManager.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class MyAlarms {
     private static AlarmManager alarmManagerForService;
@@ -22,13 +23,15 @@ public class MyAlarms {
     /**
      * An alarm that updates the previous day's step to database.
      */
-    public void startUpdateAlarm() {
+    public void startUpdateToFirebase() {
         // Set the alarm to start at approximately 1:00 a.m.
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
+        if (calendar.getTime().getHours() > 1) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
         calendar.set(Calendar.HOUR_OF_DAY, 1);
         calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.SECOND, 0);
 
         AlarmManager alarmManager = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
 
@@ -40,18 +43,18 @@ public class MyAlarms {
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendingIntent);
 //        alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 60000, pendingIntent);
-        System.out.println("Update alarm started");
+        System.out.println("Update to firebase alarm started");
     }
 
     /**
      * An alarm that wakes the phone to update current day's step to shared preference.
      */
-    public void startServiceAlarm() {
-        // Set the alarm to start at exactly 11.55
+    public void startDailyUpdates() {
+        // Set the alarm to start at exactly 12.00
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 55);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
         alarmManagerForService = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
@@ -64,14 +67,14 @@ public class MyAlarms {
 
         alarmManagerForService.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, intentForService);
-        System.out.println("Service alarm started");
+        System.out.println("update to shared pref alarm started");
 //        alarmManagerForService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 60000, intentForService);
     }
 
     public void startAlarmAtTime(int hour, int minute) {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
+//        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
@@ -82,14 +85,4 @@ public class MyAlarms {
         intentForService = PendingIntent.getBroadcast(this.context, 1, alarmIntent, 0);
         alarmManagerForService.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), intentForService);
     }
-
-    /**
-     * Cancel alarm if user decides not to allow step tracker to run in the background.
-     */
-    public void cancelServiceAlarm() {
-        System.out.println("alarm service cancelled");
-        alarmManagerForService.cancel(intentForService);
-    }
-
-
 }

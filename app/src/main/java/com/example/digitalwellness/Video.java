@@ -90,6 +90,12 @@ public class Video extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
+
 //    private void initializePlayer() {
 //        playerView = (PlayerView) findViewById(R.id.video);
 //        exoPlayer = new SimpleExoPlayer.Builder(this).build();

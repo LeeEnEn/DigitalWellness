@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalWellness">
-        <activity android:name=".LockedActivity"></activity>
+        <activity android:name=".LockedActivity" />
         <activity android:name=".FocusMode" />
         <activity
             android:name=".Splash"
@@ -29,11 +29,14 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".PasswordReset" />
         <activity android:name=".Registration" />
-        <activity android:name=".Settings" />
+        <activity android:name=".Settings"
+            android:theme="@style/Theme.DigitalWellness"/>
         <activity android:name=".ScreenTimeTracker" />
         <activity android:name=".StartMenu" />
         <activity android:name=".StepTracker" />
-        <activity android:name=".Video" /> <!-- Facebook Implementation -->
+        <activity android:name=".Video" />
+
+        <!-- Facebook Implementation -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

@@ -8,33 +8,36 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
     private FirebaseHelper firebase;
     private MyPreference myPreference;
     private Context context;
+    private String previousDate;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         firebase = new FirebaseHelper();
         myPreference  = new MyPreference(context, "Steps");
+        previousDate = firebase.getPreviousDate();
 
         if (intent.getAction() != null) {
             if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
                 MyAlarms myAlarms = new MyAlarms(context);
-                myAlarms.startUpdateAlarm();
+                myAlarms.startDailyUpdates();
+                myAlarms.startUpdateToFirebase();
                 myPreference.setPreviousTotalStepCount(0);
             }
         }
 
         switch (intent.getIntExtra("code", 0)) {
             case 1:
-                dailyUpdates(intent.getStringExtra("uid"));
+                updateToFirebase(intent.getStringExtra("uid"));
                 break;
             case 2:
-                serviceUpdates(intent.getStringExtra("uid"));
+                dailyUpdates(intent.getStringExtra("uid"));
                 break;
         }
     }
 
-    private void dailyUpdates(String uid) {
-        String previousDate = firebase.getPreviousDate();
+    private void updateToFirebase(String uid) {
+        previousDate = firebase.getPreviousDate();
         String key = previousDate + uid;
         firebase.updateSteps(previousDate, myPreference.getCurrentStepCount(key));
         firebase.updateScreen(previousDate, myPreference.getScreenTime(previousDate));
@@ -42,12 +45,23 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
         System.out.println("normal updates done");
     }
 
-    private void serviceUpdates(String uid) {
-        String currentDate = firebase.getCurrentDate();
-        String key = currentDate + uid;
+    private void dailyUpdates(String uid) {
+        previousDate = firebase.getPreviousDate();
+        String key =  previousDate + uid;
         long value = myPreference.getCurrentStepCount(key);
-        firebase.updateSteps(currentDate, value);
+        // Update steps to database.
+        firebase.updateSteps(previousDate, value);
+        // Create basic data for the next day.
+        firebase.createBasicData(context);
         myPreference.setPreviousTotalStepCount(value);
+        // Reset streak
+        MyPreference streak = new MyPreference(context, "Streak");
+        boolean today = streak.getStreak("Today");
+        streak.setStreak("Yesterday", today);
+        streak.setStreak("Today", false);
+        // Restart service.
+        context.stopService(new Intent(context, StepTrackerService.class));
+        context.startService(new Intent(context, StepTrackerService.class));
 
         System.out.println("alarm service done");
     }

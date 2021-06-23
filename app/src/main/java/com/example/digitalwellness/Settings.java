@@ -1,10 +1,13 @@
 package com.example.digitalwellness;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.widget.Toolbar;
 
 import androidx.annotation.Nullable;
@@ -12,7 +15,8 @@ import androidx.appcompat.app.ActionBar;
 
 public class Settings extends PreferenceActivity {
 
-    boolean toggle;
+    private boolean toggle;
+    private FirebaseHelper firebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +24,9 @@ public class Settings extends PreferenceActivity {
 
         addPreferencesFromResource(R.xml.prefs);
 
-        MyAlarms myAlarms = new MyAlarms(this);
         MyPreference myPreference = new MyPreference(this, "permissions");
+        Intent intent = new Intent(this, StepTrackerService.class);
+        firebase = new FirebaseHelper();
 
         toggle = myPreference.getService();
         CheckBoxPreference trackerBox = (CheckBoxPreference) getPreferenceManager().findPreference("trackerCheckBox");
@@ -32,14 +37,15 @@ public class Settings extends PreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 toggle = !toggle;
                 if (toggle) {
-                    myAlarms.startServiceAlarm();
+                    startService(intent);
                 } else {
-                    myAlarms.cancelServiceAlarm();
+                    stopService(intent);
                 }
                 trackerBox.setChecked(toggle);
                 myPreference.setService(toggle);
                 return toggle;
             }
         });
+
     }
 }

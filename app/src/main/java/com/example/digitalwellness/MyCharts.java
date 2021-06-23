@@ -69,7 +69,7 @@ public class MyCharts {
         stepChart.setDragEnabled(false);
     }
 
-    public void showScreenGraph (ArrayList<BarEntry> values) {
+    public void showScreenGraph (ArrayList<BarEntry> values, String[] axis) {
         screenChart = (BarChart) context.findViewById(R.id.screenchart);
         Log.e("LOG", "Screen graph entered");
         Log.e("LOG", values.toString());
@@ -93,8 +93,8 @@ public class MyCharts {
         screenChart.animateY(1000);
 
         // Set x-axis value.
-        final String[] weekdays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(weekdays));
+
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(axis));
 
         // Load data.
         BarDataSet dataSet = new BarDataSet(values, null);
@@ -109,7 +109,7 @@ public class MyCharts {
         BarData data = new BarData(dataSet);
         screenChart.setData(data);
         screenChart.setFitBars(true);
-        screenChart.setVisibleXRangeMaximum(10);
+        screenChart.setVisibleXRangeMaximum(7);
         screenChart.setDragEnabled(false);
     }
 }

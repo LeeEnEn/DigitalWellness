@@ -15,6 +15,12 @@
     <string name="login">Already have an account?</string>
     <string name="open">Open</string>
     <string name="password_prompt">Password</string>
-
+    <string name="sunday">Sun</string>
+    <string name="monday">Mon</string>
+    <string name="tuesday">Tue</string>
+    <string name="wednesday">Wed</string>
+    <string name="thursday">Thu</string>
+    <string name="friday">Fri</string>
+    <string name="saturday">Sat</string>
 
 </resources>

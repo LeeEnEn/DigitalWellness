@@ -38,4 +38,12 @@
             android:defaultValue="false"/>
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="User Settings">
+        <Preference
+            android:key="reset_password"
+            android:title="Reset Password"
+            android:summary="Instructions to reset your password will be sent to you." />
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -38,7 +38,7 @@ public class FirebaseHelper {
     private static ArrayList<BarEntry> steps;
     private static ArrayList<BarEntry> screen;
 
-    private static String currentDate = "";
+    private static Date currentDate;
     private String Uid;
 
     /**
@@ -46,8 +46,7 @@ public class FirebaseHelper {
      */
     public FirebaseHelper() {
         this.auth = FirebaseAuth.getInstance();
-        Date date = Calendar.getInstance().getTime();
-        currentDate = new SimpleDateFormat(PATTERN, Locale.getDefault()).format(date);
+        currentDate = Calendar.getInstance().getTime();
         this.Uid = this.auth.getUid();
     }
 
@@ -68,10 +67,7 @@ public class FirebaseHelper {
                             // Sign in success, update UI with the signed-in user's information
                             // ref.push().child(date.toString()).setValue("Account created under: " + email);
                             updateProfile(name, "Account created!", activity);
-                            createBasicData();
-                            MyAlarms myAlarms = new MyAlarms(activity);
-                            myAlarms.startServiceAlarm();
-                            myAlarms.startUpdateAlarm();
+                            createBasicData(activity);
                             activity.startActivity(new Intent(activity, Login.class));
                         } else {
                             // If sign in fails, display a message to the user.
@@ -86,7 +82,7 @@ public class FirebaseHelper {
     /**
      * Create basic data when user first creates an account.
      */
-    private void createBasicData() {
+    public void createBasicData(Context context) {
         FirebaseHelper firebase = new FirebaseHelper();
         DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference("Users")
@@ -94,8 +90,21 @@ public class FirebaseHelper {
                 .child(firebase.getCurrentDate());
         reference.child("Steps").setValue(0);
         reference.child("Screen").setValue(0);
+
+        // Reset streak when it is a Sunday
+        if (firebase.getCurrentDay() == 1) {
+            MyPreference myPreference = new MyPreference(context, "Streak");
+            for (int i = 1; i < 8; i++) {
+                myPreference.setMilestone(String.valueOf(i), false);
+            }
+        }
     }
 
+    /**
+     * Returns an array of string which corresponds to the current day of the week.
+     *
+     * @return An array of string which corresponds to the current day of the week.
+     */
     public String[] getAxis() {
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
@@ -132,7 +141,12 @@ public class FirebaseHelper {
      * @return current date.
      */
     public String getCurrentDate() {
-        return currentDate;
+        return new SimpleDateFormat(PATTERN, Locale.getDefault()).format(currentDate);
+    }
+
+    public int getCurrentDay() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
     /**
@@ -156,6 +170,12 @@ public class FirebaseHelper {
         return new SimpleDateFormat(PATTERN, Locale.getDefault()).format(date);
     }
 
+    /**
+     * Get data of the past seven days and store it in an array.
+     *
+     * @param activity Calling activity.
+     * @param intent The intent to be called after.
+     */
     public void getData(Activity activity, Intent intent) {
         steps = new ArrayList<>();
         screen = new ArrayList<>();
@@ -179,7 +199,7 @@ public class FirebaseHelper {
                     int i = 0;
                     int j = 0;
 
-                    while (entriesToAdd > 0) {
+                    while (entriesToAdd >= 0) {
                         steps.add(new BarEntry(i, 0));
                         screen.add(new BarEntry(j, 0));
                         i++;
@@ -289,8 +309,8 @@ public class FirebaseHelper {
                             Toast.makeText(activity, "Login Successful!", Toast.LENGTH_LONG).show();
                             // ref.push().child(date.toString()).setValue(username + " has logged in.");
                             MyAlarms myAlarms = new MyAlarms(activity);
-                            myAlarms.startUpdateAlarm();
-                            myAlarms.startServiceAlarm();
+                            myAlarms.startUpdateToFirebase();
+                            myAlarms.startDailyUpdates();
                             getData(activity, new Intent(activity, MainActivity.class));
                         } else {
                             Toast.makeText(activity, "Username and password does not match!", Toast.LENGTH_LONG).show();

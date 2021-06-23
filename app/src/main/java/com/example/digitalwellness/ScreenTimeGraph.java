@@ -29,7 +29,7 @@ public class ScreenTimeGraph extends AppCompatActivity {
         firebaseHelper = new FirebaseHelper();
         myCharts = new MyCharts(this);
 
-        myCharts.showScreenGraph(firebaseHelper.getScreen());
+        myCharts.showScreenGraph(firebaseHelper.getScreen(), firebaseHelper.getAxis());
         progressLayout.setVisibility(View.GONE);
 
     }

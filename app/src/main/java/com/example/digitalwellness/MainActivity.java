@@ -4,43 +4,28 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.service.notification.StatusBarNotification;
-import android.util.Log;
+import android.provider.ContactsContract;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -54,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private MyPreference myPreference;
     private FirebaseHelper firebaseHelper;
     private TextView userdisplay;
-    private MyAlarms myAlarms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         userName.setText(firebaseHelper.getUser().getDisplayName());
         userEmail.setText(firebaseHelper.getUser().getEmail());
         Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
+
+        // Load streak here
+        loadStreak();
 
         // Video button here
         CardView videoButton = (CardView) findViewById(R.id.video_button);
@@ -135,13 +122,19 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.test) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         startForegroundService(new Intent(MainActivity.this, ScreenTimeService.class));
-                        Toast.makeText(MainActivity.this, "Button Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
                     } else {
                         startService(new Intent(MainActivity.this, ScreenTimeService.class));
-                        Toast.makeText(MainActivity.this, "Button Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
                     }
+                    Toast.makeText(MainActivity.this, "Button Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
                 } else if(id == R.id.logout) {
+                    // Update steps when user logs out
+                    String currentDate = firebaseHelper.getCurrentDate();
+                    long value = new StepTracker().getCurrentStepValue();
+                    MyPreference stepPref = new MyPreference(MainActivity.this, "Steps");
+                    stepPref.setPreviousTotalStepCount(value);
+                    firebaseHelper.updateSteps(currentDate, value);
                     firebaseHelper.logoutUser();
+                    // Send user back to start menu page
                     Intent i = new Intent(MainActivity.this, StartMenu.class);
                     startActivity(i);
                 } else if (id == R.id.settings) {
@@ -167,6 +160,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void loadStreak() {
+        ImageView[] array = new ImageView[7];
+        array[0] = findViewById(R.id.sunday_circle);
+        array[1] = findViewById(R.id.monday_circle);
+        array[2] = findViewById(R.id.tuesday_circle);
+        array[3] = findViewById(R.id.wednesday_circle);
+        array[4] = findViewById(R.id.thursday_circle);
+        array[5] = findViewById(R.id.friday_circle);
+        array[6] = findViewById(R.id.saturday_circle);
+
+        MyPreference myPreference = new MyPreference(this, "Streak");
+        for (int i = 1; i < 8; i++) {
+            if (myPreference.getMilestone(String.valueOf(i))) {
+                array[i-1].setImageResource(R.drawable.filled_circle);
+            }
+        }
+        TextView textView = (TextView) findViewById(R.id.streak_value);
+        textView.setText(String.valueOf(myPreference.getStreakCount()));
     }
 
     @Override

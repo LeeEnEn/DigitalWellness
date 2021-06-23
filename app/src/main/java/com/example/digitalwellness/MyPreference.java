@@ -129,4 +129,48 @@ public class MyPreference {
     public void setService(boolean bool) {
         this.preferences.edit().putBoolean("service", bool).apply();
     }
+
+    /**
+     * Returns true if that particular day hits 10,000 steps.
+     *
+     * @param day Day to be queried.
+     */
+    public boolean getMilestone(String day) {
+        return this.preferences.getBoolean(day, false);
+    }
+
+    /**
+     * Set if a particular day hits 10,000 steps.
+     *
+     * @param day Day that reaches desired steps.
+     * @param val True or false.
+     */
+    public void setMilestone(String day, boolean val) {
+        this.preferences.edit().putBoolean(day, val).apply();
+    }
+
+    public int getStreakCount() {
+        boolean ytdStreak = this.preferences.getBoolean("Yesterday", false);
+        boolean tdyStreak = this.preferences.getBoolean("Today", false);
+        int streakDays = 0;
+
+        if (tdyStreak) {
+            if (ytdStreak) {
+                streakDays = this.preferences.getInt("streak_count", 0);
+                streakDays += 1;
+                this.preferences.edit().putInt("streak_count", streakDays).apply();
+            } else {
+                streakDays++;
+            }
+        }
+        return streakDays;
+    }
+
+    public boolean getStreak(String day) {
+        return this.preferences.getBoolean(day, false);
+    }
+
+    public void setStreak(String day, boolean val) {
+        this.preferences.edit().putBoolean(day, val).apply();
+    }
 }
