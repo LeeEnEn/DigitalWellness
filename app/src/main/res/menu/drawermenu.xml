@@ -21,10 +21,6 @@
         android:icon="@drawable/ic_action_alarm_2"/>
 
     <item
-        android:id="@+id/test"
-        android:title="On Service" />
-
-    <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_action_gear"
         android:title="Settings" />

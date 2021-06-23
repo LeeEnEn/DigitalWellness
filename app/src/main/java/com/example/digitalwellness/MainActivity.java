@@ -132,14 +132,6 @@ public class MainActivity extends AppCompatActivity {
                 } else if(id == R.id.screenDrawer) {
                     Intent i = new Intent(MainActivity.this, ScreenTimeTracker.class);
                     startActivity(i);
-                } else if (id == R.id.test) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(new Intent(MainActivity.this, ScreenTimeService.class));
-                        Toast.makeText(MainActivity.this, "Button Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
-                    } else {
-                        startService(new Intent(MainActivity.this, ScreenTimeService.class));
-                        Toast.makeText(MainActivity.this, "Button Clicked, Service Initiated", Toast.LENGTH_SHORT).show();
-                    }
                 } else if(id == R.id.logout) {
                     firebaseHelper.logoutUser();
                     Intent i = new Intent(MainActivity.this, StartMenu.class);

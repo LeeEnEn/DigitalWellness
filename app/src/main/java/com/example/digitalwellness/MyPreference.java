@@ -122,11 +122,24 @@ public class MyPreference {
     }
 
     /**
-     * Set to true if user allows step tracker to work in the background. False otherwise.
+     * Set to true if user allows screen tracker to work in the background. False otherwise.
      *
      * @param bool The value to be updated.
      */
     public void setService(boolean bool) {
+        this.preferences.edit().putBoolean("service", bool).apply();
+    }
+
+    public boolean getScreenService() {
+        return this.preferences.getBoolean("service", false);
+    }
+
+    /**
+     * Set to true if user allows screen tracker to work in the background. False otherwise.
+     *
+     * @param bool The value to be updated.
+     */
+    public void setScreenService(boolean bool) {
         this.preferences.edit().putBoolean("service", bool).apply();
     }
 }
