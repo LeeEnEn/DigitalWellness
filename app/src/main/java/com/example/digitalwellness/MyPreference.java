@@ -130,6 +130,19 @@ public class MyPreference {
         this.preferences.edit().putBoolean("service", bool).apply();
     }
 
+    public boolean getScreenService() {
+        return this.preferences.getBoolean("service", false);
+    }
+
+    /**
+     * Set to true if user allows screen tracker to work in the background. False otherwise.
+     *
+     * @param bool The value to be updated.
+     */
+    public void setScreenService(boolean bool) {
+        this.preferences.edit().putBoolean("service", bool).apply();
+    }
+
     /**
      * Returns true if that particular day hits 10,000 steps.
      *

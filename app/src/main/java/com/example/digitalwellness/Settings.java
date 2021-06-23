@@ -1,18 +1,17 @@
 package com.example.digitalwellness;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.widget.Toolbar;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
+import android.util.Log;
 
 public class Settings extends PreferenceActivity {
 
     boolean toggle;
+    boolean screenBool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +21,7 @@ public class Settings extends PreferenceActivity {
 
         MyPreference myPreference = new MyPreference(this, "permissions");
         Intent intent = new Intent(this, StepTrackerService.class);
-        firebase = new FirebaseHelper();
+        FirebaseHelper firebase = new FirebaseHelper();
 
         toggle = myPreference.getService();
         screenBool = myPreference.getScreenService();
