@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LockedActivity">
+    tools:context=".LockedActivity"
+    android:background="@drawable/background2">
 
     <ImageView
         android:id="@+id/backdoor"
@@ -29,7 +30,7 @@
         android:layout_marginBottom="216dp"
         android:fontFamily="sans-serif-black"
         android:text="00:00"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

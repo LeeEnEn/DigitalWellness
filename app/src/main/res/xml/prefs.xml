@@ -35,16 +35,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Screen Orientation">
-        <ListPreference
-            android:title="Orientation"
-            android:key="ORIENTATION"
-            android:entries="@array/items_name"
-            android:entryValues="@array/items_value"
-            android:defaultValue="false"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:title="User Settings">
         <Preference
             android:key="reset_password"
