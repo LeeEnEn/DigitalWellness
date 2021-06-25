@@ -67,6 +67,13 @@ public class Settings extends PreferenceActivity {
             }
         });
 
-
+        Preference preference = (Preference) getPreferenceManager().findPreference("reset_password");
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                firebase.resetPassword(firebase.getUser().getEmail(), Settings.this);
+                return false;
+            }
+        });
     }
 }

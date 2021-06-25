@@ -118,7 +118,7 @@ public class StepTracker extends AppCompatActivity {
 
                         if (preference == null && currentSensorValue >= 100) {
                             preference = new MyPreference(StepTracker.this, "Streak");
-                            preference.setMilestone(String.valueOf(Calendar.DAY_OF_WEEK), true);
+                            preference.setMilestone(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), true);
                             preference.setStreak("Today", true);
                         }
 
