@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
         CardView stepTracker = (CardView) findViewById(R.id.stepsTracker);
         CardView screenTracker = (CardView) findViewById(R.id.screenTracker);
-        userdisplay = (TextView) findViewById(R.id.userdisplayname);
+        userdisplay = (TextView) findViewById(R.id.textView5);
         firebaseHelper = new FirebaseHelper();
         myPermissions = new MyPermissions(this, MainActivity.this);
         myPreference = new MyPreference(this, "permissions");
-        userdisplay.setText(firebaseHelper.getUser().getDisplayName());
+        userdisplay.setText("Welcome back, " + firebaseHelper.getUser().getDisplayName());
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 

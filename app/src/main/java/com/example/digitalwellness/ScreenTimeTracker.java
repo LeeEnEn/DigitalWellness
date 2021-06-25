@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +33,7 @@ public class ScreenTimeTracker extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         firebaseHelper = new FirebaseHelper();
-        myPreference = new MyPreference(this, "Screen");
+        myPreference = new MyPreference(this, firebaseHelper.getUid());
 
         moreDetailsButton = (Button) findViewById(R.id.moreDetails);
 
@@ -41,8 +42,10 @@ public class ScreenTimeTracker extends AppCompatActivity {
 
         long currenttime = myPreference.getScreenTime(firebaseHelper.getCurrentDate());
         long progress = (currenttime * 100) / NUM_OF_SECONDS_PER_DAY;
-        Toast.makeText(ScreenTimeTracker.this, String.valueOf(myPreference.getScreenLimit()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(ScreenTimeTracker.this, String.valueOf(myPreference.getScreenLimit() + String.valueOf(progress)), Toast.LENGTH_SHORT).show();
 
+
+        Log.i("Screen Tracker Update", String.valueOf(currenttime));
         ProgressBar bar = (ProgressBar) findViewById(R.id.progressBarToday);
         TextView text = (TextView) findViewById(R.id.displayStatus);
         bar.setProgress((int)progress);
