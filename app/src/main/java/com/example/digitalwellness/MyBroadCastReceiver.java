@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 public class MyBroadCastReceiver extends BroadcastReceiver {
-    private FirebaseHelper firebase;
+
     private MyPreference myPreference;
     private Context context;
     private String previousDate;
@@ -13,7 +13,7 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        firebase = new FirebaseHelper();
+        FirebaseHelper firebase = new FirebaseHelper();
         myPreference  = new MyPreference(context, "Steps");
         previousDate = firebase.getPreviousDate();
 
@@ -37,6 +37,7 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
     }
 
     private void updateToFirebase(String uid) {
+        FirebaseHelper firebase = new FirebaseHelper();
         previousDate = firebase.getPreviousDate();
         String key = previousDate + uid;
         firebase.updateSteps(previousDate, myPreference.getCurrentStepCount(key));
@@ -46,6 +47,7 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
     }
 
     private void dailyUpdates(String uid) {
+        FirebaseHelper firebase = new FirebaseHelper();
         previousDate = firebase.getPreviousDate();
         String key =  previousDate + uid;
         long value = myPreference.getCurrentStepCount(key);
@@ -62,6 +64,8 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
         // Restart service.
         context.stopService(new Intent(context, StepTrackerService.class));
         context.startService(new Intent(context, StepTrackerService.class));
+        // Reload data.
+        firebase.getData();
 
         System.out.println("alarm service done");
     }

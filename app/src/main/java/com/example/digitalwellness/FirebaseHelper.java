@@ -3,6 +3,7 @@ package com.example.digitalwellness;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -68,6 +69,7 @@ public class FirebaseHelper {
                             // ref.push().child(date.toString()).setValue("Account created under: " + email);
                             updateProfile(name, "Account created!", activity);
                             createBasicData(activity);
+                            createStreakData(activity);
                             activity.startActivity(new Intent(activity, Login.class));
                         } else {
                             // If sign in fails, display a message to the user.
@@ -98,6 +100,15 @@ public class FirebaseHelper {
                 myPreference.setMilestone(String.valueOf(i), false);
             }
         }
+    }
+
+    public void createStreakData(Context context) {
+        MyPreference myPreference = new MyPreference(context, "Streak");
+        for (int i = 1; i < 8; i++) {
+            myPreference.setMilestone(String.valueOf(i), false);
+        }
+        myPreference.setStreak("Today", false);
+        myPreference.setStreak("Yesterday", false);
     }
 
     /**
@@ -199,7 +210,7 @@ public class FirebaseHelper {
                     int i = 0;
                     int j = 0;
 
-                    while (entriesToAdd >= 0) {
+                    while (entriesToAdd > 0) {
                         steps.add(new BarEntry(i, 0));
                         screen.add(new BarEntry(j, 0));
                         i++;
@@ -221,6 +232,56 @@ public class FirebaseHelper {
                         }
                     }
                     activity.startActivity(intent);
+                    System.out.println("data loaded");
+                }
+            }
+        });
+    }
+
+    public void getData() {
+        steps = new ArrayList<>();
+        screen = new ArrayList<>();
+
+        if (Uid == null) {
+            Uid = new FirebaseHelper().getUid();
+        }
+
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(Uid);
+
+        ref.limitToLast(7).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+
+                    long entriesToAdd = RANGE - snapshot.getChildrenCount();
+                    int counter = 0;
+                    int i = 0;
+                    int j = 0;
+
+                    while (entriesToAdd > 0) {
+                        steps.add(new BarEntry(i, 0));
+                        screen.add(new BarEntry(j, 0));
+                        i++;
+                        j++;
+                        counter += 2;
+                        entriesToAdd--;
+                    }
+
+                    for (DataSnapshot snap: snapshot.getChildren()) {
+                        for (DataSnapshot s: snap.getChildren()) {
+                            if (counter % 2 == 0) {
+                                screen.add(new BarEntry(i, (Long) s.getValue()));
+                                i++;
+                            } else {
+                                steps.add(new BarEntry(j, (Long) s.getValue()));
+                                j++;
+                            }
+                            counter++;
+                        }
+                    }
                     System.out.println("data loaded");
                 }
             }
@@ -311,6 +372,7 @@ public class FirebaseHelper {
                             MyAlarms myAlarms = new MyAlarms(activity);
                             myAlarms.startUpdateToFirebase();
                             myAlarms.startDailyUpdates();
+                            createStreakData(activity);
                             getData(activity, new Intent(activity, MainActivity.class));
                         } else {
                             Toast.makeText(activity, "Username and password does not match!", Toast.LENGTH_LONG).show();

@@ -1,30 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/stepRefreshLayout">
 
-    <include layout="@layout/activity_progress_bar" />
-
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/chart"
-        android:layout_margin="25dp"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Steps"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/chart"/>
+        <include layout="@layout/activity_progress_bar" />
 
-    <TextView
-        android:id="@+id/number_of_steps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/chart"
+            android:layout_margin="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="400dp" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Steps"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/chart"/>
+
+        <TextView
+            android:id="@+id/number_of_steps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
+
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

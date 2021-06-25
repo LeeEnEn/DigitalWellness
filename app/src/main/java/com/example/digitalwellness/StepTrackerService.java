@@ -22,7 +22,6 @@ import java.util.Calendar;
 public class StepTrackerService extends Service {
     private static long val;
     private static String key;
-    private FirebaseHelper firebase;
     private MyPreference myPreference = null;
     private long databaseVal = 0L;
     private SensorManager sensorManager;
@@ -37,7 +36,7 @@ public class StepTrackerService extends Service {
     @Override
     public void onCreate() {
         System.out.println("Service started");
-        firebase = new FirebaseHelper();
+        FirebaseHelper firebase = new FirebaseHelper();
         String currentDate = firebase.getCurrentDate();
         key = currentDate + firebase.getUid();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -77,11 +76,17 @@ public class StepTrackerService extends Service {
                 val = stepCount + databaseVal - previousCount;
                 getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, val).apply();
 
-                if (myPreference == null && val >= 10000) {
+                if (myPreference == null && val >= 100) {
                     getSharedPreferences("Streak", MODE_PRIVATE)
                             .edit()
                             .putBoolean(String.valueOf(Calendar.DAY_OF_WEEK), true)
                             .apply();
+                    getSharedPreferences("Streak", MODE_PRIVATE)
+                            .edit()
+                            .putBoolean("Today", true)
+                            .apply();
+                    myPreference = new MyPreference(StepTrackerService.this, "Streak");
+                    System.out.println("in here");
                 }
             }
 

@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,6 +65,23 @@ public class StepTracker extends AppCompatActivity {
 
         // Load data
         MyCharts myCharts = new MyCharts(this);
+
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.stepRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                firebase.getData();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
+
         DatabaseReference reference = firebase.getStepsRef(currentDate);
         reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -97,9 +116,10 @@ public class StepTracker extends AppCompatActivity {
                         myPreference.setCurrentStepCount(key, displayValue);
                         textView.setText(String.valueOf(displayValue));
 
-                        if (preference == null && currentSensorValue >= 10000) {
+                        if (preference == null && currentSensorValue >= 100) {
                             preference = new MyPreference(StepTracker.this, "Streak");
                             preference.setMilestone(String.valueOf(Calendar.DAY_OF_WEEK), true);
+                            preference.setStreak("Today", true);
                         }
 
                         System.out.println(currentSensorValue);

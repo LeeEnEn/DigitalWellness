@@ -40,7 +40,7 @@ public class MyAlarms {
         alarmIntent.putExtra("uid", firebase.getUid());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.context, 0, alarmIntent, 0);
 
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendingIntent);
 //        alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 60000, pendingIntent);
         System.out.println("Update to firebase alarm started");
@@ -52,7 +52,7 @@ public class MyAlarms {
     public void startDailyUpdates() {
         // Set the alarm to start at exactly 12.00
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        calendar.add(Calendar.DAY_OF_YEAR, 0);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
