@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#DCDCDC">
+        android:background="@drawable/background">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +58,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 app:cardCornerRadius="25dp"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
+                app:cardBackgroundColor="@color/white"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -77,9 +78,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="25dp"
                             android:fontFamily="sans-serif-black"
-                            android:textSize="16sp"
+                            android:text="Streak"
                             android:textColor="@android:color/black"
-                            android:text="Streak" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/streak_value"
@@ -87,22 +88,23 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:fontFamily="sans-serif-black"
-                            android:textSize="16sp"
+                            android:text="0"
                             android:textColor="@android:color/black"
-                            android:text="0"/>
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:paddingTop="10dp">
+                        android:paddingTop="10dp"
+                        android:layout_gravity="center">
 
                         <LinearLayout
                             android:layout_width="38dp"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:layout_marginStart="13dp">
+                            android:layout_marginStart="23dp">
 
                             <ImageView
                                 android:id="@+id/sunday_circle"
@@ -115,7 +117,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/sunday" />
+                                android:textColor="@color/black"
+                                android:text="@string/sunday"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="38dp"
@@ -134,7 +137,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/monday" />
+                                android:text="@string/monday"
+                                android:textColor="@color/black"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="38dp"
@@ -153,7 +157,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/tuesday" />
+                                android:text="@string/tuesday"
+                                android:textColor="@color/black"
+                                />
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="38dp"
@@ -172,7 +178,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/wednesday" />
+                                android:text="@string/wednesday"
+                                android:textColor="@color/black"
+                                />
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="38dp"
@@ -191,7 +199,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/thursday" />
+                                android:text="@string/thursday"
+                                android:textColor="@color/black"
+                                />
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="38dp"
@@ -210,7 +220,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/friday" />
+                                android:text="@string/friday"
+                                android:textColor="@color/black"
+                                />
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="38dp"
@@ -229,7 +241,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/saturday" />
+                                android:text="@string/saturday"
+                                android:textColor="@color/black"
+                                />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -240,13 +254,13 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/stepsTracker"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_margin="7dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
@@ -259,8 +273,9 @@
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:src="@mipmap/shoe" />
+                            android:layout_height="100dp"
+                            android:paddingTop="30dp"
+                            android:src="@mipmap/steps_tracker_round" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -268,6 +283,7 @@
                             android:text="STEPS TRACKER"
                             android:fontFamily="sans-serif-black"
                             android:textSize="12sp"
+                            android:paddingTop="10dp"
                             android:textColor="@android:color/black"
                             android:textAlignment="center"
                             android:paddingBottom="10dp">
@@ -278,7 +294,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/screenTracker"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_margin="7dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
@@ -286,19 +302,21 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="150dp"
                         android:orientation="vertical">
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:src="@mipmap/screen">
+                            android:paddingTop="30dp"
+                            android:layout_height="100dp"
+                            android:src="@mipmap/screen_tracker_round">
                         </ImageView>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="SCREEN TRACKER"
+                            android:paddingTop="10dp"
                             android:fontFamily="sans-serif-black"
                             android:textSize="12sp"
                             android:textColor="@android:color/background_dark"
@@ -312,13 +330,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/video_button"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_margin="7dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
@@ -326,13 +344,14 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="150dp"
                         android:orientation="vertical">
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:src="@mipmap/workout" />
+                            android:layout_height="100dp"
+                            android:paddingTop="30dp"
+                            android:src="@mipmap/exercise_round"/>
 
                         <TextView
                             android:layout_width="match_parent"
@@ -363,8 +382,9 @@
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:src="@mipmap/dnd">
+                            android:layout_height="100dp"
+                            android:paddingTop="30dp"
+                            android:src="@mipmap/lock_round">
                         </ImageView>
 
                         <TextView
@@ -389,7 +409,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/distanceTracker"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_margin="7dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
@@ -398,23 +418,24 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_gravity="center">
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:src="@drawable/digitalwellnesslogo" />
+                            android:layout_height="100dp"
+                            android:paddingTop="30dp"
+                            android:src="@mipmap/distance_round" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="DISTANCE TRACKER"
                             android:fontFamily="sans-serif-black"
-                            android:textSize="12sp"
-                            android:textColor="@android:color/black"
+                            android:padding="10dp"
+                            android:text="DISTANCE TRACKER"
                             android:textAlignment="center"
-                            android:padding="10dp">
-                        </TextView>
+                            android:textColor="@android:color/black"
+                            android:textSize="12sp"></TextView>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
@@ -427,6 +448,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/header"
+        android:background="@drawable/drawer"
         app:menu="@menu/drawermenu" >
 
         <androidx.cardview.widget.CardView
