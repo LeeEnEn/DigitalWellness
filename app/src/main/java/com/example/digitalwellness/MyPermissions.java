@@ -151,7 +151,7 @@ public class MyPermissions {
      */
     public void displayServiceDialog() {
         Intent intent = new Intent(context, StepTracker.class);
-
+        MyPreference myPreference = new MyPreference(context, "permissions");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Permission needed:");
         alertDialogBuilder.setMessage("Allow Step Tracker to run in the background?");
@@ -159,6 +159,7 @@ public class MyPermissions {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Start service
+                myPreference.setService(true);
                 context.startService(new Intent(context, StepTrackerService.class));
                 context.startActivity(intent);
             }
@@ -167,6 +168,7 @@ public class MyPermissions {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Do nothing
+                myPreference.setService(false);
                 context.startActivity(intent);
             }
         });
