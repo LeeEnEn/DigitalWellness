@@ -59,7 +59,7 @@ public class MyCharts {
         stepChart.getDescription().setEnabled(false);
 
         // Set color
-        dataSet.setColors(ColorTemplate.rgb("#CF5217"));
+        dataSet.setColors(ColorTemplate.getHoloBlue());
 
         // x-axis data
         BarData data = new BarData(dataSet);
