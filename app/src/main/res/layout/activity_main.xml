@@ -86,157 +86,170 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:paddingTop="10dp"
-                        android:layout_gravity="center">
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
 
-                        <LinearLayout
-                            android:layout_width="38dp"
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_marginStart="23dp">
+                            android:orientation="horizontal"
+                            android:paddingTop="10dp"
+                            android:layout_gravity="center">
 
-                            <ImageView
-                                android:id="@+id/sunday_circle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/empty_circle" />
+                            <LinearLayout
+                                android:id="@+id/sunday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_marginStart="5dp">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="@color/black"
-                                android:text="@string/sunday"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="38dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_marginStart="13dp">
+                                <ImageView
+                                    android:id="@+id/sunday_circle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/empty_circle" />
 
-                            <ImageView
-                                android:id="@+id/monday_circle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/empty_circle" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/black"
+                                    android:text="@string/sunday"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/monday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_toEndOf="@+id/sunday">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/monday"
-                                android:textColor="@color/black"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="38dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_marginStart="13dp">
+                                <ImageView
+                                    android:id="@+id/monday_circle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/empty_circle" />
 
-                            <ImageView
-                                android:id="@+id/tuesday_circle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/empty_circle" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/monday"
+                                    android:textColor="@color/black"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/tuesday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_toEndOf="@id/monday">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/tuesday"
-                                android:textColor="@color/black"
-                                />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="38dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_marginStart="13dp">
+                                <ImageView
+                                    android:id="@+id/tuesday_circle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/empty_circle" />
 
-                            <ImageView
-                                android:id="@+id/wednesday_circle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/empty_circle" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/tuesday"
+                                    android:textColor="@color/black"
+                                    />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/wednesday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_toEndOf="@+id/tuesday">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/wednesday"
-                                android:textColor="@color/black"
-                                />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="38dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_marginStart="13dp">
+                                <ImageView
+                                    android:id="@+id/wednesday_circle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/empty_circle" />
 
-                            <ImageView
-                                android:id="@+id/thursday_circle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/empty_circle" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/wednesday"
+                                    android:textColor="@color/black"
+                                    />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/thursday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_toEndOf="@+id/wednesday">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/thursday"
-                                android:textColor="@color/black"
-                                />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="38dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_marginStart="13dp">
+                                <ImageView
+                                    android:id="@+id/thursday_circle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/empty_circle" />
 
-                            <ImageView
-                                android:id="@+id/friday_circle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/empty_circle" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/thursday"
+                                    android:textColor="@color/black"
+                                    />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/friday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_toEndOf="@+id/thursday">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/friday"
-                                android:textColor="@color/black"
-                                />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="38dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_marginStart="13dp">
+                                <ImageView
+                                    android:id="@+id/friday_circle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/empty_circle" />
 
-                            <ImageView
-                                android:id="@+id/saturday_circle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/empty_circle" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/friday"
+                                    android:textColor="@color/black"
+                                    />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/saturday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_toEndOf="@+id/friday">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/saturday"
-                                android:textColor="@color/black"
-                                />
-                        </LinearLayout>
+                                <ImageView
+                                    android:id="@+id/saturday_circle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/empty_circle" />
 
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/saturday"
+                                    android:textColor="@color/black"
+                                    />
+                            </LinearLayout>
+
+                        </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

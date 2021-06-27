@@ -6,19 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".Registration"
     android:orientation="vertical"
-    android:layout_margin="20dp">
+    android:background="@drawable/background">
 
     <TextView
         android:id="@+id/first_name_prompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/black"
         android:text="@string/first_name_prompt" />
 
     <EditText
         android:id="@+id/regFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:ems="15"
         android:inputType="textPersonName"
         android:hint="@string/first_name_prompt" />
@@ -28,13 +37,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:paddingLeft="5dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/black"
         android:text="@string/last_name_prompt" />
 
     <EditText
         android:id="@+id/regLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:ems="15"
         android:inputType="textPersonName"
         android:hint="@string/last_name_prompt" />
@@ -44,13 +61,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:paddingLeft="5dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/black"
         android:text="@string/email_prompt" />
 
     <EditText
         android:id="@+id/regEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:inputType="textEmailAddress"
         android:hint="@string/email_prompt" />
 
@@ -59,13 +84,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:paddingLeft="5dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/black"
         android:text="@string/password_prompt" />
 
     <EditText
         android:id="@+id/regPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:inputType="textPassword"
         android:hint="@string/password_prompt" />
 
@@ -73,6 +106,7 @@
         android:id="@+id/regButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/orange"
         android:text="@string/create_account" />
 </LinearLayout>

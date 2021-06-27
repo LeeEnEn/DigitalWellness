@@ -22,7 +22,7 @@ import java.util.Calendar;
 public class StepTrackerService extends Service {
     private static long val;
     private static String key;
-    private MyPreference myPreference = null;
+    private boolean obtained = false;
     private long databaseVal = 0L;
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -47,7 +47,12 @@ public class StepTrackerService extends Service {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
-                    databaseVal = (long) task.getResult().getValue();
+                    if (task.getResult().getValue() == null) {
+                        ref.setValue(0);
+                    } else {
+                        databaseVal = (long) task.getResult().getValue();
+                    }
+
                     startTracker();
                 }
             }
@@ -76,7 +81,7 @@ public class StepTrackerService extends Service {
                 val = stepCount + databaseVal - previousCount;
                 getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, val).apply();
 
-                if (myPreference == null && val >= 100) {
+                if (!obtained && val >= 100) {
                     getSharedPreferences("Streak", MODE_PRIVATE)
                             .edit()
                             .putBoolean(String.valueOf(Calendar.DAY_OF_WEEK), true)
@@ -85,8 +90,7 @@ public class StepTrackerService extends Service {
                             .edit()
                             .putBoolean("Today", true)
                             .apply();
-                    myPreference = new MyPreference(StepTrackerService.this, "Streak");
-                    System.out.println("in here");
+                    obtained = true;
                 }
             }
 

@@ -2,6 +2,8 @@ package com.example.digitalwellness;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -87,7 +89,12 @@ public class StepTracker extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
-                    databaseValue = (long) task.getResult().getValue();
+                    if (task.getResult().getValue() == null) {
+                        reference.setValue(0);
+                    } else {
+                        databaseValue = (long) task.getResult().getValue();
+                    }
+
                     long temp = myPreference.getCurrentStepCount(key);
                     if (databaseValue < temp) {
                         entry.get(6).setY(temp);
@@ -118,8 +125,10 @@ public class StepTracker extends AppCompatActivity {
 
                         if (preference == null && currentSensorValue >= 100) {
                             preference = new MyPreference(StepTracker.this, "Streak");
-                            preference.setMilestone(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), true);
+                            preference.setStreak(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), true);
                             preference.setStreak("Today", true);
+                            preference.getStreakCount();
+                            preference.setStreak("isCounted", true);
                         }
 
                         System.out.println(currentSensorValue);

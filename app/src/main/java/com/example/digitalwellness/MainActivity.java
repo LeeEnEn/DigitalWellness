@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
         MyPreference myPreference = new MyPreference(this, "Streak");
         for (int i = 1; i < 8; i++) {
-            if (myPreference.getMilestone(String.valueOf(i))) {
+            if (myPreference.getStreak(String.valueOf(i))) {
                 array[i-1].setImageResource(R.drawable.filled_circle);
             }
         }
@@ -246,4 +246,9 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadStreak();
+    }
 }

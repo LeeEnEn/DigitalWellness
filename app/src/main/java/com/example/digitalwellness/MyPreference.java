@@ -143,40 +143,21 @@ public class MyPreference {
         this.preferences.edit().putBoolean("service", bool).apply();
     }
 
-    /**
-     * Returns true if that particular day hits 10,000 steps.
-     *
-     * @param day Day to be queried.
-     */
-    public boolean getMilestone(String day) {
-        return this.preferences.getBoolean(day, false);
-    }
-
-    /**
-     * Set if a particular day hits 10,000 steps.
-     *
-     * @param day Day that reaches desired steps.
-     * @param val True or false.
-     */
-    public void setMilestone(String day, boolean val) {
-        this.preferences.edit().putBoolean(day, val).apply();
-    }
-
     public int getStreakCount() {
-        boolean ytdStreak = this.preferences.getBoolean("Yesterday", false);
         boolean tdyStreak = this.preferences.getBoolean("Today", false);
-        int streakDays = 0;
+        boolean ytdStreak = this.preferences.getBoolean("Yesterday", false);
+        boolean isCounted = this.preferences.getBoolean("Counted", false);
+        int count = 0;
 
-        if (tdyStreak) {
+        if (!isCounted && tdyStreak) {
+            //i am so good at programming!
             if (ytdStreak) {
-                streakDays = this.preferences.getInt("streak_count", 0);
-                streakDays += 1;
-                this.preferences.edit().putInt("streak_count", streakDays).apply();
-            } else {
-                streakDays++;
+                count = this.preferences.getInt("streak_count", 0);
             }
+            count++;
+            this.preferences.edit().putInt("streak_count", count).apply();
         }
-        return streakDays;
+        return count;
     }
 
     public boolean getStreak(String day) {
@@ -185,5 +166,17 @@ public class MyPreference {
 
     public void setStreak(String day, boolean val) {
         this.preferences.edit().putBoolean(day, val).apply();
+    }
+
+    public void setStreak() {
+        this.preferences.edit().putInt("streak_count", 0).apply();
+    }
+
+    public boolean isDataCreated() {
+        return this.preferences.getBoolean("isCreated", false);
+    }
+
+    public void dataCreated() {
+        this.preferences.edit().putBoolean("isCreated", true).apply();
     }
 }

@@ -97,18 +97,22 @@ public class FirebaseHelper {
         if (firebase.getCurrentDay() == 1) {
             MyPreference myPreference = new MyPreference(context, "Streak");
             for (int i = 1; i < 8; i++) {
-                myPreference.setMilestone(String.valueOf(i), false);
+                myPreference.setStreak(String.valueOf(i), false);
             }
         }
     }
 
     public void createStreakData(Context context) {
         MyPreference myPreference = new MyPreference(context, "Streak");
-        for (int i = 1; i < 8; i++) {
-            myPreference.setMilestone(String.valueOf(i), false);
+        if (!myPreference.isDataCreated()) {
+            for (int i = 1; i < 8; i++) {
+                myPreference.setStreak(String.valueOf(i), false);
+            }
+            myPreference.setStreak("Today", false);
+            myPreference.setStreak("Yesterday", false);
+            myPreference.setStreak();
+            myPreference.dataCreated();
         }
-        myPreference.setStreak("Today", false);
-        myPreference.setStreak("Yesterday", false);
     }
 
     /**

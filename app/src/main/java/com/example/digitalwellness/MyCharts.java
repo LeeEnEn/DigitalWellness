@@ -59,7 +59,7 @@ public class MyCharts {
         stepChart.getDescription().setEnabled(false);
 
         // Set color
-        dataSet.setColors(ColorTemplate.getHoloBlue());
+        dataSet.setColors(ColorTemplate.rgb("#CF5217"));
 
         // x-axis data
         BarData data = new BarData(dataSet);
@@ -67,6 +67,10 @@ public class MyCharts {
         stepChart.setFitBars(true);
         stepChart.setVisibleXRangeMaximum(7);
         stepChart.setDragEnabled(false);
+    }
+
+    public void invalidateStepGraph() {
+        this.stepChart.invalidate();
     }
 
     public void showScreenGraph (ArrayList<BarEntry> values, String[] axis) {

@@ -26,11 +26,9 @@ public class MyAlarms {
     public void startUpdateToFirebase() {
         // Set the alarm to start at approximately 1:00 a.m.
         Calendar calendar = Calendar.getInstance();
-        if (calendar.getTime().getHours() > 1) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1);
-        }
-        calendar.set(Calendar.HOUR_OF_DAY, 1);
-        calendar.set(Calendar.MINUTE, 0);
+//        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 16);
+        calendar.set(Calendar.MINUTE, 28);
         calendar.set(Calendar.SECOND, 0);
 
         AlarmManager alarmManager = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
@@ -40,7 +38,7 @@ public class MyAlarms {
         alarmIntent.putExtra("uid", firebase.getUid());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.context, 0, alarmIntent, 0);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendingIntent);
 //        alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 60000, pendingIntent);
         System.out.println("Update to firebase alarm started");
@@ -52,9 +50,9 @@ public class MyAlarms {
     public void startDailyUpdates() {
         // Set the alarm to start at exactly 12.00
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
+//        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 16);
+        calendar.set(Calendar.MINUTE, 28);
         calendar.set(Calendar.SECOND, 0);
 
         alarmManagerForService = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
