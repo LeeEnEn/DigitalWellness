@@ -8,6 +8,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -426,6 +430,25 @@ public class FirebaseHelper {
                 }
             }
         });
+    }
+
+    public void startUpdates(Context context) {
+        Calendar today = Calendar.getInstance();
+        Calendar tmr = Calendar.getInstance();
+        tmr.add(Calendar.DAY_OF_YEAR, 1);
+        tmr.set(Calendar.HOUR, 0);
+        tmr.set(Calendar.MINUTE, 0);
+        tmr.set(Calendar.SECOND, 0);
+        tmr.set(Calendar.MILLISECOND, 0);
+        long now = today.getTimeInMillis();
+        long midnight = tmr.getTimeInMillis();
+        long diff = midnight - now;
+
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(UploadWorker.class, 24, TimeUnit.HOURS)
+                .setInitialDelay(diff, TimeUnit.MILLISECONDS)
+                .build();
+        WorkManager.getInstance(context)
+                .enqueueUniquePeriodicWork("update", ExistingPeriodicWorkPolicy.KEEP, request);
     }
 
     /**

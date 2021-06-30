@@ -66,4 +66,7 @@ dependencies {
 
     // Media player
     implementation 'com.google.android.exoplayer:exoplayer:2.14.0'
+
+    // Work manager to replace alarm manager
+    implementation "androidx.work:work-runtime:2.5.0"
 }

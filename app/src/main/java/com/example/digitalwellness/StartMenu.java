@@ -55,7 +55,6 @@ public class StartMenu extends AppCompatActivity {
      */
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
-    private MyAlarms myAlarms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +89,6 @@ public class StartMenu extends AppCompatActivity {
         final LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_login);
         facebookLoginButton.setReadPermissions("email", "public_profile");
         final Button forgetPassword = findViewById(R.id.forget_password);
-        myAlarms = new MyAlarms(this);
 
         /**
          * Button listener for users who are already registered
@@ -118,8 +116,7 @@ public class StartMenu extends AppCompatActivity {
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 //firebaseHelper.registerEmailAndPassword(firebaseHelper.getUser().getEmail(), "12345", StartMenu.this);
                 //Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
-                myAlarms.startUpdateToFirebase();
-                myAlarms.startDailyUpdates();
+                firebaseHelper.startUpdates(StartMenu.this);
                 Intent intent = new Intent(StartMenu.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -242,8 +239,7 @@ public class StartMenu extends AppCompatActivity {
                             Log.d("GOOGLE", "signInWithCredential:success");
                             FirebaseUser user = firebaseHelper.getUser();
                             //Toast.makeText(getApplicationContext(),"Welcome back, " + user.getDisplayName(),Toast. LENGTH_SHORT).show();
-                            myAlarms.startUpdateToFirebase();
-                            myAlarms.startDailyUpdates();
+                            firebaseHelper.startUpdates(StartMenu.this);
                             Intent intent = new Intent(StartMenu.this, MainActivity.class);
                             startActivity(intent);
                             //updateUI(user);

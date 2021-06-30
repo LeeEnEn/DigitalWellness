@@ -3,7 +3,7 @@ package com.example.digitalwellness;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
+// Class not needed, shifted to UploadWorker
 public class MyBroadCastReceiver extends BroadcastReceiver {
 
     private MyPreference myPreference;

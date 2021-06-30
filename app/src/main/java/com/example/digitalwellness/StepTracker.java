@@ -91,6 +91,7 @@ public class StepTracker extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (task.getResult().getValue() == null) {
                         reference.setValue(0);
+                        firebase.getScreenRef(currentDate).setValue(0);
                     } else {
                         databaseValue = (long) task.getResult().getValue();
                     }
