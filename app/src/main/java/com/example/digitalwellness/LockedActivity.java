@@ -71,7 +71,7 @@ public class LockedActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-                countdownTimer.setText("FOCUS HELLO COMPLETED");
+                countdownTimer.setText("FOCUS FOCUS COMPLETED");
                 finish();
             }
 
