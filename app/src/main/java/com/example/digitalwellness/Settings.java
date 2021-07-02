@@ -52,12 +52,9 @@ public class Settings extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 screenBool = !screenBool;
+
                 if (screenBool) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(new Intent(Settings.this, ScreenTimeService.class));
-                    } else {
-                        startService(new Intent(Settings.this, ScreenTimeService.class));
-                    }
+                    startService(new Intent(Settings.this, ScreenTimeService.class));
                 } else {
                     stopService(new Intent(Settings.this, ScreenTimeService.class));
                 }
