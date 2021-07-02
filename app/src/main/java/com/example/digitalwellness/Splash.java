@@ -27,12 +27,9 @@ public class Splash extends Activity {
         if (firebase.isLoggedIn()) {
             // Start screen time services.
             if (myPreference.getScreenService()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(new Intent(Splash.this, ScreenTimeService.class));
-                } else {
-                    startService(new Intent(Splash.this, ScreenTimeService.class));
-                }
+                startService(new Intent(Splash.this, ScreenTimeService.class));
             }
+
             // Start work manager to periodically launch updates to firebase.
             firebase.startUpdates(this);
             // Fetch data, for graph creation.
