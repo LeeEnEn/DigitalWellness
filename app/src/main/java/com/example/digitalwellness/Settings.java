@@ -52,9 +52,12 @@ public class Settings extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 screenBool = !screenBool;
-
                 if (screenBool) {
-                    startService(new Intent(Settings.this, ScreenTimeService.class));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(new Intent(Settings.this, ScreenTimeService.class));
+                    } else {
+                        startService(new Intent(Settings.this, ScreenTimeService.class));
+                    }
                 } else {
                     stopService(new Intent(Settings.this, ScreenTimeService.class));
                 }
@@ -63,6 +66,7 @@ public class Settings extends PreferenceActivity {
                 return toggle;
             }
         });
+
 
         Preference preference = (Preference) getPreferenceManager().findPreference("reset_password");
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

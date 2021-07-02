@@ -23,10 +23,38 @@ public class ScreenTimeService extends Service {
     private String NOTIFICATION_CHANNEL_ID = "1234";
     private String channelName = "STS";
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-        public void onDestroy() {
-            unregisterReceiver(screenTimeBroadcastReceiver);
-            Log.d("SERVICE", "Service Stopped");
+    public void onCreate() {
+        super.onCreate();
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "STS00";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "Notification Channel Title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("")
+                    .setContentText("").build();
+
+            startForeground(1, notification);
+        }
+
+        //Log.d("SERVICE", "Service Started");
+        screenTimeBroadcastReceiver = new ScreenTimeBroadcastReceiver();
+        IntentFilter lockFilter = new IntentFilter();
+        lockFilter.addAction(Intent.ACTION_SCREEN_ON);
+        lockFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(screenTimeBroadcastReceiver, lockFilter);
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(screenTimeBroadcastReceiver);
+        Log.d("SERVICE", "Service Stopped");
 
     }
 
@@ -39,12 +67,6 @@ public class ScreenTimeService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("SERVICE", "Service Started");
-        screenTimeBroadcastReceiver = new ScreenTimeBroadcastReceiver();
-        IntentFilter lockFilter = new IntentFilter();
-        lockFilter.addAction(Intent.ACTION_SCREEN_ON);
-        lockFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(screenTimeBroadcastReceiver, lockFilter);
         return START_STICKY;
     }
 }
