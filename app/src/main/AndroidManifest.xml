@@ -76,8 +76,8 @@
         <receiver android:name=".ScreenTimeBroadcastReceiver" />
 
         <service
-            android:name=".ScreenTimeService"
-            android:enabled="true" />
+            android:name="com.example.digitalwellness.ScreenTimeService"
+            android:enabled="true"/>
     </application>
 
 </manifest>

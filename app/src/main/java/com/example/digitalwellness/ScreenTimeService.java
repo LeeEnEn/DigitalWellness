@@ -52,9 +52,9 @@ public class ScreenTimeService extends Service {
     }
 
     @Override
-        public void onDestroy() {
-            unregisterReceiver(screenTimeBroadcastReceiver);
-            Log.d("SERVICE", "Service Stopped");
+    public void onDestroy() {
+        unregisterReceiver(screenTimeBroadcastReceiver);
+        Log.d("SERVICE", "Service Stopped");
 
     }
 

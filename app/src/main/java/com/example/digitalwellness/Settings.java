@@ -67,6 +67,7 @@ public class Settings extends PreferenceActivity {
             }
         });
 
+
         Preference preference = (Preference) getPreferenceManager().findPreference("reset_password");
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

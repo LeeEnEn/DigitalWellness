@@ -1,5 +1,6 @@
 package com.example.digitalwellness;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -100,6 +103,13 @@ public class MainActivity extends AppCompatActivity {
         CardView lockdownButton = (CardView) findViewById(R.id.lockdownbutton);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("My Notification", "My Notification", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
 
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,6 +245,15 @@ public class MainActivity extends AppCompatActivity {
             firebaseHelper.logoutUser();
             Intent i = new Intent(MainActivity.this, StartMenu.class);
             startActivity(i);
+        } else if (id == R.id.options_notify) {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My Notification");
+            builder.setContentTitle("This is a notification");
+            builder.setContentText("This is a message");
+            builder.setSmallIcon(R.drawable.digitalwellnesslogo);
+            builder.setAutoCancel(true);
+
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
+            managerCompat.notify(1, builder.build());
         }
         return super.onOptionsItemSelected(item);
     }

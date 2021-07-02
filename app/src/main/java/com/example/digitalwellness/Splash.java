@@ -33,6 +33,7 @@ public class Splash extends Activity {
                     startService(new Intent(Splash.this, ScreenTimeService.class));
                 }
             }
+
             // Start work manager to periodically launch updates to firebase.
             firebase.startUpdates(this);
             // Fetch data, for graph creation.
