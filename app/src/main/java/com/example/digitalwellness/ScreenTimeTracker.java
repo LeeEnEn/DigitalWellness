@@ -1,10 +1,13 @@
 package com.example.digitalwellness;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +20,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.transition.platform.MaterialArcMotion;
+import com.google.android.material.transition.platform.MaterialContainerTransform;
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
+
 public class ScreenTimeTracker extends AppCompatActivity {
 
     private MyPreference myPreference;
@@ -24,10 +31,15 @@ public class ScreenTimeTracker extends AppCompatActivity {
     private int NUM_OF_SECONDS_PER_DAY ;
     private Button moreDetailsButton;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_time_tracker);
+
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.screenLayout);
+        transitionBuilder.applyTransition();
+
+        super.onCreate(savedInstanceState);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -87,4 +99,5 @@ public class ScreenTimeTracker extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
     }
+
 }

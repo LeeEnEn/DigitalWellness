@@ -2,12 +2,14 @@ package com.example.digitalwellness;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,10 +31,16 @@ public class Video extends AppCompatActivity {
     private static String[] titles;
     private static ExoPlayer[] players;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_video);
+
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.videoLayout);
+        transitionBuilder.applyTransition();
+
+        super.onCreate(savedInstanceState);
         this.context = this;
 
         // Display back button.

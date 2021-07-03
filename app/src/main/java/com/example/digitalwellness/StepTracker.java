@@ -8,22 +8,29 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.google.android.material.transition.platform.MaterialContainerTransform;
 
 import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.transition.platform.MaterialArcMotion;
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
@@ -43,10 +50,16 @@ public class StepTracker extends AppCompatActivity {
     private static long displayValue;
     private long databaseValue = 0L;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_steptracker);
+
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.stepRefreshLayout);
+        transitionBuilder.applyTransition();
+
+        super.onCreate(savedInstanceState);
 
         // Display back button.
         ActionBar actionBar = getSupportActionBar();
@@ -170,4 +183,7 @@ public class StepTracker extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }

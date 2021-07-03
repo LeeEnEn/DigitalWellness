@@ -31,7 +31,7 @@ public class ScreenTimeService extends Service {
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "STS00";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    "Notification Channel Title",
+                    "Background Service",
                     NotificationManager.IMPORTANCE_DEFAULT);
 
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);

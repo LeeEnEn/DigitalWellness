@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    android:id="@+id/videoLayout"
+    android:transitionName="shared_element_to_compose">
 
     <include layout="@layout/activity_progress_bar" />
 

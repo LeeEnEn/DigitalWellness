@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.material.transition.platform.MaterialContainerTransform;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -36,8 +38,13 @@ public class FocusMode extends AppCompatActivity {
     @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_focus_mode);
+
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.focusLayout);
+        transitionBuilder.applyTransition();
+
+        super.onCreate(savedInstanceState);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -122,6 +129,5 @@ public class FocusMode extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 }

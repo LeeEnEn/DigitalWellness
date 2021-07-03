@@ -1,5 +1,6 @@
 package com.example.digitalwellness;
 
+import android.app.ActivityOptions;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -41,6 +44,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -59,8 +63,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView userdisplay;
     private MyAlarms myAlarms;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+
+        setExitSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
+        getWindow().setSharedElementsUseOverlay(false);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -106,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("My Notification", "My Notification", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel("MainNotification", "Screen Notifications", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
@@ -114,15 +125,22 @@ public class MainActivity extends AppCompatActivity {
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        MainActivity.this, videoButton, videoButton.getTransitionName());
+
                 Intent intent = new Intent(MainActivity.this, Video.class);
-                startActivity(intent);
+                startActivity(intent, options.toBundle());
             }
         });
 
         lockdownButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, FocusMode.class));
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        MainActivity.this, lockdownButton, lockdownButton.getTransitionName());
+
+                startActivity(new Intent(MainActivity.this, FocusMode.class), options.toBundle());
             }
         });
 
@@ -130,8 +148,12 @@ public class MainActivity extends AppCompatActivity {
         screenTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        MainActivity.this, screenTracker, screenTracker.getTransitionName());
+
                 Intent i = new Intent(MainActivity.this, ScreenTimeTracker.class);
-                startActivity(i);
+                startActivity(i, options.toBundle());
             }
         });
 
@@ -168,14 +190,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
         stepTracker.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getActivityRecognition());
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        MainActivity.this, stepTracker, stepTracker.getTransitionName());
+
+
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
                     myPermissions.requestPermission();
                 } else {
                     Intent intent = new Intent(MainActivity.this, StepTracker.class);
-                    startActivity(intent);
+                    startActivity(intent, options.toBundle());
                 }
             }
         });
@@ -246,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, StartMenu.class);
             startActivity(i);
         } else if (id == R.id.options_notify) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My Notification");
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "MainNotification");
             builder.setContentTitle("This is a notification");
             builder.setContentText("This is a message");
             builder.setSmallIcon(R.drawable.digitalwellnesslogo);
@@ -270,4 +299,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         loadStreak();
     }
+
+
+
 }
