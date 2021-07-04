@@ -10,5 +10,4 @@
     <item android:id="@+id/options_notify"
         android:title="Send Notification" />
 
-
 </menu>
