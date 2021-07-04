@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         setExitSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
         getWindow().setSharedElementsUseOverlay(false);
 
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.layout.activity_main);
+        transitionBuilder.applyTransition();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
