@@ -332,19 +332,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadCards() {
 
+        myPreference = new MyPreference(this, firebaseHelper.getUid());
+
+        long currentScreenTime = myPreference.getScreenTime(firebaseHelper.getCurrentDate());
+        Toast.makeText(MainActivity.this, String.valueOf(currentScreenTime), Toast.LENGTH_SHORT).show();
+        int hours = (int) (currentScreenTime/3600);
+        int minutes = (int) (currentScreenTime - (hours * 3600)) / 60;
+
         modeArrayList = new ArrayList<>();
 
         modeArrayList.add(new MyModel("Screen Time",
-                "1h 30mins",
-                "5% increament",
+                hours + "h " + minutes + "mins",
+                "",
                 "1/2",
-                R.drawable.com_facebook_button_icon));
+                R.drawable.increase));
 
         modeArrayList.add(new MyModel("Steps Taken Today",
-                "1h 30mins",
+                String.valueOf(hours) + "h " + String.valueOf(minutes) + "mins",
                 "5% increament",
-                "1/2",
-                R.drawable.com_facebook_button_icon));
+                "2/2",
+                R.drawable.decrease));
 
 
         //setup adapter

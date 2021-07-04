@@ -1,6 +1,9 @@
 package com.example.digitalwellness;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.ArrayList;
@@ -67,9 +73,18 @@ public class MyAdapter extends PagerAdapter {
 
         view.setOnClickListener(new View.OnClickListener() {
 
+
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        (Activity) context, view, "shared_element_to_compose");
+                if (position == 0) {
+                    context.startActivity(new Intent(context, ScreenTimeTracker.class), options.toBundle());
+                } else if (position == 1) {
+                    context.startActivity(new Intent(context, StepTracker.class), options.toBundle());
+                }
             }
 
 
