@@ -34,6 +34,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
@@ -62,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseHelper firebaseHelper;
     private TextView userdisplay;
     private MyAlarms myAlarms;
+    private ActionBar actionBar;
+
+    private ViewPager viewPager;
+
+    private ArrayList<MyModel> modeArrayList;
+
+    private MyAdapter myAdapter;
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -89,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         myPermissions = new MyPermissions(this, MainActivity.this);
         myPreference = new MyPreference(this, "permissions");
         userdisplay.setText("Welcome back, " + firebaseHelper.getUser().getDisplayName());
-
+        viewPager = findViewById(R.id.viewPager);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
         /**
@@ -107,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
         // Load streak here
         loadStreak();
 
+        //load cards
+        loadCards();
+
         // Video button here
         CardView videoButton = (CardView) findViewById(R.id.video_button);
 
@@ -121,6 +133,23 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,5 +330,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void loadCards() {
+
+        myPreference = new MyPreference(this, firebaseHelper.getUid());
+
+        long currentScreenTime = myPreference.getScreenTime(firebaseHelper.getCurrentDate());
+        Toast.makeText(MainActivity.this, String.valueOf(currentScreenTime), Toast.LENGTH_SHORT).show();
+        int hours = (int) (currentScreenTime/3600);
+        int minutes = (int) (currentScreenTime - (hours * 3600)) / 60;
+
+        modeArrayList = new ArrayList<>();
+
+        modeArrayList.add(new MyModel("Screen Time",
+                hours + "h " + minutes + "mins",
+                "",
+                "1/2",
+                R.drawable.increase));
+
+        modeArrayList.add(new MyModel("Steps Taken Today",
+                String.valueOf(hours) + "h " + String.valueOf(minutes) + "mins",
+                "5% increament",
+                "2/2",
+                R.drawable.decrease));
+
+
+        //setup adapter
+        myAdapter = new MyAdapter(this, modeArrayList);
+        //set adapter to view pager
+        viewPager.setAdapter(myAdapter);
+        //set default padding from left right
+        viewPager.setPadding(50,0,50,0);
+
+    }
 
 }
