@@ -13,8 +13,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/settings"
+            android:id="@+id/profilesettings"
             android:layout_gravity="end"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:transitionName="shared_element_to_compose">
         </ImageView>
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -25,7 +27,7 @@
             android:layout_marginTop="20dp"
             android:src="@drawable/digitalwellnesslogo"
             app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp" />
+            app:civ_border_width="0dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +43,7 @@
             android:text="Tiew Wei Jian"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="15sp"/>
+            android:textSize="24sp"/>
 
         <!-- Follwing and Followers-->
         <LinearLayout
@@ -60,7 +62,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Following"
+                    android:text="Streaks"
                     android:textColor="@color/black"
                     android:fontFamily="@font/roboto_medium_numbers">
                 </TextView>
@@ -81,7 +83,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Followers"
+                    android:text="Friends"
                     android:textColor="@color/black"
                     android:fontFamily="@font/roboto_medium_numbers">
                 </TextView>
@@ -115,14 +117,31 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="15dp"
-                        android:text="Leadership Board"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/roboto_medium_numbers"/>
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="350dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.9"
+                            android:fontFamily="@font/roboto_medium_numbers"
+                            android:padding="15dp"
+                            android:text="Leadership Board"
+                            android:textColor="@color/black"
+                            android:textSize="20sp" />
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:src="@drawable/info"
+                            android:padding="5dp"
+                            android:id="@+id/infoButton">
+                        </ImageView>
+                    </LinearLayout>
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -138,7 +157,7 @@
                                 android:layout_width="229dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Your position"
+                                android:text="Your position last week"
                                 android:paddingStart="15dp"/>
 
                             <TextView
@@ -151,13 +170,11 @@
                                 android:fontFamily="@font/roboto_medium_numbers"/>
 
                         </LinearLayout>
-
-
                         <ImageView
                             android:layout_width="170dp"
                             android:layout_height="76dp"
                             android:layout_weight="1"
-                            tools:srcCompat="@drawable/trophy"
+                            android:src="@drawable/trophy"
                             android:paddingBottom="10dp"/>
                     </LinearLayout>
 

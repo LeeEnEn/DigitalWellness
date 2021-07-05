@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent, options.toBundle());
             }
         });
+
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,6 +241,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(i);
                 } else if (id == R.id.focusmodedrawer) {
                     startActivity(new Intent(MainActivity.this, FocusMode.class));
+                } else if (id == R.id.profile_image) {
+                    startActivity(new Intent(MainActivity.this, UserProfile.class));
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return true;
