@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -104,8 +105,8 @@ public class Video extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
+            onBackPressed();
+            (new Handler()).postDelayed(this::finish, 500);
         }
         return super.onOptionsItemSelected(item);
     }

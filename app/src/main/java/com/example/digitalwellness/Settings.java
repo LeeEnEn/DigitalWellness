@@ -8,16 +8,20 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
 public class Settings extends PreferenceActivity {
 
     boolean toggle;
     boolean screenBool;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.prefs);
+
 
         MyPreference myPreference = new MyPreference(this, "permissions");
         Intent intent = new Intent(this, StepTrackerService.class);

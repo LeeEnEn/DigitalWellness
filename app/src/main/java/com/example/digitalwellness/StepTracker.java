@@ -178,8 +178,9 @@ public class StepTracker extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
+            onBackPressed();
+            (new Handler()).postDelayed(this::finish, 500);
+
         }
         return super.onOptionsItemSelected(item);
     }

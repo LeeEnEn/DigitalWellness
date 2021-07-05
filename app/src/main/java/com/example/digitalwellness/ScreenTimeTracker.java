@@ -6,9 +6,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
 
+import android.annotation.TargetApi;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,8 +82,8 @@ public class ScreenTimeTracker extends AppCompatActivity {
         int id = item.getItemId();
         switch(item.getItemId()) {
             case android.R.id.home:
-                this.finish();
-                return true;
+                onBackPressed();
+                (new Handler()).postDelayed(this::finish, 500);
         }
 
         if (id == R.id.setting) {
@@ -98,6 +101,11 @@ public class ScreenTimeTracker extends AppCompatActivity {
         //inflate menu
         getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
 }
