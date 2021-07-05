@@ -4,3 +4,11 @@ This is a project created by En En and Wei Jian, from NUS School of Computing fo
 # Information 
 The application is running on Android platform. It is recommended to run this application on Android 10 and above. 
 
+
+# Steps Tracker
+
+# Screen Time Tracker
+
+# Workout Tutorials
+
+# Focus Mode 
