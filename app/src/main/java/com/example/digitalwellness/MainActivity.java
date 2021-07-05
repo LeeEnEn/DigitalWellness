@@ -34,6 +34,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private MyPreference myPreference;
     private FirebaseHelper firebaseHelper;
     private TextView userdisplay;
+    private ImageView profileButton;
     private MyAlarms myAlarms;
     private ActionBar actionBar;
 
@@ -93,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         CardView stepTracker = (CardView) findViewById(R.id.stepsTracker);
         CardView screenTracker = (CardView) findViewById(R.id.screenTracker);
         userdisplay = (TextView) findViewById(R.id.textView5);
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         myPreference = new MyPreference(this, "permissions");
         userdisplay.setText("Welcome back, " + firebaseHelper.getUser().getDisplayName());
         viewPager = findViewById(R.id.viewPager);
+        profileButton = findViewById(R.id.profileButton);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
         /**
@@ -137,6 +139,19 @@ public class MainActivity extends AppCompatActivity {
             manager.createNotificationChannel(channel);
         }
 
+
+        /*swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                finish();
+                overridePendingTransition( 0, 0);
+                startActivity(getIntent());
+                overridePendingTransition( 0, 0);
+            }
+        });*/
+
+
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -154,6 +169,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        MainActivity.this, profileButton, profileButton.getTransitionName());
+
+                Intent intent = new Intent(MainActivity.this, UserProfile.class);
+                startActivity(intent, options.toBundle());
+            }
+        });
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -315,6 +340,8 @@ public class MainActivity extends AppCompatActivity {
 
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
             managerCompat.notify(1, builder.build());
+        } else if (id == R.id.profile) {
+            startActivity(new Intent(MainActivity.this, UserProfile.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -365,5 +392,26 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setPadding(50,0,50,0);
 
     }
+
+    private void refreshCards() {
+        long currentScreenTime = myPreference.getScreenTime(firebaseHelper.getCurrentDate());
+        Toast.makeText(MainActivity.this, String.valueOf(currentScreenTime), Toast.LENGTH_SHORT).show();
+        int hours = (int) (currentScreenTime/3600);
+        int minutes = (int) (currentScreenTime - (hours * 3600)) / 60;
+
+        modeArrayList.set(0, new MyModel("Screen Time",
+                hours + "h " + minutes + "mins",
+                "",
+                "1/2",
+                R.drawable.increase));
+
+        modeArrayList.set(1, new MyModel("Screen Time",
+                hours + "h " + minutes + "mins",
+                "",
+                "1/2",
+                R.drawable.increase));
+
+    }
+
 
 }

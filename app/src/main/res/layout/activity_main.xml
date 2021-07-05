@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,9 +15,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
+
             <!--Contains first row -->
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -30,10 +32,20 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed-medium"
                     android:text="Welcome Back,"
+                    android:paddingTop="10dp"
                     android:textSize="24sp" />
 
+                <ImageView
+                    android:layout_width="53dp"
+                    android:layout_height="47dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="-2dp"
+                    android:src="@drawable/profile"
+                    android:id="@+id/profileButton"
+                    android:transitionName="shared_element_to_compose"/>
+
                 <!-- App's logo-->
-            </LinearLayout>
+            </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -490,5 +502,4 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.navigation.NavigationView>
-
 </androidx.drawerlayout.widget.DrawerLayout>

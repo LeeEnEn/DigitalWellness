@@ -70,4 +70,11 @@ dependencies {
 
     // Work manager to replace alarm manager
     implementation "androidx.work:work-runtime:2.5.0"
+
+    //Swipe to refresh dependency
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    // to get circular profile pictures
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }

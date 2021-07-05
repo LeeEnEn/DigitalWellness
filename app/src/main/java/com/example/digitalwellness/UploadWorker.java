@@ -25,13 +25,14 @@ public class UploadWorker extends Worker {
         FirebaseHelper firebase = new FirebaseHelper();
         MyPreference streakPreference = new MyPreference(getApplicationContext(), "Streak");
         MyPreference preference = new MyPreference(getApplicationContext(), "Steps");
+        MyPreference screenPreference = new MyPreference(getApplicationContext(), firebase.getUid());
 
         String ytd = firebase.getPreviousDate();
         String uid = firebase.getUid();
         String key = ytd + uid;
         // Upload data to firebase
         firebase.updateSteps(ytd, preference.getCurrentStepCount(key));
-        firebase.updateScreen(ytd, preference.getScreenTime(ytd));
+        firebase.updateScreen(ytd, screenPreference.getScreenTime(ytd));
         // Restart service
         Intent intent = new Intent(getApplicationContext(), StepTrackerService.class);
         getApplicationContext().stopService(intent);
