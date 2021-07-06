@@ -3,6 +3,9 @@ package com.example.digitalwellness;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 public class MyPreference {
     private final String KEY_SCREEN = "Screen";
     private final SharedPreferences preferences;
@@ -15,6 +18,14 @@ public class MyPreference {
      */
     public MyPreference(Context context, String filename) {
         this.preferences = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
+    }
+
+    public void updateFriends(Set<String> list) {
+        this.preferences.edit().putStringSet("friends", list).commit();
+    }
+
+    public Set<String> getFriends() {
+        return this.preferences.getStringSet("friends", null);
     }
 
     /**

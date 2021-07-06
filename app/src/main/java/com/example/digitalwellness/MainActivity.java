@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         profileButton = findViewById(R.id.profileButton);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
+
         /**
          * Setting Email and Name on Navigation View
          * Can put into a method in the future??
@@ -116,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
         ImageView userPic = (ImageView) headerView.findViewById(R.id.user_display);
         userName.setText(firebaseHelper.getUser().getDisplayName());
         userEmail.setText(firebaseHelper.getUser().getEmail());
+
+        firebaseHelper.setDetails();
+
         Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
 
         // Load streak here
@@ -344,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
             managerCompat.notify(1, builder.build());
         } else if (id == R.id.profile) {
-            startActivity(new Intent(MainActivity.this, UserProfile.class));
+            startActivity(new Intent(MainActivity.this, UserList.class));
         }
         return super.onOptionsItemSelected(item);
     }

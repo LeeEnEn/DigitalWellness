@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,14 +21,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +50,7 @@ public class FirebaseHelper {
 
     private static Date currentDate;
     private String Uid;
+    private String url;
 
     /**
      * Public constructor.
@@ -106,6 +112,26 @@ public class FirebaseHelper {
         }
     }
 
+
+    /**
+     *  Enter details into database
+     *  child ("name") stores the user name
+     *  child ("email") stores the user email
+     *  child ("picture") stores the user profile picture
+     */
+    public void setDetails() {
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("Users").child(Uid);
+        FirebaseUser userRef = auth.getCurrentUser();
+        dataRef.child("name")
+                .setValue(userRef.getDisplayName());
+
+        dataRef.child("email")
+                .setValue(userRef.getEmail());
+
+        dataRef.child("picture")
+                .setValue(userRef.getPhotoUrl().toString());
+    }
+
     public void createStreakData(Context context) {
         MyPreference myPreference = new MyPreference(context, "Streak");
         if (!myPreference.isDataCreated()) {
@@ -153,6 +179,7 @@ public class FirebaseHelper {
         }
         return axis;
     }
+
 
     /**
      * Returns current date in dd-MM-yyyy format.
@@ -498,4 +525,42 @@ public class FirebaseHelper {
     public void updateScreen(String date, long value) {
         this.getScreenRef(date).setValue(value);
     }
+
+
+    /**
+     *
+     */
+    public ArrayList<String> getAllUsersId(Context context)  {
+        ArrayList<String> nameList = new ArrayList<>();
+        ArrayList<String> emailList = new ArrayList<>();
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersdRef = rootRef.child("Users");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Set<String> usernames = new HashSet<>();
+
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String name = ds.child("name").getValue().toString();
+                    String email = ds.child("email").getValue().toString();
+                    String url = ds.child("picture").getValue().toString();
+                    Log.d("User ID", name + " " + email);
+                    usernames.add(name + "\n" + email + "\n" + url);
+                }
+                MyPreference friendsPreference = new MyPreference(context, "friends");
+                friendsPreference.updateFriends(usernames);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+        usersdRef.addListenerForSingleValueEvent(eventListener);
+
+        return nameList;
+    }
+
+
+
+
 }
