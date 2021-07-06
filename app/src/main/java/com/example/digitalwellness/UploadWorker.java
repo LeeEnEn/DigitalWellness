@@ -44,6 +44,7 @@ public class UploadWorker extends Worker {
         // Create basic data
         firebase.createBasicData(getApplicationContext());
         // Reload data
+        preference.setPreviousTotalStepCount(preference.getCurrentStepCount(key));
         firebase.getData();
     }
 }

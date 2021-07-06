@@ -1,35 +1,37 @@
 package com.example.digitalwellness;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.net.Uri;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.ui.TimeBar;
-
-import java.sql.Time;
+import com.squareup.picasso.Picasso;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
     private final Context context;
-    private final String[] titles;
-    private final Uri[] data;
-    private final ExoPlayer[] players;
+    private final String[] title;
+    private final String[] link;
+    private final String[] videoUri;
+    private final String[] thumbnail;
 
-    public CustomAdapter(Uri[] data, String[] titles, ExoPlayer[] players, Context context) {
+    public CustomAdapter(String[] thumbnail, String[] videoUri, String[] title, String[] link, Context context) {
         this.context = context;
-        this.data = data;
-        this.titles = titles;
-        this.players = players;
+        this.thumbnail = thumbnail;
+        this.title = title;
+        this.link = link;
+        this.videoUri = videoUri;
     }
 
     @NonNull
@@ -41,48 +43,60 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        SimpleExoPlayer exoPlayer = new SimpleExoPlayer.Builder(context).build();
-        // Set each video in an array.
-        players[position] = exoPlayer;
-        // Get title from array.
-        holder.textView.setText(titles[position]);
-        // Get uri from array.
-        MediaItem mediaItem = MediaItem.fromUri(data[position]);
-        exoPlayer.setMediaItem(mediaItem);
-        // Do not auto play.
-        exoPlayer.setPlayWhenReady(false);
-        // Start from beginning.
-        exoPlayer.seekTo(0, 0);
-        exoPlayer.prepare();
-        holder.playerView.setPlayer(exoPlayer);
-        // Set fast forward time to 10 secs.
-        holder.playerView.setFastForwardIncrementMs(10000);
-        // Set rewind time to 10 secs.
-        holder.playerView.setRewindIncrementMs(10000);
+        Picasso.get().load(thumbnail[position]).into(holder.imageView);
+        holder.textView.setText(title[position]);
+        // More details button.
+        holder.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Courtesy of:");
+                builder.setMessage(link[position]);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+        // Opens a new page with corresponding video.
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, VideoPlayer.class);
+                intent.putExtra("uri", videoUri[position]);
+                intent.putExtra("title", title[position]);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onViewRecycled(@NonNull ViewHolder holder) {
-        int position = holder.getAdapterPosition();
 
     }
 
     @Override
     public int getItemCount() {
-        return data.length;
+        return title.length;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final PlayerView playerView;
         private final TextView textView;
-        private final TimeBar timeBar;
+        private final ImageView imageView;
+        private final Button button;
+        private final RelativeLayout layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.playerView = (PlayerView) itemView.findViewById(R.id.video);
             this.textView = (TextView) itemView.findViewById(R.id.video_title);
-            this.timeBar = (TimeBar) itemView.findViewById(R.id.timebar);
+            this.imageView = (ImageView) itemView.findViewById(R.id.video_image);
+            this.button = (Button) itemView.findViewById(R.id.video_details);
+            this.layout = (RelativeLayout) itemView.findViewById(R.id.recycler_list_item_layout);
         }
     }
 }

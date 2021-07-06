@@ -1,13 +1,15 @@
 package com.example.digitalwellness;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -16,21 +18,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-public class Video extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Arrays;
 
-    private int counterUri = 0;
-    private int counterTitle = 0;
+public class Video extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    private static VideoHelper temp = new VideoHelper();
+    private static VideoHelper all = null;
+    private static VideoHelper basic = null;
+    private static VideoHelper intermediate = null;
+    private static VideoHelper advanced = null;
+    private static String[] options = {"All", "Basic", "Intermediate", "Advanced"};
+
     private Context context;
-    private static Uri[] data;
-    private static String[] titles;
-    private static ExoPlayer[] players;
+    private FrameLayout progressLayout;
+    private RecyclerView recyclerView;
+    private CustomAdapter customAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -49,56 +58,57 @@ public class Video extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Display progress bar
-        FrameLayout progressLayout = (FrameLayout) findViewById(R.id.progress_overlay);
+        progressLayout = (FrameLayout) findViewById(R.id.progress_overlay);
         progressLayout.setVisibility(View.VISIBLE);
 
-        // Get storage reference.
-        StorageReference reference = FirebaseStorage.getInstance().getReference();
-        // Get all items in bucket.
-        if (data == null || titles == null || players == null) {
-            reference.listAll().addOnCompleteListener(new OnCompleteListener<ListResult>() {
+        // Create spinner (drop down selector)
+        Spinner spinner = (Spinner) findViewById(R.id.video_spinner);
+        spinner.setOnItemSelectedListener(this);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, options);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        // Load once and store all the values.
+        if (all == null || basic == null || intermediate == null || advanced == null) {
+            all = new VideoHelper();
+            basic = new VideoHelper();
+            intermediate = new VideoHelper();
+            advanced = new VideoHelper();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Video");
+            reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<ListResult> task) {
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (task.isSuccessful()) {
-                        // Initialize data size.
-                        int size = task.getResult().getItems().size();
-                        data = new Uri[size];
-                        titles = new String[size];
-                        players = new ExoPlayer[size];
-                        System.out.println("data fetched");
-                        // For each reference, get download url
-                        for (StorageReference ref: task.getResult().getItems()) {
-                            titles[counterTitle] = ref.getName();
-                            ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        data[counterUri] = task.getResult();
-                                        counterUri++;
-                                    }
-                                    // Once getting of data is completed, set up the view.
-                                    if (counterUri == size) {
-                                        showLayout(progressLayout);
-                                    }
+                        DataSnapshot snapshot = task.getResult();
+                        if (snapshot != null) {
+                            for (DataSnapshot data: snapshot.getChildren()) {
+                                String tag = (String) data.child("Tag").getValue();
+                                String title = data.getKey();
+                                String thumbnail = (String) data.child("Thumbnail").getValue();
+                                String videoUrl = (String) data.child("VideoUrl").getValue();
+                                String link = (String) data.child("Link").getValue();
+
+                                if (tag.equals("Advanced")) {
+                                    advanced.addData(thumbnail, videoUrl, title, link);
+                                } else if (tag.equals("Basic")) {
+                                    basic.addData(thumbnail, videoUrl, title, link);
+                                } else {
+                                    intermediate.addData(thumbnail, videoUrl, title, link);
                                 }
-                            });
-                            counterTitle++;
+                                all.addData(thumbnail, videoUrl, title, link);
+                            }
+                            temp.changeData(all.getThumbnail(), all.getVideoUrl(), all.getTitle(), all.getLink());
+                            setLayout();
                         }
                     }
                 }
             });
+            System.out.println("here");
         } else {
-            showLayout(progressLayout);
+            setLayout();
+            System.out.println("?here");
         }
-    }
-
-    private void showLayout(FrameLayout progressLayout) {
-        progressLayout.setVisibility(View.GONE);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        CustomAdapter customAdapter = new CustomAdapter(data, titles, players, context);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(customAdapter);
     }
 
     // Enables back button to be usable. Brings user back one page.
@@ -111,31 +121,100 @@ public class Video extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // Release all exoplayer in the page.
-        if (players != null) {
-            for (int i = 0; i < players.length; i++) {
-                players[i].release();
-            }
-        }
-        finish();
+    private void setLayout() {
+        progressLayout.setVisibility(View.GONE);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        customAdapter = new CustomAdapter(temp.getThumbnail(), temp.getVideoUrl(),
+                temp.getTitle(), temp.getLink(), context);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(customAdapter);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        // Pause all exoplayer in the page.
-        if (players != null) {
-            for (int i = 0; i < players.length; i++) {
-                players[i].pause();
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (customAdapter != null) {
+            if (position == 0) {
+                changeDataList(all);
+            } else if (position == 1) {
+                changeDataList(basic);
+            } else if (position == 2) {
+                changeDataList(intermediate);
+            } else {
+                changeDataList(advanced);
             }
         }
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    private void changeDataList(VideoHelper helper) {
+        temp.changeData(helper.getThumbnail(), helper.getVideoUrl(), helper.getTitle(), helper.getLink());
+        customAdapter.notifyDataSetChanged();
+    }
+
+    static class VideoHelper {
+
+        private ArrayList<String> thumbnail;
+        private ArrayList<String> link;
+        private ArrayList<String> title;
+        private ArrayList<String> videoUrl;
+
+        public VideoHelper() {
+            this.thumbnail = new ArrayList<String>();
+            this.link = new ArrayList<String>();
+            this.title = new ArrayList<String>();
+            this.videoUrl = new ArrayList<String>();
+        }
+
+        public void addData(String thumbnail, String videoUrl, String title, String link) {
+            this.thumbnail.add(thumbnail);
+            this.link.add(link);
+            this.title.add(title);
+            this.videoUrl.add(videoUrl);
+        }
+
+        public String[] getThumbnail() {
+            int size = this.thumbnail.size();
+            return this.thumbnail.toArray(new String[size]);
+        }
+
+        public String[] getLink() {
+            int size = this.link.size();
+            return this.link.toArray(new String[size]);
+        }
+
+        public String[] getTitle() {
+            int size = this.title.size();
+            return this.title.toArray(new String[size]);
+        }
+
+        public String[] getVideoUrl() {
+            int size = this.videoUrl.size();
+            return this.videoUrl.toArray(new String[size]);
+        }
+
+        public void changeData(String[] thumbnail, String[] videoUrl, String[] title, String[] link) {
+            this.thumbnail.clear();
+            this.videoUrl.clear();
+            this.title.clear();
+            this.link.clear();
+            this.thumbnail.addAll(Arrays.asList(thumbnail));
+            this.videoUrl.addAll(Arrays.asList(videoUrl));
+            this.title.addAll(Arrays.asList(title));
+            this.link.addAll(Arrays.asList(link));
+            System.out.println(this.thumbnail.size());
+        }
+
+        public void clearData() {
+            this.thumbnail.clear();
+            this.videoUrl.clear();
+            this.title.clear();
+            this.link.clear();
+            System.out.println(this.thumbnail.size());
+        }
     }
 }
