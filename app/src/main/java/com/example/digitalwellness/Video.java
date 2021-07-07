@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -25,7 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Video extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -39,6 +40,7 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
     private Context context;
     private FrameLayout progressLayout;
     private CustomAdapter customAdapter;
+    private TextView videoNotFound;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -60,7 +62,30 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
         progressLayout = (FrameLayout) findViewById(R.id.progress_overlay);
         progressLayout.setVisibility(View.VISIBLE);
 
-        // Create spinner (drop down selector)
+        // Initialize text view.
+        videoNotFound = (TextView) findViewById(R.id.video_not_found);
+
+        // Initialize search view.
+        SearchView searchView = (SearchView) findViewById(R.id.video_search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+//                if (customAdapter != null) {
+//                    customAdapter.filter(query, videoNotFound, all);
+//                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (customAdapter != null) {
+                    customAdapter.filter(newText, videoNotFound, all);
+                }
+                return false;
+            }
+        });
+
+        // Initialize spinner (drop down selector).
         Spinner spinner = (Spinner) findViewById(R.id.video_spinner);
         spinner.setOnItemSelectedListener(this);
 
@@ -86,17 +111,17 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
                                 String tag = (String) data.child("Tag").getValue();
                                 String title = data.getKey();
                                 String thumbnail = (String) data.child("Thumbnail").getValue();
-                                String videoUrl = (String) data.child("VideoUrl").getValue();
+                                String videoUri = (String) data.child("VideoUrl").getValue();
                                 String link = (String) data.child("Link").getValue();
 
                                 if (tag.equals("Advanced")) {
-                                    advanced.addData(thumbnail, videoUrl, title, link);
+                                    advanced.addData(thumbnail, videoUri, title, link);
                                 } else if (tag.equals("Basic")) {
-                                    basic.addData(thumbnail, videoUrl, title, link);
+                                    basic.addData(thumbnail, videoUri, title, link);
                                 } else {
-                                    intermediate.addData(thumbnail, videoUrl, title, link);
+                                    intermediate.addData(thumbnail, videoUri, title, link);
                                 }
-                                all.addData(thumbnail, videoUrl, title, link);
+                                all.addData(thumbnail, videoUri, title, link);
                             }
                             myList.changeData(all);
                             setLayout();
@@ -155,20 +180,20 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
         private ArrayList<String> thumbnail;
         private ArrayList<String> link;
         private ArrayList<String> title;
-        private ArrayList<String> videoUrl;
+        private ArrayList<String> videoUri;
 
         public VideoHelper() {
             this.thumbnail = new ArrayList<String>();
             this.link = new ArrayList<String>();
             this.title = new ArrayList<String>();
-            this.videoUrl = new ArrayList<String>();
+            this.videoUri = new ArrayList<String>();
         }
 
         public void addData(String thumbnail, String videoUrl, String title, String link) {
             this.thumbnail.add(thumbnail);
             this.link.add(link);
             this.title.add(title);
-            this.videoUrl.add(videoUrl);
+            this.videoUri.add(videoUrl);
         }
 
         public ArrayList<String> getThumbnail() {
@@ -183,17 +208,17 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
             return this.title;
         }
 
-        public ArrayList<String> getVideoUrl() {
-            return this.videoUrl;
+        public ArrayList<String> getVideoUri() {
+            return this.videoUri;
         }
 
         public void changeData(VideoHelper helper) {
             this.thumbnail.clear();
-            this.videoUrl.clear();
+            this.videoUri.clear();
             this.title.clear();
             this.link.clear();
             this.thumbnail.addAll(helper.getThumbnail());
-            this.videoUrl.addAll(helper.getVideoUrl());
+            this.videoUri.addAll(helper.getVideoUri());
             this.title.addAll(helper.getTitle());
             this.link.addAll(helper.getLink());
         }

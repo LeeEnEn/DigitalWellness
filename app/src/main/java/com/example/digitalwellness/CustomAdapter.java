@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,13 +26,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     private final ArrayList<String> link;
     private final ArrayList<String> videoUri;
     private final ArrayList<String> thumbnail;
+    private static Video.VideoHelper videoHelper = null;
 
     public CustomAdapter(Video.VideoHelper helper, Context context) {
         this.context = context;
         this.thumbnail = helper.getThumbnail();
         this.title = helper.getTitle();
         this.link = helper.getLink();
-        this.videoUri = helper.getVideoUrl();
+        this.videoUri = helper.getVideoUri();
     }
 
     @NonNull
@@ -84,6 +84,51 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return title.size();
+    }
+
+    public void filter(String text, TextView view, Video.VideoHelper helper) {
+        if (videoHelper == null) {
+            videoHelper = helper;
+        }
+        if (text.isEmpty()) {
+            resetData(videoHelper);
+        } else {
+            text = text.toLowerCase();
+            clearData();
+            for (int i = 0; i < videoHelper.getTitle().size(); i++) {
+                if (videoHelper.getTitle().get(i).toLowerCase().contains(text)) {
+                    addData(i);
+                }
+            }
+            if (title.size() == 0) {
+                view.setVisibility(View.VISIBLE);
+            } else {
+                view.setVisibility(View.GONE);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    private void addData(int i) {
+        this.title.add(videoHelper.getTitle().get(i));
+        this.thumbnail.add(videoHelper.getThumbnail().get(i));
+        this.link.add(videoHelper.getLink().get(i));
+        this.videoUri.add(videoHelper.getVideoUri().get(i));
+    }
+
+    private void clearData() {
+        this.title.clear();
+        this.thumbnail.clear();
+        this.link.clear();
+        this.videoUri.clear();
+    }
+
+    private void resetData(Video.VideoHelper helper) {
+        clearData();
+        this.thumbnail.addAll(helper.getThumbnail());
+        this.videoUri.addAll(helper.getVideoUri());
+        this.title.addAll(helper.getTitle());
+        this.link.addAll(helper.getLink());
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
