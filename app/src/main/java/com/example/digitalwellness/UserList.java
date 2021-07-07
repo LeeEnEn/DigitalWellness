@@ -30,7 +30,7 @@ public class UserList extends AppCompatActivity {
 
         firebaseHelper = new FirebaseHelper();
         myPreference = new MyPreference(this, "friends");
-        listView = findViewById(R.id.userlist);
+        listView = findViewById(R.id.userList);
 
         List<String> arrayList = new ArrayList<String>(myPreference.getFriends());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(UserList.this, android.R.layout.simple_list_item_1, arrayList);

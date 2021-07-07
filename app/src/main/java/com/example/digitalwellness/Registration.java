@@ -37,6 +37,7 @@ public class Registration extends AppCompatActivity {
                 String name = firstName.getText().toString() + " " + lastName.getText().toString();
                 firebase.registerEmailAndPassword(editEmail.getText().toString(),
                         editPassword.getText().toString(), name, Registration.this);
+                firebase.setDetails();
             }
         });
     }

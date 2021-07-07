@@ -541,7 +541,6 @@ public class FirebaseHelper {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 Set<String> usernames = new HashSet<>();
-
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String name = ds.child("name").getValue().toString();
                     String email = ds.child("email").getValue().toString();
