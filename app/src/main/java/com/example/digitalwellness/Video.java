@@ -29,16 +29,15 @@ import java.util.Arrays;
 
 public class Video extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static VideoHelper temp = new VideoHelper();
     private static VideoHelper all = null;
     private static VideoHelper basic = null;
     private static VideoHelper intermediate = null;
     private static VideoHelper advanced = null;
+    private static VideoHelper myList = null;
     private static String[] options = {"All", "Basic", "Intermediate", "Advanced"};
 
     private Context context;
     private FrameLayout progressLayout;
-    private RecyclerView recyclerView;
     private CustomAdapter customAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -69,12 +68,13 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        // Load once and store all the values.
-        if (all == null || basic == null || intermediate == null || advanced == null) {
+        // Acquire data once and store all the values.
+        if (myList == null) {
             all = new VideoHelper();
             basic = new VideoHelper();
             intermediate = new VideoHelper();
             advanced = new VideoHelper();
+            myList = new VideoHelper();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Video");
             reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
@@ -98,16 +98,15 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
                                 }
                                 all.addData(thumbnail, videoUrl, title, link);
                             }
-                            temp.changeData(all.getThumbnail(), all.getVideoUrl(), all.getTitle(), all.getLink());
+                            myList.changeData(all);
                             setLayout();
                         }
                     }
                 }
             });
-            System.out.println("here");
         } else {
+            // Data already acquired, load list.
             setLayout();
-            System.out.println("?here");
         }
     }
 
@@ -122,38 +121,33 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
     }
 
     private void setLayout() {
-        progressLayout.setVisibility(View.GONE);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        customAdapter = new CustomAdapter(temp.getThumbnail(), temp.getVideoUrl(),
-                temp.getTitle(), temp.getLink(), context);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        customAdapter = new CustomAdapter(myList, this);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(customAdapter);
+        progressLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (customAdapter != null) {
             if (position == 0) {
-                changeDataList(all);
+                myList.changeData(all);
             } else if (position == 1) {
-                changeDataList(basic);
+                myList.changeData(basic);
             } else if (position == 2) {
-                changeDataList(intermediate);
+                myList.changeData(intermediate);
             } else {
-                changeDataList(advanced);
+                myList.changeData(advanced);
             }
+            customAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-    private void changeDataList(VideoHelper helper) {
-        temp.changeData(helper.getThumbnail(), helper.getVideoUrl(), helper.getTitle(), helper.getLink());
-        customAdapter.notifyDataSetChanged();
     }
 
     static class VideoHelper {
@@ -177,44 +171,31 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
             this.videoUrl.add(videoUrl);
         }
 
-        public String[] getThumbnail() {
-            int size = this.thumbnail.size();
-            return this.thumbnail.toArray(new String[size]);
+        public ArrayList<String> getThumbnail() {
+            return this.thumbnail;
         }
 
-        public String[] getLink() {
-            int size = this.link.size();
-            return this.link.toArray(new String[size]);
+        public ArrayList<String> getLink() {
+            return this.link;
         }
 
-        public String[] getTitle() {
-            int size = this.title.size();
-            return this.title.toArray(new String[size]);
+        public ArrayList<String> getTitle() {
+            return this.title;
         }
 
-        public String[] getVideoUrl() {
-            int size = this.videoUrl.size();
-            return this.videoUrl.toArray(new String[size]);
+        public ArrayList<String> getVideoUrl() {
+            return this.videoUrl;
         }
 
-        public void changeData(String[] thumbnail, String[] videoUrl, String[] title, String[] link) {
+        public void changeData(VideoHelper helper) {
             this.thumbnail.clear();
             this.videoUrl.clear();
             this.title.clear();
             this.link.clear();
-            this.thumbnail.addAll(Arrays.asList(thumbnail));
-            this.videoUrl.addAll(Arrays.asList(videoUrl));
-            this.title.addAll(Arrays.asList(title));
-            this.link.addAll(Arrays.asList(link));
-            System.out.println(this.thumbnail.size());
-        }
-
-        public void clearData() {
-            this.thumbnail.clear();
-            this.videoUrl.clear();
-            this.title.clear();
-            this.link.clear();
-            System.out.println(this.thumbnail.size());
+            this.thumbnail.addAll(helper.getThumbnail());
+            this.videoUrl.addAll(helper.getVideoUrl());
+            this.title.addAll(helper.getTitle());
+            this.link.addAll(helper.getLink());
         }
     }
 }

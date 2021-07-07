@@ -18,20 +18,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
     private final Context context;
-    private final String[] title;
-    private final String[] link;
-    private final String[] videoUri;
-    private final String[] thumbnail;
+    private final ArrayList<String> title;
+    private final ArrayList<String> link;
+    private final ArrayList<String> videoUri;
+    private final ArrayList<String> thumbnail;
 
-    public CustomAdapter(String[] thumbnail, String[] videoUri, String[] title, String[] link, Context context) {
+    public CustomAdapter(Video.VideoHelper helper, Context context) {
         this.context = context;
-        this.thumbnail = thumbnail;
-        this.title = title;
-        this.link = link;
-        this.videoUri = videoUri;
+        this.thumbnail = helper.getThumbnail();
+        this.title = helper.getTitle();
+        this.link = helper.getLink();
+        this.videoUri = helper.getVideoUrl();
     }
 
     @NonNull
@@ -43,15 +45,15 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Picasso.get().load(thumbnail[position]).into(holder.imageView);
-        holder.textView.setText(title[position]);
+        Picasso.get().load(thumbnail.get(position)).into(holder.imageView);
+        holder.textView.setText(title.get(position));
         // More details button.
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Courtesy of:");
-                builder.setMessage(link[position]);
+                builder.setMessage(link.get(position));
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -67,8 +69,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, VideoPlayer.class);
-                intent.putExtra("uri", videoUri[position]);
-                intent.putExtra("title", title[position]);
+                intent.putExtra("uri", videoUri.get(position));
+                intent.putExtra("title", title.get(position));
                 context.startActivity(intent);
             }
         });
@@ -81,7 +83,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return title.length;
+        return title.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
