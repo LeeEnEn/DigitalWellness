@@ -22,5 +22,5 @@
     <string name="thursday">Thu</string>
     <string name="friday">Fri</string>
     <string name="saturday">Sat</string>
-
+    <string name="video_not_found">Oops, no video matches the search.</string>
 </resources>
