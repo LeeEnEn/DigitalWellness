@@ -4,13 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import com.google.gson.Gson;
+
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -22,6 +27,7 @@ public class Splash extends Activity {
 
         FirebaseHelper firebase = new FirebaseHelper();
         MyPreference myPreference = new MyPreference(this, "permissions");
+        MyPreference friendsPreference = new MyPreference(this, "friends");
 
         // User is logged in.
         if (firebase.isLoggedIn()) {
@@ -33,6 +39,19 @@ public class Splash extends Activity {
                     startService(new Intent(Splash.this, ScreenTimeService.class));
                 }
             }
+
+            firebase.getAllUsersId(this);
+
+            /*Set<String> set = new HashSet<>();
+            try {
+                set.addAll(firebase.getAllUsersId());
+                myPreference.updateFriends(set);
+                Log.i("Friends", "Storing user data as friends successful");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Log.i("Friends", "Storing user data as friends NOT successful");
+
+            }*/
 
             // Start work manager to periodically launch updates to firebase.
             firebase.startUpdates(this);
