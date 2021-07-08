@@ -9,18 +9,21 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        app:cardCornerRadius="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="5dp"
-                android:text="Username"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userlistpicutre"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/digitalwellnesslogo"
+                app:civ_border_color="#FF000000"
+                app:civ_border_width="0dp" />
 
             <TextView
                 android:id="@+id/usernamelist"
