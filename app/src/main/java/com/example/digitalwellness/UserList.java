@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class UserList extends AppCompatActivity {
+public class UserList extends AppCompatActivity implements recyclerAdapter.OnNoteListener{
 
     private ArrayList<User> usersList;
     private RecyclerView recyclerView;
@@ -44,7 +45,7 @@ public class UserList extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        recyclerAdapter adapter = new recyclerAdapter(usersList);
+        recyclerAdapter adapter = new recyclerAdapter(usersList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -84,5 +85,11 @@ public class UserList extends AppCompatActivity {
         };
         usersdRef.addListenerForSingleValueEvent(eventListener);
 
+    }
+
+
+    @Override
+    public void onNoteCLick(int position) {
+        Toast.makeText(this, usersList.get(position).getEmail(), Toast.LENGTH_SHORT).show();  
     }
 }

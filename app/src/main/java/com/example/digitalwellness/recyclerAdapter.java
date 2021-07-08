@@ -13,17 +13,28 @@ import java.util.ArrayList;
 public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyViewHolder> {
 
     private ArrayList<User> usersList;
+    private OnNoteListener mOnNoteListener;
 
-    public recyclerAdapter(ArrayList<User> usersList) {
+    public recyclerAdapter(ArrayList<User> usersList, OnNoteListener mOnNoteListener) {
         this.usersList = usersList;
+        this.mOnNoteListener = mOnNoteListener;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView nameTxt;
-        public MyViewHolder(final View view) {
+        OnNoteListener onNoteListener;
+
+        public MyViewHolder(final View view, OnNoteListener onNoteListener) {
             super(view);
             nameTxt = view.findViewById(R.id.usernamelist);
+            this.onNoteListener = onNoteListener;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onNoteListener.onNoteCLick(getAdapterPosition());
         }
     }
 
@@ -31,7 +42,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
     @Override
     public recyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.userlistlayout, parent, false);
-        return new MyViewHolder(itemView);
+        return new MyViewHolder(itemView, mOnNoteListener);
     }
 
     @Override
@@ -43,5 +54,9 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
     @Override
     public int getItemCount() {
         return usersList.size();
+    }
+
+    public interface OnNoteListener {
+        void onNoteCLick(int position);
     }
 }
