@@ -90,6 +90,6 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
 
     @Override
     public void onNoteCLick(int position) {
-        Toast.makeText(this, usersList.get(position).getEmail(), Toast.LENGTH_SHORT).show();  
+        Toast.makeText(this, usersList.get(position).getEmail(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -22,12 +22,13 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private TextView nameTxt;
+        private TextView nameTxt, emailTxt;
         OnNoteListener onNoteListener;
 
         public MyViewHolder(final View view, OnNoteListener onNoteListener) {
             super(view);
             nameTxt = view.findViewById(R.id.usernamelist);
+            emailTxt = view.findViewById(R.id.emaillist);
             this.onNoteListener = onNoteListener;
             view.setOnClickListener(this);
         }
@@ -48,7 +49,9 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull recyclerAdapter.MyViewHolder holder, int position) {
         String name = usersList.get(position).getUsername();
+        String email = usersList.get(position).getEmail();
         holder.nameTxt.setText(name);
+        holder.emailTxt.setText(email);
     }
 
     @Override
