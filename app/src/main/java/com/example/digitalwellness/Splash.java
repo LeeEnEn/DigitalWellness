@@ -40,8 +40,6 @@ public class Splash extends Activity {
                 }
             }
 
-            firebase.getAllUsersId(this);
-
             /*Set<String> set = new HashSet<>();
             try {
                 set.addAll(firebase.getAllUsersId());

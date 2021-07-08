@@ -12,7 +12,7 @@
 
 
     <item android:id="@+id/profile"
-        android:title="Go To Profile" />
+        android:title="Friends [BETA]" />
 
 
 </menu>
