@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +37,12 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if(!CheckNetwork.isInternetAvailable(UserList.this)) //returns true if internet available
+        {
+            buildAlert("No Internet Connection", "This feature requires internet connection. Please check your Wi-Fi settings before continuing");
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
         usersList = new ArrayList<>();
@@ -85,6 +93,27 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
         };
         usersdRef.addListenerForSingleValueEvent(eventListener);
 
+    }
+
+    public void buildAlert(String title, String message) {
+        AlertDialog.Builder builder
+                = new AlertDialog
+                .Builder(UserList.this);
+        builder.setMessage(message);
+        builder.setTitle(title);
+        builder.setPositiveButton(
+                "close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,
+                                        int which)
+                    {
+                        onBackPressed();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+
+        // Show the Alert Dialog box
+        alertDialog.show();
     }
 
 
