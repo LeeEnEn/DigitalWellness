@@ -1,11 +1,13 @@
 package com.example.digitalwellness;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -49,6 +51,19 @@ public class ScreenTimeService extends Service {
         lockFilter.addAction(Intent.ACTION_SCREEN_ON);
         lockFilter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(screenTimeBroadcastReceiver, lockFilter);
+
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("Screen Limit", "Screen Limit", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
+        buildNotification();
+
     }
 
     @Override
@@ -69,4 +84,14 @@ public class ScreenTimeService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;
     }
+
+    public void buildNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Screen Limit");
+        builder.setContentTitle("This is a notification");
+        builder.setContentText("This is a message");
+        builder.setSmallIcon(R.drawable.digitalwellnesslogo);
+        builder.setAutoCancel(true);
+
+    }
+
 }

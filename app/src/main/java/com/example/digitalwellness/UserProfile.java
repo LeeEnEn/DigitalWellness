@@ -9,16 +9,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class UserProfile extends AppCompatActivity {
 
     private ImageView infoButton, settingButton;
     private ImageView profileImage;
     private FirebaseHelper firebaseHelper;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +40,7 @@ public class UserProfile extends AppCompatActivity {
 
         firebaseHelper = new FirebaseHelper();
 
-        Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(profileImage);
+        getProfilePicture();
 
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,5 +88,29 @@ public class UserProfile extends AppCompatActivity {
 
         // Show the Alert Dialog box
         alertDialog.show();
+    }
+
+    public void getProfilePicture()  {
+        ArrayList<String> nameList = new ArrayList<>();
+
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersdRef = rootRef
+                .child("Users")
+                .child(firebaseHelper.getUser().getUid())
+                .child("picture");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                url = dataSnapshot.getValue().toString();
+                Log.d("User ID", "profile:" + url);
+                Picasso.get().load(url).into(profileImage);
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+        usersdRef.addListenerForSingleValueEvent(eventListener);
     }
 }

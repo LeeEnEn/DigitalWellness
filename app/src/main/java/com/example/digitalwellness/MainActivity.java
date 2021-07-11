@@ -47,6 +47,11 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -63,9 +68,10 @@ public class MainActivity extends AppCompatActivity {
     private MyPreference myPreference;
     private FirebaseHelper firebaseHelper;
     private TextView userdisplay;
-    private ImageView profileButton;
+    private ImageView profileButton, userPic;
     private MyAlarms myAlarms;
     private ActionBar actionBar;
+    private String url;
 
     private ViewPager viewPager;
 
@@ -114,13 +120,13 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         TextView userName = (TextView) headerView.findViewById(R.id.user_name);
         TextView userEmail = (TextView) headerView.findViewById(R.id.user_email);
-        ImageView userPic = (ImageView) headerView.findViewById(R.id.user_display);
+        userPic = (ImageView) headerView.findViewById(R.id.user_display);
         userName.setText(firebaseHelper.getUser().getDisplayName());
         userEmail.setText(firebaseHelper.getUser().getEmail());
 
-        firebaseHelper.setDetails();
+        //firebaseHelper.setDetails();
 
-        Picasso.get().load(firebaseHelper.getUser().getPhotoUrl()).into(userPic);
+        getProfilePicture();
 
         // Load streak here
         loadStreak();
@@ -355,7 +361,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //inflate menu
         getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
     }
@@ -418,6 +423,30 @@ public class MainActivity extends AppCompatActivity {
                 "1/2",
                 R.drawable.increase));
 
+    }
+
+    public void getProfilePicture()  {
+        ArrayList<String> nameList = new ArrayList<>();
+
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersdRef = rootRef
+                .child("Users")
+                .child(firebaseHelper.getUser().getUid())
+                .child("picture");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                url = dataSnapshot.getValue().toString();
+                Log.d("User ID", "profile:" + url);
+                Picasso.get().load(url).into(userPic);
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+        usersdRef.addListenerForSingleValueEvent(eventListener);
     }
 
 
