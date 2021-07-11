@@ -9,6 +9,20 @@
     android:orientation="vertical"
     android:transitionName="shared_element_to_compose">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pencil"
+            android:id="@+id/changePicture"
+            android:padding="10dp"
+            android:transitionName="shared_element_to_compose"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -19,14 +33,16 @@
             android:transitionName="shared_element_to_compose">
         </ImageView>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_image"
-            android:layout_width="168dp"
-            android:layout_height="164dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            app:civ_border_color="#FF000000"
-            app:civ_border_width="0dp"/>
+    </LinearLayout>
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="168dp"
+        android:layout_height="164dp"
+        android:layout_gravity="center"
+        app:civ_border_color="#FF000000"
+        app:civ_border_width="0dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -560,6 +560,14 @@ public class FirebaseHelper {
     }
 
 
+    public void setImage(String url) {
+        FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(Uid)
+                .child("picture")
+                .setValue(url);
+    }
+
 
 
 }
