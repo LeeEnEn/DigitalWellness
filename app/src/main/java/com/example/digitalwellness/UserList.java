@@ -33,7 +33,9 @@ import java.util.Set;
 public class UserList extends AppCompatActivity implements recyclerAdapter.OnNoteListener{
 
     private ArrayList<User> usersList;
+    private ArrayList<String> friendList;
     private RecyclerView recyclerView;
+    private FirebaseHelper firebaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,11 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
+        friendList = new ArrayList<>();
         usersList = new ArrayList<>();
         recyclerView = findViewById(R.id.userList);
-
-        getAllUsersDetails();
+        firebaseHelper = new FirebaseHelper();
+        getFriendStatus();
 
     }
 
@@ -60,31 +63,30 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
         recyclerView.setAdapter(adapter);
     }
 
-    private void setUserInfo(String name, String email, String url) {
-        usersList.add(new User(name, email, url));
+    private void setUserInfo(String name, String email, String url, String uid, boolean friend) {
+        if (!email.equals(firebaseHelper.getUser().getEmail())) {
+            usersList.add(new User(name, email, url, uid, friend));
+        }
     }
 
 
     public void getAllUsersDetails()  {
-        ArrayList<String> nameList = new ArrayList<>();
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference usersdRef = rootRef.child("Users");
+        DatabaseReference usersdRef = rootRef.child("UsersDB");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Set<String> usernames = new HashSet<>();
+                //Set<String> usernames = new HashSet<>();
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String name = ds.child("name").getValue().toString();
                     String email = ds.child("email").getValue().toString();
                     String url = ds.child("picture").getValue().toString();
-                    setUserInfo(name, email, url);
+                    String uid = ds.getKey();
+                    setUserInfo(name, email, url, uid, friendList.contains(uid));
                     Log.d("User ID", name + " " + email);
-                    usernames.add(name + "\n" + email + "\n" + url);
                 }
-                MyPreference friendsPreference = new MyPreference(UserList.this, "friends");
-                friendsPreference.updateFriends(usernames);
                 setAdapter();
 
             }
@@ -93,6 +95,28 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
         };
         usersdRef.addListenerForSingleValueEvent(eventListener);
 
+    }
+
+    public ArrayList<String> getFriendStatus() {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersdRef = rootRef.child("UsersDB").child(firebaseHelper.getUid()).child("friend");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String friends = ds.getKey();
+                    friendList.add(ds.getKey());
+                    Log.d("Friends", friends);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+        usersdRef.addListenerForSingleValueEvent(eventListener);
+        getAllUsersDetails();
+        return friendList;
     }
 
     public void buildAlert(String title, String message) {
@@ -119,6 +143,6 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
 
     @Override
     public void onNoteCLick(int position) {
-        Toast.makeText(this, usersList.get(position).getEmail(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, usersList.get(position).getUid(), Toast.LENGTH_SHORT).show();
     }
 }

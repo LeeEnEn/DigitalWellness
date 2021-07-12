@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference usersdRef = rootRef
-                .child("Users")
+                .child("UsersDB")
                 .child(firebaseHelper.getUser().getUid())
                 .child("picture");
 

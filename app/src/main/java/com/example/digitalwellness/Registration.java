@@ -3,6 +3,7 @@ package com.example.digitalwellness;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,6 @@ public class Registration extends AppCompatActivity {
                 String name = firstName.getText().toString() + " " + lastName.getText().toString();
                 firebase.registerEmailAndPassword(editEmail.getText().toString(),
                         editPassword.getText().toString(), name, Registration.this);
-                firebase.setDetails();
             }
         });
     }

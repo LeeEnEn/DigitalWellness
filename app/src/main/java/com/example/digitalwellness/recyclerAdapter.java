@@ -1,12 +1,15 @@
 package com.example.digitalwellness;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -26,7 +29,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView nameTxt, emailTxt;
-        private ImageView profilePicture;
+        private ImageView profilePicture, friendStatus;
         OnNoteListener onNoteListener;
 
         public MyViewHolder(final View view, OnNoteListener onNoteListener) {
@@ -34,6 +37,8 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             nameTxt = view.findViewById(R.id.usernamelist);
             emailTxt = view.findViewById(R.id.emaillist);
             profilePicture = view.findViewById(R.id.userlistpicutre);
+            friendStatus = view.findViewById(R.id.friendStatus);
+
             this.onNoteListener = onNoteListener;
             view.setOnClickListener(this);
         }
@@ -58,6 +63,25 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
         holder.nameTxt.setText(name);
         holder.emailTxt.setText(email);
         Picasso.get().load(usersList.get(position).getUrl()).into(holder.profilePicture);
+
+        if (usersList.get(position).isFriend()) {
+            holder.friendStatus.setImageResource(R.drawable.friend);
+        } else {
+            holder.friendStatus.setImageResource(R.drawable.addfriend);
+        }
+
+        if (!usersList.get(position).isFriend()) {
+            holder.friendStatus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.friendStatus.setImageResource(R.drawable.friend);
+                    usersList.get(position).setFriend(true);
+                    //Toast.makeText(v.getContext(), usersList.get(position).getUid(), Toast.LENGTH_SHORT).show();
+                    FirebaseHelper firebaseHelper = new FirebaseHelper();
+                    firebaseHelper.setFriend(usersList.get(position).getUid());
+                }
+            });
+        }
 
     }
 
