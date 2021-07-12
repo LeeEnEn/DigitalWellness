@@ -15,6 +15,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -109,12 +110,14 @@ public class StartMenu extends AppCompatActivity {
         });
 
         // Facebook Button Initialisation
+        facebookLoginButton.setReadPermissions("email", "public_profile");
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d("FACEBOOK", "facebook:onSuccess:" + loginResult);
-                firebaseHelper.setDetails();
+                Profile profile = Profile.getCurrentProfile();
                 handleFacebookAccessToken(loginResult.getAccessToken());
+                loginResult.getAccessToken();
                 //firebaseHelper.registerEmailAndPassword(firebaseHelper.getUser().getEmail(), "12345", StartMenu.this);
                 //Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
                 firebaseHelper.startUpdates(StartMenu.this);
@@ -238,10 +241,13 @@ public class StartMenu extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("GOOGLE", "signInWithCredential:success");
-                            FirebaseUser user = firebaseHelper.getUser();
-                            firebaseHelper.setDetails();
+                            FirebaseUser user = task.getResult().getUser();
+                            firebaseHelper.setDetails(user.getDisplayName(), user.getEmail(), user.getPhotoUrl(), user.getUid());
                             //Toast.makeText(getApplicationContext(),"Welcome back, " + user.getDisplayName(),Toast. LENGTH_SHORT).show();
                             firebaseHelper.startUpdates(StartMenu.this);
+                            firebaseHelper.updateProfile(user.getDisplayName(), "Account created!", StartMenu.this);
+                            firebaseHelper.createBasicData(StartMenu.this);
+                            firebaseHelper.createStreakData(StartMenu.this);
                             Intent intent = new Intent(StartMenu.this, MainActivity.class);
                             startActivity(intent);
                             //updateUI(user);

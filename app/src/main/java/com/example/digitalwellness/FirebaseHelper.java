@@ -38,6 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FirebaseHelper {
+    private static String name;
     private final FirebaseAuth auth;
     private final String KEY_SCREEN = "Screen";
     private final String KEY_STEP = "Steps";
@@ -80,6 +81,8 @@ public class FirebaseHelper {
                             updateProfile(name, "Account created!", activity);
                             createBasicData(activity);
                             createStreakData(activity);
+                            Uid = task.getResult().getUser().getUid();
+                            setDetailsNoPicture(name, email);
                             activity.startActivity(new Intent(activity, Login.class));
                         } else {
                             // If sign in fails, display a message to the user.
@@ -119,17 +122,35 @@ public class FirebaseHelper {
      *  child ("email") stores the user email
      *  child ("picture") stores the user profile picture
      */
-    public void setDetails() {
-        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("Users").child(Uid);
+    public void setDetails(String name, String email, Uri url, String uid) {
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("UsersDB").child(uid);
         FirebaseUser userRef = auth.getCurrentUser();
+
         dataRef.child("name")
-                .setValue(userRef.getDisplayName());
+                .setValue(name);
 
         dataRef.child("email")
-                .setValue(userRef.getEmail());
+                .setValue(email);
 
         dataRef.child("picture")
-                .setValue(userRef.getPhotoUrl().toString());
+                .setValue(url.toString());
+
+        dataRef.child("friend").child(uid).setValue(uid);
+    }
+
+    public void setDetailsNoPicture(String name, String email) {
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("UsersDB").child(Uid);
+        FirebaseUser userRef = auth.getCurrentUser();
+        dataRef.child("name")
+                .setValue(name);
+
+        dataRef.child("email")
+                .setValue(email);
+
+        dataRef.child("picture")
+                .setValue("https://st2.depositphotos.com/1009634/7235/v/600/depositphotos_72350117-stock-illustration-no-user-profile-picture-hand.jpg");
+
+        dataRef.child("friend").child(Uid).setValue(Uid);
     }
 
     public void createStreakData(Context context) {
@@ -436,7 +457,9 @@ public class FirebaseHelper {
             Toast.makeText(activity, "Password should contain at least 8 characters!",
                     Toast.LENGTH_LONG).show();
         } else {
+            FirebaseHelper.name = name;
             createAccount(username, password, name, activity);
+
         }
     }
 
@@ -562,10 +585,18 @@ public class FirebaseHelper {
 
     public void setImage(String url) {
         FirebaseDatabase.getInstance()
-                .getReference("Users")
+                .getReference("UsersDB")
                 .child(Uid)
                 .child("picture")
                 .setValue(url);
+    }
+
+    public void setFriend(String uid) {
+        FirebaseDatabase.getInstance()
+                .getReference("UsersDB")
+                .child(Uid)
+                .child("friend")
+                .child(uid).setValue(uid);
     }
 
 
