@@ -20,12 +20,13 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.Calendar;
 
 public class StepTrackerService extends Service {
-    private static long val;
-    private static String key;
-    private boolean obtained = false;
-    private long databaseVal = 0L;
-    private SensorManager sensorManager;
-    private Sensor sensor;
+
+    private static int nStep;
+    private static int sensorSteps;
+
+    private int step;
+    private FirebaseHelper firebase;
+    private MyPreference myPreference;
 
     @Nullable
     @Override
@@ -36,29 +37,12 @@ public class StepTrackerService extends Service {
     @Override
     public void onCreate() {
         System.out.println("Service started");
-        FirebaseHelper firebase = new FirebaseHelper();
-        String currentDate = firebase.getCurrentDate();
-        key = currentDate + firebase.getUid();
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
-        DatabaseReference ref = firebase.getStepsRef(currentDate);
-        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().getValue() == null) {
-                        ref.setValue(0);
-                    } else {
-                        databaseVal = (long) task.getResult().getValue();
-                    }
+        firebase = new FirebaseHelper();
+        myPreference = new MyPreference(getApplicationContext(), "Steps");
+        step = Math.max((int) firebase.getStepCount(), myPreference.getCurrentStepCount(firebase.getCurrentDate()));
 
-                    startTracker();
-                }
-            }
-        });
-
-
+        startTracker();
     }
 
     @Override
@@ -66,31 +50,20 @@ public class StepTrackerService extends Service {
         return START_STICKY;
     }
 
-    @Override
-    public void onDestroy() {
-        getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, val).apply();
-        System.out.println("Service destroyed");
-    }
-
     private void startTracker() {
-        long previousCount = getSharedPreferences("Steps", MODE_PRIVATE).getLong(key, 0);
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        int prevTotal = myPreference.getPreviousTotalStepCount();
+
         SensorEventListener eventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                long stepCount = (long) event.values[0];
-                val = stepCount + databaseVal - previousCount;
-                getSharedPreferences("Steps", MODE_PRIVATE).edit().putLong(key, val).apply();
+                sensorSteps = (int) event.values[0];
+                nStep = sensorSteps + step - prevTotal;
 
-                if (!obtained && val >= 100) {
-                    getSharedPreferences("Streak", MODE_PRIVATE)
-                            .edit()
-                            .putBoolean(String.valueOf(Calendar.DAY_OF_WEEK), true)
-                            .apply();
-                    getSharedPreferences("Streak", MODE_PRIVATE)
-                            .edit()
-                            .putBoolean("Today", true)
-                            .apply();
-                    obtained = true;
+                if (nStep >= 10) {
+                    MyPreference streakPref = new MyPreference(StepTrackerService.this, "Streak");
+                    streakPref.updateStreak();
                 }
             }
 
@@ -100,5 +73,13 @@ public class StepTrackerService extends Service {
             }
         };
         sensorManager.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    public int getSteps() {
+        return nStep;
+    }
+
+    public int getPreviousTotalSteps() {
+        return sensorSteps;
     }
 }

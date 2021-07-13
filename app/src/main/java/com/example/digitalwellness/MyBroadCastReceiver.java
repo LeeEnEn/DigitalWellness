@@ -3,70 +3,70 @@ package com.example.digitalwellness;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-// Class not needed, shifted to UploadWorker
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MyBroadCastReceiver extends BroadcastReceiver {
 
-    private MyPreference myPreference;
     private Context context;
-    private String previousDate;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        FirebaseHelper firebase = new FirebaseHelper();
-        myPreference  = new MyPreference(context, "Steps");
-        previousDate = firebase.getPreviousDate();
 
         if (intent.getAction() != null) {
             if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-                MyAlarms myAlarms = new MyAlarms(context);
-                myAlarms.startDailyUpdates();
-                myAlarms.startUpdateToFirebase();
-                myPreference.setPreviousTotalStepCount(0);
+                // Set previous total to zero.
+                MyPreference steps  = new MyPreference(context, "Steps");
+                steps.setPreviousTotalStepCount(0);
+                // Start alarm.
+                MyAlarms alarms = new MyAlarms(context);
+                alarms.startDailyUpdates();
             }
         }
 
-        switch (intent.getIntExtra("code", 0)) {
-            case 1:
-                updateToFirebase(intent.getStringExtra("uid"));
-                break;
-            case 2:
-                dailyUpdates(intent.getStringExtra("uid"));
-                break;
+        int code = intent.getIntExtra("code", 0);
+
+        if (code == 7) {
+            System.out.println("hohohoho");
+            MyPreference servicePref = new MyPreference(context, "Service");
+            String date = intent.getStringExtra("date");
+            int steps;
+            int previousTotalSteps;
+
+            if (servicePref.getService()) {
+                StepTrackerService stepService = new StepTrackerService();
+                steps = stepService.getSteps();
+                previousTotalSteps = stepService.getPreviousTotalSteps();
+                // Restart service.
+                Intent serviceIntent = new Intent(context, StepTrackerService.class);
+                context.stopService(serviceIntent);
+                context.startService(serviceIntent);
+            } else {
+                StepTracker stepTracker = new StepTracker();
+                steps = stepTracker.getSteps();
+                previousTotalSteps = stepTracker.getPreviousTotalSteps();
+            }
+            update(date, steps, previousTotalSteps);
+            // Restart alarm.
+            MyAlarms myAlarms = new MyAlarms(context);
+            myAlarms.startDailyUpdates();
         }
     }
 
-    private void updateToFirebase(String uid) {
+    private void update(String date, int step, int prevTotalSteps) {
         FirebaseHelper firebase = new FirebaseHelper();
-        previousDate = firebase.getPreviousDate();
-        String key = previousDate + uid;
-        firebase.updateSteps(previousDate, myPreference.getCurrentStepCount(key));
-        firebase.updateScreen(previousDate, myPreference.getScreenTime(previousDate));
+        firebase.updateSteps(date, step);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("ASDASD");
+        reference.setValue("ADASDAS");
+        MyPreference stepPref = new MyPreference(context, "Steps");
+        stepPref.setPreviousTotalStepCount(prevTotalSteps);
 
-        System.out.println("normal updates done");
-    }
+        MyPreference streakPref = new MyPreference(context, "Streak");
+        streakPref.setStreak("isUpdated", false);
 
-    private void dailyUpdates(String uid) {
-        FirebaseHelper firebase = new FirebaseHelper();
-        previousDate = firebase.getPreviousDate();
-        String key =  previousDate + uid;
-        long value = myPreference.getCurrentStepCount(key);
-        // Update steps to database.
-        firebase.updateSteps(previousDate, value);
-        // Create basic data for the next day.
-        firebase.createBasicData(context);
-        myPreference.setPreviousTotalStepCount(value);
-        // Reset streak
-        MyPreference streak = new MyPreference(context, "Streak");
-        boolean today = streak.getStreak("Today");
-        streak.setStreak("Yesterday", today);
-        streak.setStreak("Today", false);
-        // Restart service.
-        context.stopService(new Intent(context, StepTrackerService.class));
-        context.startService(new Intent(context, StepTrackerService.class));
-        // Reload data.
-        firebase.getData();
-
-        System.out.println("alarm service done");
+        firebase.createDailyData(date);
+        System.out.println("hdhasdasda");
     }
 }

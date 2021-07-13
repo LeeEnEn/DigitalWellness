@@ -120,7 +120,8 @@ public class StartMenu extends AppCompatActivity {
                 loginResult.getAccessToken();
                 //firebaseHelper.registerEmailAndPassword(firebaseHelper.getUser().getEmail(), "12345", StartMenu.this);
                 //Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
-                firebaseHelper.startUpdates(StartMenu.this);
+                MyAlarms myAlarms = new MyAlarms(StartMenu.this);
+                myAlarms.startDailyUpdates();
                 Intent intent = new Intent(StartMenu.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -244,7 +245,8 @@ public class StartMenu extends AppCompatActivity {
                             FirebaseUser user = task.getResult().getUser();
                             firebaseHelper.setDetails(user.getDisplayName(), user.getEmail(), user.getPhotoUrl(), user.getUid());
                             //Toast.makeText(getApplicationContext(),"Welcome back, " + user.getDisplayName(),Toast. LENGTH_SHORT).show();
-                            firebaseHelper.startUpdates(StartMenu.this);
+                            MyAlarms myAlarms = new MyAlarms(StartMenu.this);
+                            myAlarms.startDailyUpdates();
                             firebaseHelper.updateProfile(user.getDisplayName(), "Account created!", StartMenu.this);
                             firebaseHelper.createBasicData(StartMenu.this);
                             firebaseHelper.createStreakData(StartMenu.this);
@@ -255,6 +257,7 @@ public class StartMenu extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Log.w("GOOGLE", "signInWithCredential:failure", task.getException());
                             //updateUI(null);
+                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 });

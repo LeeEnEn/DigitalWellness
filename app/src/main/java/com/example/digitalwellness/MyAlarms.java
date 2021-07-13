@@ -19,30 +19,6 @@ public class MyAlarms {
     }
 
     /**
-     * An alarm that updates the previous day's step to database.
-     */
-    public void startUpdateToFirebase() {
-        // Set the alarm to start at approximately 1:00 a.m.
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 1);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        AlarmManager alarmManager = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent alarmIntent = new Intent(this.context, MyBroadCastReceiver.class);
-        alarmIntent.putExtra("code", 1);
-        alarmIntent.putExtra("uid", firebase.getUid());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.context, 0, alarmIntent, 0);
-
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pendingIntent);
-//        alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 60000, pendingIntent);
-        System.out.println("Update to firebase alarm started");
-    }
-
-    /**
      * An alarm that wakes the phone to update current day's step to shared preference.
      */
     public void startDailyUpdates() {
@@ -52,19 +28,19 @@ public class MyAlarms {
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
-        alarmManagerForService = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
 
         Intent alarmIntent = new Intent(this.context, MyBroadCastReceiver.class);
-        alarmIntent.putExtra("code", 2);
-        alarmIntent.putExtra("uid", firebase.getUid());
+        alarmIntent.putExtra("code", 7);
+        alarmIntent.putExtra("date", firebase.getCurrentDate());
 
-        intentForService = PendingIntent.getBroadcast(this.context, 1, alarmIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.context, 1, alarmIntent, 0);
 
-        alarmManagerForService.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, intentForService);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
         System.out.println("update to shared pref alarm started");
-//        alarmManagerForService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 60000, intentForService);
     }
 
     public void startAlarmAtTime(int hour, int minute) {

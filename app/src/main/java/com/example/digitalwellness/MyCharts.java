@@ -30,7 +30,7 @@ public class MyCharts {
     }
 
     public void showStepGraph(ArrayList<BarEntry> values, String[] axis) {
-        stepChart = (BarChart) context.findViewById(R.id.chart);
+        stepChart = (BarChart) context.findViewById(R.id.step_chart);
         // Disable all zooming.
         stepChart.setScaleEnabled(false);
 

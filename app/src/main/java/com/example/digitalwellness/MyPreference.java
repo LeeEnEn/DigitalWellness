@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Set;
 
 public class MyPreference {
@@ -21,7 +22,7 @@ public class MyPreference {
     }
 
     public void updateFriends(Set<String> list) {
-        this.preferences.edit().putStringSet("friends", list).commit();
+        this.preferences.edit().putStringSet("friends", list).apply();
     }
 
     public Set<String> getFriends() {
@@ -34,8 +35,8 @@ public class MyPreference {
      * @param key Consists of date + Uid.
      * @return Step count.
      */
-    public long getCurrentStepCount(String key) {
-        return this.preferences.getLong(key, 0);
+    public int getCurrentStepCount(String key) {
+        return this.preferences.getInt(key, 0);
     }
 
     /**
@@ -44,8 +45,8 @@ public class MyPreference {
      * @param key Consists of date + Uid.
      * @param value The value to be updated.
      */
-    public void setCurrentStepCount(String key, long value) {
-        this.preferences.edit().putLong(key, value).apply();
+    public void setCurrentStepCount(String key, int value) {
+        this.preferences.edit().putInt(key, value).apply();
     }
 
     /**
@@ -53,8 +54,8 @@ public class MyPreference {
      *
      * @return Step count.
      */
-    public long getPreviousTotalStepCount() {
-        return this.preferences.getLong("previous_step_count", 0);
+    public int getPreviousTotalStepCount() {
+        return this.preferences.getInt("previous_step_count", 0);
     }
 
     /**
@@ -62,8 +63,8 @@ public class MyPreference {
      *
      * @param value The value to be updated.
      */
-    public void setPreviousTotalStepCount(long value) {
-        this.preferences.edit().putLong("previous_step_count", value).apply();
+    public void setPreviousTotalStepCount(int value) {
+        this.preferences.edit().putInt("previous_step_count", value).apply();
     }
 
     /**
@@ -154,21 +155,27 @@ public class MyPreference {
         this.preferences.edit().putBoolean("service", bool).apply();
     }
 
-    public int getStreakCount() {
-        boolean tdyStreak = this.preferences.getBoolean("Today", false);
-        boolean ytdStreak = this.preferences.getBoolean("Yesterday", false);
-        boolean isCounted = this.preferences.getBoolean("Counted", false);
-        int count = 0;
+    public void updateStreak() {
+        boolean isUpdated = this.preferences.getBoolean("isUpdated", false);
+        boolean ytd = this.preferences.getBoolean("Yesterday", false);
 
-        if (!isCounted && tdyStreak) {
-            //i am so good at programming!
-            if (ytdStreak) {
-                count = this.preferences.getInt("streak_count", 0);
+        if (!isUpdated) {
+            int streakCount  = 0;
+            if (ytd) {
+                streakCount = this.preferences.getInt("streak_count", 0);
             }
-            count++;
-            this.preferences.edit().putInt("streak_count", count).apply();
+            // Update streak count
+            this.preferences.edit().putInt("streak_count", ++streakCount).apply();
+            this.preferences.edit().putBoolean("isUpdated", true).apply();
+            // Update streak circles.
+            Calendar calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
+            this.preferences.edit().putBoolean(String.valueOf(day), true).apply();
         }
-        return count;
+    }
+
+    public int getStreakCount() {
+        return this.preferences.getInt("streak_count", 0);
     }
 
     public boolean getStreak(String day) {
@@ -177,10 +184,6 @@ public class MyPreference {
 
     public void setStreak(String day, boolean val) {
         this.preferences.edit().putBoolean(day, val).apply();
-    }
-
-    public void setStreak() {
-        this.preferences.edit().putInt("streak_count", 0).apply();
     }
 
     public boolean isDataCreated() {

@@ -42,7 +42,7 @@ public class FirebaseHelper {
     private final FirebaseAuth auth;
     private final String KEY_SCREEN = "Screen";
     private final String KEY_STEP = "Steps";
-    private final String PATTERN = "MM-dd-yyyy";
+    private final String PATTERN = "yyyy-MM-dd";
     private final int RANGE = 7;
 
     private static String[] axis = null;
@@ -50,16 +50,15 @@ public class FirebaseHelper {
     private static ArrayList<BarEntry> screen;
 
     private static Date currentDate;
-    private String Uid;
-    private String url;
-
+    private static String uid;
+    private static long stepCount;
     /**
      * Public constructor.
      */
     public FirebaseHelper() {
         this.auth = FirebaseAuth.getInstance();
         currentDate = Calendar.getInstance().getTime();
-        this.Uid = this.auth.getUid();
+        uid = this.auth.getUid();
     }
 
     /**
@@ -81,7 +80,7 @@ public class FirebaseHelper {
                             updateProfile(name, "Account created!", activity);
                             createBasicData(activity);
                             createStreakData(activity);
-                            Uid = task.getResult().getUser().getUid();
+                            uid = task.getResult().getUser().getUid();
                             setDetailsNoPicture(name, email);
                             activity.startActivity(new Intent(activity, Login.class));
                         } else {
@@ -115,6 +114,10 @@ public class FirebaseHelper {
         }
     }
 
+    public void createDailyData(String date) {
+
+    }
+
 
     /**
      *  Enter details into database
@@ -139,7 +142,7 @@ public class FirebaseHelper {
     }
 
     public void setDetailsNoPicture(String name, String email) {
-        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("UsersDB").child(Uid);
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("UsersDB").child(uid);
         FirebaseUser userRef = auth.getCurrentUser();
         dataRef.child("name")
                 .setValue(name);
@@ -150,7 +153,7 @@ public class FirebaseHelper {
         dataRef.child("picture")
                 .setValue("https://st2.depositphotos.com/1009634/7235/v/600/depositphotos_72350117-stock-illustration-no-user-profile-picture-hand.jpg");
 
-        dataRef.child("friend").child(Uid).setValue(Uid);
+        dataRef.child("friend").child(uid).setValue(uid);
     }
 
     public void createStreakData(Context context) {
@@ -159,9 +162,7 @@ public class FirebaseHelper {
             for (int i = 1; i < 8; i++) {
                 myPreference.setStreak(String.valueOf(i), false);
             }
-            myPreference.setStreak("Today", false);
             myPreference.setStreak("Yesterday", false);
-            myPreference.setStreak();
             myPreference.dataCreated();
         }
     }
@@ -203,7 +204,7 @@ public class FirebaseHelper {
 
 
     /**
-     * Returns current date in dd-MM-yyyy format.
+     * Returns current date in yyyy-MM-dd format.
      *
      * @return current date.
      */
@@ -226,7 +227,7 @@ public class FirebaseHelper {
     }
 
     /**
-     * Returns yesterday's date in dd-MM-yyyy format.
+     * Returns yesterday's date in yyyy-MM-dd format.
      *
      * @return Yesterday's date.
      */
@@ -247,13 +248,13 @@ public class FirebaseHelper {
         steps = new ArrayList<>();
         screen = new ArrayList<>();
 
-        if (Uid == null) {
-            Uid = new FirebaseHelper().getUid();
+        if (uid == null) {
+            uid = new FirebaseHelper().getUid();
         }
 
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Users")
-                .child(Uid);
+                .child(uid);
 
         ref.limitToLast(7).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -277,6 +278,9 @@ public class FirebaseHelper {
 
                     for (DataSnapshot snap: snapshot.getChildren()) {
                         for (DataSnapshot s: snap.getChildren()) {
+                            if (counter == 7) {
+                                stepCount = (long) s.getValue();
+                            }
                             if (counter % 2 == 0) {
                                 screen.add(new BarEntry(i, (Long) s.getValue()));
                                 i++;
@@ -294,62 +298,16 @@ public class FirebaseHelper {
         });
     }
 
-    public void getData() {
-        steps = new ArrayList<>();
-        screen = new ArrayList<>();
-
-        if (Uid == null) {
-            Uid = new FirebaseHelper().getUid();
-        }
-
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("Users")
-                .child(Uid);
-
-        ref.limitToLast(7).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DataSnapshot snapshot = task.getResult();
-
-                    long entriesToAdd = RANGE - snapshot.getChildrenCount();
-                    int counter = 0;
-                    int i = 0;
-                    int j = 0;
-
-                    while (entriesToAdd > 0) {
-                        steps.add(new BarEntry(i, 0));
-                        screen.add(new BarEntry(j, 0));
-                        i++;
-                        j++;
-                        counter += 2;
-                        entriesToAdd--;
-                    }
-
-                    for (DataSnapshot snap: snapshot.getChildren()) {
-                        for (DataSnapshot s: snap.getChildren()) {
-                            if (counter % 2 == 0) {
-                                screen.add(new BarEntry(i, (Long) s.getValue()));
-                                i++;
-                            } else {
-                                steps.add(new BarEntry(j, (Long) s.getValue()));
-                                j++;
-                            }
-                            counter++;
-                        }
-                    }
-                    System.out.println("data loaded");
-                }
-            }
-        });
-    }
-
     public ArrayList<BarEntry> getSteps() {
         return steps;
     }
 
     public ArrayList<BarEntry> getScreen() {
         return screen;
+    }
+
+    public long getStepCount() {
+        return stepCount;
     }
 
     /**
@@ -360,7 +318,7 @@ public class FirebaseHelper {
     public DatabaseReference getStepsRef(String date) {
         return FirebaseDatabase.getInstance()
                 .getReference("Users")
-                .child(Uid)
+                .child(uid)
                 .child(date)
                 .child(KEY_STEP);
     }
@@ -371,7 +329,7 @@ public class FirebaseHelper {
     public DatabaseReference getScreenRef(String date) {
         return FirebaseDatabase.getInstance()
                 .getReference("Users")
-                .child(Uid)
+                .child(uid)
                 .child(date)
                 .child(KEY_SCREEN);
     }
@@ -426,7 +384,6 @@ public class FirebaseHelper {
                             Toast.makeText(activity, "Login Successful!", Toast.LENGTH_LONG).show();
                             // ref.push().child(date.toString()).setValue(username + " has logged in.");
                             MyAlarms myAlarms = new MyAlarms(activity);
-                            myAlarms.startUpdateToFirebase();
                             myAlarms.startDailyUpdates();
                             createStreakData(activity);
                             getData(activity, new Intent(activity, MainActivity.class));
@@ -534,7 +491,7 @@ public class FirebaseHelper {
     public void updateSteps(String date, long value) {
         FirebaseDatabase.getInstance()
                 .getReference("Users")
-                .child(Uid)
+                .child(uid)
                 .child(date)
                 .child(KEY_STEP)
                 .setValue(value);
@@ -586,7 +543,7 @@ public class FirebaseHelper {
     public void setImage(String url) {
         FirebaseDatabase.getInstance()
                 .getReference("UsersDB")
-                .child(Uid)
+                .child(uid)
                 .child("picture")
                 .setValue(url);
     }
@@ -594,11 +551,8 @@ public class FirebaseHelper {
     public void setFriend(String uid) {
         FirebaseDatabase.getInstance()
                 .getReference("UsersDB")
-                .child(Uid)
+                .child(uid)
                 .child("friend")
                 .child(uid).setValue(uid);
     }
-
-
-
 }
