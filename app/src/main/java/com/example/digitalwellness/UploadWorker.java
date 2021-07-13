@@ -22,29 +22,28 @@ public class UploadWorker extends Worker {
     }
 
     private void myWork() {
-        FirebaseHelper firebase = new FirebaseHelper();
-        MyPreference streakPreference = new MyPreference(getApplicationContext(), "Streak");
-        MyPreference preference = new MyPreference(getApplicationContext(), "Steps");
-        MyPreference screenPreference = new MyPreference(getApplicationContext(), firebase.getUid());
-
-        String ytd = firebase.getPreviousDate();
-        String uid = firebase.getUid();
-        String key = ytd + uid;
-        // Upload data to firebase
-        firebase.updateSteps(ytd, preference.getCurrentStepCount(key));
-        firebase.updateScreen(ytd, screenPreference.getScreenTime(ytd));
-        // Restart service
-        Intent intent = new Intent(getApplicationContext(), StepTrackerService.class);
-        getApplicationContext().stopService(intent);
-        getApplicationContext().startService(intent);
-        // Reset streak
-        boolean today = streakPreference.getStreak("Today");
-        streakPreference.setStreak("Yesterday", today);
-        streakPreference.setStreak("Today", false);
-        // Create basic data
-        firebase.createBasicData(getApplicationContext());
-        // Reload data
-        preference.setPreviousTotalStepCount(preference.getCurrentStepCount(key));
-        firebase.getData();
+//        FirebaseHelper firebase = new FirebaseHelper();
+//        MyPreference streakPreference = new MyPreference(getApplicationContext(), "Streak");
+//        MyPreference preference = new MyPreference(getApplicationContext(), "Steps");
+//        MyPreference screenPreference = new MyPreference(getApplicationContext(), firebase.getUid());
+//
+//        String ytd = firebase.getPreviousDate();
+//        String uid = firebase.getUid();
+//        String key = ytd + uid;
+//        // Upload data to firebase
+//        firebase.updateSteps(ytd, preference.getCurrentStepCount(key));
+//        firebase.updateScreen(ytd, screenPreference.getScreenTime(ytd));
+//        // Restart service
+//        Intent intent = new Intent(getApplicationContext(), StepTrackerService.class);
+//        getApplicationContext().stopService(intent);
+//        getApplicationContext().startService(intent);
+//        // Reset streak
+//        boolean today = streakPreference.getStreak("Today");
+//        streakPreference.setStreak("Yesterday", today);
+//        streakPreference.setStreak("Today", false);
+//        // Create basic data
+//        firebase.createBasicData(getApplicationContext());
+//        // Reload data
+//        preference.setPreviousTotalStepCount(preference.getCurrentStepCount(key));
     }
 }

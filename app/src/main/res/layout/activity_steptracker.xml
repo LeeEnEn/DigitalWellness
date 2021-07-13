@@ -1,40 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/stepRefreshLayout"
-    android:transitionName="shared_element_to_compose">
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:transitionName="shared_element_to_compose"
+    android:id="@+id/step_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
 
-        <include layout="@layout/activity_progress_bar" />
+        <ProgressBar
+            android:id="@+id/step_progress"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:indeterminate="false"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/shape"
+            android:rotation="270"
+            android:layout_centerInParent="true"/>
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart"
-            android:layout_margin="25dp"
-            android:layout_width="match_parent"
-            android:layout_height="400dp" />
-
-        <TextView
-            android:id="@+id/text"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Steps"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/chart"
-            android:textStyle="bold"
-            android:fontFamily=""/>
+            android:layout_centerInParent="true"
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/number_of_steps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:textStyle="bold"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/run_icon"
+                android:layout_gravity="center_horizontal"/>
 
+            <TextView
+                android:id="@+id/step_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="35sp"
+                android:text="@string/zero"
+                android:fontFamily="sans-serif-black"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-black"
+                android:text="@string/step_goal"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
     </RelativeLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/step_chart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_above="@+id/step_button_panel"
+        android:layout_centerInParent="true" />
+
+    <LinearLayout
+        android:id="@+id/step_button_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/step_seven_days"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/seven_days" />
+
+        <Button
+            android:id="@+id/step_all_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/all_time" />
+
+    </LinearLayout>
+
+</RelativeLayout>

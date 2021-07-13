@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalWellness">
-        <activity android:name=".UserList"></activity>
+        <activity android:name=".UserList" />
         <activity android:name=".UserProfile" />
         <activity android:name=".LockedActivity" />
         <activity android:name=".FocusMode" />

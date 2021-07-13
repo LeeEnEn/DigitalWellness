@@ -14,7 +14,9 @@ import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.github.mikephil.charting.charts.BarChart;
 import com.google.android.material.transition.platform.MaterialContainerTransform;
 
 import com.github.mikephil.charting.data.BarEntry;
@@ -39,16 +43,14 @@ import java.util.Calendar;
 
 public class StepTracker extends AppCompatActivity {
 
-    private FirebaseHelper firebase;
+
+    private int step;
+    private TextView stepView;
+    private ProgressBar stepProgress;
     private MyPreference myPreference;
-    private MyPreference preference = null;
-    private SensorEventListener eventListener;
-    private SensorManager sensorManager;
-    private String key;
-    private String currentDate;
-    private TextView textView;
-    private static long displayValue;
-    private long databaseValue = 0L;
+
+    private static int nSteps;
+    private static int sensorSteps;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -56,7 +58,7 @@ public class StepTracker extends AppCompatActivity {
 
         setContentView(R.layout.activity_steptracker);
 
-        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.stepRefreshLayout);
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.step_layout);
         transitionBuilder.applyTransition();
 
         super.onCreate(savedInstanceState);
@@ -65,113 +67,76 @@ public class StepTracker extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        // Show loading screen.
-        FrameLayout progressLayout = (FrameLayout) findViewById(R.id.progress_overlay);
-        progressLayout.setVisibility(View.VISIBLE);
-        textView = (TextView) findViewById(R.id.number_of_steps);
+        // Initialize variables.
+        FirebaseHelper firebase = new FirebaseHelper();
+        long stepCountDatabase = firebase.getStepCount();
+        // Set views.
+        stepProgress = (ProgressBar) findViewById(R.id.step_progress);
+        stepProgress.setMax(10000);
 
-        // Initialize classes.
-        firebase = new FirebaseHelper();
+        stepView =  (TextView) findViewById(R.id.step_view);
+
         myPreference = new MyPreference(this, "Steps");
+        int stepCountPref = myPreference.getCurrentStepCount(firebase.getCurrentDate());
 
-        currentDate = firebase.getCurrentDate();
-        key = currentDate + firebase.getUid();
-        ArrayList<BarEntry> entry = firebase.getSteps();
+        step = Math.max((int) stepCountDatabase, stepCountPref);
+        stepProgress.setProgress(step);
+        stepView.setText(String.valueOf(nSteps));
 
-        // Load data
+        System.out.println(stepCountDatabase + " db steps");
+        System.out.println(step + " final step");
+        System.out.println(stepCountPref + " local");
+
+        // Plot chart.
         MyCharts myCharts = new MyCharts(this);
+        myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
 
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.stepRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        Button sevenDay = (Button) findViewById(R.id.step_seven_days);
+        Button allTime = (Button) findViewById(R.id.step_all_time);
+
+        sevenDay.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRefresh() {
-                firebase.getData();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 2000);
+            public void onClick(View v) {
+                // show 7 day chart
             }
         });
 
-        DatabaseReference reference = firebase.getStepsRef(currentDate);
-        reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        allTime.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().getValue() == null) {
-                        reference.setValue(0);
-                        firebase.getScreenRef(currentDate).setValue(0);
-                    } else {
-                        databaseValue = (long) task.getResult().getValue();
-                    }
-
-                    long temp = myPreference.getCurrentStepCount(key);
-                    if (databaseValue < temp) {
-                        entry.get(6).setY(temp);
-                    }
-                    myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
-                    progressLayout.setVisibility(View.GONE);
-                    startTracker();
-                }
+            public void onClick(View v) {
+                // show all time chart
             }
         });
+        // Start tracker.
+        startTracker();
     }
 
     // Enables real time updates.
     private void startTracker() {
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        long previousStepCount = myPreference.getPreviousTotalStepCount();
+        SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        int prevTotal = myPreference.getPreviousTotalStepCount();
 
-        if (sensor != null) {
-            eventListener = new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent event) {
-                    if (event.values != null) {
-                        long currentSensorValue = (long) event.values[0];
-                        displayValue = currentSensorValue + databaseValue - previousStepCount;
-                        myPreference.setCurrentStepCount(key, displayValue);
-                        textView.setText(String.valueOf(displayValue));
-
-                        if (preference == null && currentSensorValue >= 100) {
-                            preference = new MyPreference(StepTracker.this, "Streak");
-                            preference.setStreak(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), true);
-                            preference.setStreak("Today", true);
-                            preference.getStreakCount();
-                            preference.setStreak("isCounted", true);
-                        }
-
-                        System.out.println(currentSensorValue);
-                    }
+        SensorEventListener eventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                sensorSteps = (int) event.values[0];
+                nSteps = sensorSteps + step - prevTotal;
+                stepProgress.setProgress(nSteps);
+                stepView.setText(String.valueOf(nSteps));
+                // Goal reached, update streak.
+                if (nSteps >= 10) {
+                    MyPreference streakPref = new MyPreference(StepTracker.this, "Streak");
+                    streakPref.updateStreak();
                 }
+            }
 
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-                }
-            };
-            sensorManager.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_FASTEST);
-        } else {
-            Toast.makeText(this, "No motion sensor detected!", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    public long getCurrentStepValue() {
-        return displayValue;
+            }
+        };
+        manager.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     // Enables back button to be usable. Brings user back one page.
@@ -185,6 +150,11 @@ public class StepTracker extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public int getSteps() {
+        return nSteps;
+    }
 
-
+    public int getPreviousTotalSteps() {
+        return sensorSteps;
+    }
 }

@@ -237,11 +237,15 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(i);
                 } else if(id == R.id.logout) {
                     // Update steps when user logs out
-                    String currentDate = firebaseHelper.getCurrentDate();
-                    long value = new StepTracker().getCurrentStepValue();
-                    MyPreference stepPref = new MyPreference(MainActivity.this, "Steps");
-                    stepPref.setPreviousTotalStepCount(value);
-                    firebaseHelper.updateSteps(currentDate, value);
+                    StepTracker stepTracker = new StepTracker();
+                    // Update to firebase.
+                    firebaseHelper.updateSteps(firebaseHelper.getCurrentDate(), stepTracker.getSteps());
+                    // Update local database.
+                    String key = firebaseHelper.getCurrentDate() + firebaseHelper.getUid();
+                    MyPreference myPreference = new MyPreference(MainActivity.this, "Steps");
+                    myPreference.setCurrentStepCount(key, stepTracker.getSteps());
+                    myPreference.setPreviousTotalStepCount(stepTracker.getPreviousTotalSteps());
+                    // Logs user out.
                     firebaseHelper.logoutUser();
                     // Send user back to start menu page
                     Intent i = new Intent(MainActivity.this, StartMenu.class);
@@ -268,8 +272,6 @@ public class MainActivity extends AppCompatActivity {
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         MainActivity.this, stepTracker, stepTracker.getTransitionName());
 
-
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
                     myPermissions.requestPermission();
                 } else {
@@ -295,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
             if (myPreference.getStreak(String.valueOf(i))) {
                 array[i-1].setImageResource(R.drawable.filled_circle);
             }
+            System.out.println(myPreference.getStreak(String.valueOf(i)) + " what?");
         }
         TextView textView = (TextView) findViewById(R.id.streak_value);
         textView.setText(String.valueOf(myPreference.getStreakCount()));

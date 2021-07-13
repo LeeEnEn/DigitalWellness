@@ -51,8 +51,8 @@ public class Splash extends Activity {
 
             }*/
 
-            // Start work manager to periodically launch updates to firebase.
-            firebase.startUpdates(this);
+            MyAlarms myAlarms = new MyAlarms(this);
+            myAlarms.startDailyUpdates();
             // Fetch data, for graph creation.
             firebase.getData(this, new Intent(this, MainActivity.class));
         } else {

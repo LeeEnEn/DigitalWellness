@@ -23,4 +23,8 @@
     <string name="friday">Fri</string>
     <string name="saturday">Sat</string>
     <string name="video_not_found">Oops, no video matches the search.</string>
+    <string name="step_goal">GOAL 10,000</string>
+    <string name="seven_days">7 days</string>
+    <string name="all_time">All time</string>
+    <string name="zero">0</string>
 </resources>
