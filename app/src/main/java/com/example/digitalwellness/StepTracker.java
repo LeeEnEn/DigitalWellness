@@ -77,7 +77,8 @@ public class StepTracker extends AppCompatActivity {
         stepView =  (TextView) findViewById(R.id.step_view);
 
         myPreference = new MyPreference(this, "Steps");
-        int stepCountPref = myPreference.getCurrentStepCount(firebase.getCurrentDate());
+        String key = firebase.getCurrentDate() + firebase.getUid();
+        int stepCountPref = myPreference.getCurrentStepCount(key);
 
         step = Math.max((int) stepCountDatabase, stepCountPref);
         stepProgress.setProgress(step);

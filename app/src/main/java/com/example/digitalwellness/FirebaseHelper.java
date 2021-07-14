@@ -49,7 +49,6 @@ public class FirebaseHelper {
     private static ArrayList<BarEntry> steps;
     private static ArrayList<BarEntry> screen;
 
-    private static Date currentDate;
     private static String uid;
     private static long stepCount;
     /**
@@ -57,7 +56,6 @@ public class FirebaseHelper {
      */
     public FirebaseHelper() {
         this.auth = FirebaseAuth.getInstance();
-        currentDate = Calendar.getInstance().getTime();
         uid = this.auth.getUid();
     }
 
@@ -114,8 +112,13 @@ public class FirebaseHelper {
         }
     }
 
-    public void createDailyData(String date) {
-
+    public void createDailyData() {
+        String date = getCurrentDate();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child(date);
+        reference.child(KEY_STEP).setValue(0);
+        reference.child(KEY_SCREEN).setValue(0);
     }
 
 
@@ -209,7 +212,8 @@ public class FirebaseHelper {
      * @return current date.
      */
     public String getCurrentDate() {
-        return new SimpleDateFormat(PATTERN, Locale.getDefault()).format(currentDate);
+        Date date = Calendar.getInstance().getTime();
+        return new SimpleDateFormat(PATTERN, Locale.getDefault()).format(date);
     }
 
     public int getCurrentDay() {

@@ -7,6 +7,8 @@ import android.content.Intent;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
+
 public class MyBroadCastReceiver extends BroadcastReceiver {
 
     private Context context;
@@ -29,9 +31,8 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
         int code = intent.getIntExtra("code", 0);
 
         if (code == 7) {
-            System.out.println("hohohoho");
             MyPreference servicePref = new MyPreference(context, "Service");
-            String date = intent.getStringExtra("date");
+
             int steps;
             int previousTotalSteps;
 
@@ -48,25 +49,29 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
                 steps = stepTracker.getSteps();
                 previousTotalSteps = stepTracker.getPreviousTotalSteps();
             }
-            update(date, steps, previousTotalSteps);
+            update(steps, previousTotalSteps);
             // Restart alarm.
             MyAlarms myAlarms = new MyAlarms(context);
             myAlarms.startDailyUpdates();
         }
     }
 
-    private void update(String date, int step, int prevTotalSteps) {
+    private void update(int step, int prevTotalSteps) {
         FirebaseHelper firebase = new FirebaseHelper();
-        firebase.updateSteps(date, step);
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("ASDASD");
-        reference.setValue("ADASDAS");
+        String prevDate = firebase.getPreviousDate();
+
+        MyPreference screenPref = new MyPreference(context, firebase.getUid());
+        long screen = screenPref.getScreenTime(prevDate);
+
+        firebase.updateSteps(prevDate, step);
+        firebase.updateScreen(prevDate, screen);
+
         MyPreference stepPref = new MyPreference(context, "Steps");
         stepPref.setPreviousTotalStepCount(prevTotalSteps);
 
         MyPreference streakPref = new MyPreference(context, "Streak");
         streakPref.setStreak("isUpdated", false);
 
-        firebase.createDailyData(date);
-        System.out.println("hdhasdasda");
+        firebase.createDailyData();
     }
 }

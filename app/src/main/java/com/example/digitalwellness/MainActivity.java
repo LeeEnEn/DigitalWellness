@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
         CardView stepTracker = (CardView) findViewById(R.id.stepsTracker);
         CardView screenTracker = (CardView) findViewById(R.id.screenTracker);
+        CardView distanceTracker = (CardView) findViewById(R.id.distanceTracker);
+
         userdisplay = (TextView) findViewById(R.id.textView5);
         firebaseHelper = new FirebaseHelper();
         myPermissions = new MyPermissions(this, MainActivity.this);
@@ -225,6 +227,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        stepTracker.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getActivityRecognition());
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        MainActivity.this, stepTracker, stepTracker.getTransitionName());
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
+                    myPermissions.requestPermission();
+                } else {
+                    Intent intent = new Intent(MainActivity.this, StepTracker.class);
+                    startActivity(intent, options.toBundle());
+                }
+            }
+        });
+
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -262,24 +283,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        stepTracker.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View v) {
-                int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getActivityRecognition());
-
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        MainActivity.this, stepTracker, stepTracker.getTransitionName());
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
-                    myPermissions.requestPermission();
-                } else {
-                    Intent intent = new Intent(MainActivity.this, StepTracker.class);
-                    startActivity(intent, options.toBundle());
-                }
-            }
-        });
     }
 
     private void loadStreak() {
@@ -297,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
             if (myPreference.getStreak(String.valueOf(i))) {
                 array[i-1].setImageResource(R.drawable.filled_circle);
             }
-            System.out.println(myPreference.getStreak(String.valueOf(i)) + " what?");
         }
         TextView textView = (TextView) findViewById(R.id.streak_value);
         textView.setText(String.valueOf(myPreference.getStreakCount()));

@@ -6,16 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 
 import java.util.Calendar;
-// Class not needed, shifted to UploadWorker
+
 public class MyAlarms {
     private static AlarmManager alarmManagerForService;
     private static PendingIntent intentForService;
     private final Context context;
-    private final FirebaseHelper firebase;
 
     public MyAlarms(Context context) {
         this.context = context;
-        this.firebase = new FirebaseHelper();
     }
 
     /**
@@ -34,7 +32,6 @@ public class MyAlarms {
 
         Intent alarmIntent = new Intent(this.context, MyBroadCastReceiver.class);
         alarmIntent.putExtra("code", 7);
-        alarmIntent.putExtra("date", firebase.getCurrentDate());
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.context, 1, alarmIntent, 0);
 
