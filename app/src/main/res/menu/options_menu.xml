@@ -11,8 +11,11 @@
         android:title="Send Notification" />
 
 
-    <item android:id="@+id/profile"
+    <item android:id="@+id/friends"
         android:title="Friends [BETA]" />
+
+    <item android:id="@+id/requests"
+        android:title="Request [BETA]" />
 
 
 </menu>

@@ -142,6 +142,8 @@ public class FirebaseHelper {
                 .setValue(url.toString());
 
         dataRef.child("friend").child(uid).setValue(uid);
+
+        //setRequest();
     }
 
     public void setDetailsNoPicture(String name, String email) {
@@ -157,7 +159,15 @@ public class FirebaseHelper {
                 .setValue("https://st2.depositphotos.com/1009634/7235/v/600/depositphotos_72350117-stock-illustration-no-user-profile-picture-hand.jpg");
 
         dataRef.child("friend").child(uid).setValue(uid);
+
+        //setRequest();
     }
+
+    public void setRequest() {
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("Requests").child(uid);
+        dataRef.setValue(uid);
+    }
+
 
     public void createStreakData(Context context) {
         MyPreference myPreference = new MyPreference(context, "Streak");
@@ -552,11 +562,25 @@ public class FirebaseHelper {
                 .setValue(url);
     }
 
-    public void setFriend(String uid) {
+    public void setFriend(String friendid, String name) {
         FirebaseDatabase.getInstance()
                 .getReference("UsersDB")
                 .child(uid)
                 .child("friend")
-                .child(uid).setValue(uid);
+                .child(friendid).setValue(name);
     }
+
+
+    /**
+     * Create a DB where the request is handled
+     * @param from UID of sender
+     * @param to UID of recipient
+     */
+    public void sendFriendRequest(String from, String to, String name, String url) {
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("Requests").child(to);
+        dataRef.child(from).child("name").setValue(name);
+        dataRef.child(from).child("picture").setValue(url);
+    }
+
+
 }

@@ -358,8 +358,10 @@ public class MainActivity extends AppCompatActivity {
 
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
             managerCompat.notify(1, builder.build());
-        } else if (id == R.id.profile) {
+        } else if (id == R.id.friends) {
             startActivity(new Intent(MainActivity.this, UserList.class));
+        } else if (id == R.id.requests) {
+            startActivity(new Intent(MainActivity.this, FriendList.class));
         }
         return super.onOptionsItemSelected(item);
     }
