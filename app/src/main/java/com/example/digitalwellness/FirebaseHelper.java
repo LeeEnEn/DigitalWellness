@@ -278,7 +278,7 @@ public class FirebaseHelper {
 
                     for (DataSnapshot snap: snapshot.getChildren()) {
                         for (DataSnapshot s: snap.getChildren()) {
-                            if (counter == 7) {
+                            if (counter == 13) {
                                 stepCount = (long) s.getValue();
                             }
                             if (counter % 2 == 0) {

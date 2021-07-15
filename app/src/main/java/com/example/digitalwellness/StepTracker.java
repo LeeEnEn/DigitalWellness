@@ -89,6 +89,7 @@ public class StepTracker extends AppCompatActivity {
 
         // Plot chart.
         MyCharts myCharts = new MyCharts(this);
+        firebase.getSteps().get(6).setY(step);
         myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
 
         Button sevenDay = (Button) findViewById(R.id.step_seven_days);
