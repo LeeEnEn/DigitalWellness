@@ -63,6 +63,8 @@
         </activity>
         <activity android:name=".ScreenTimeGraph" />
 
+        <activity android:name=".FriendList"/>
+
         <receiver
             android:name=".MyBroadCastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
