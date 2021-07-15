@@ -78,7 +78,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
                     usersList.get(position).setFriend(true);
                     //Toast.makeText(v.getContext(), usersList.get(position).getUid(), Toast.LENGTH_SHORT).show();
                     FirebaseHelper firebaseHelper = new FirebaseHelper();
-                    firebaseHelper.setFriend(usersList.get(position).getUid(), usersList.get(position).getUsername());
+                    //firebaseHelper.setFriend(usersList.get(position).getUid(), usersList.get(position).getUsername());
                     firebaseHelper.sendFriendRequest(firebaseHelper.getUid(),
                             usersList.get(position).getUid(),
                             firebaseHelper.getUser().getDisplayName(),

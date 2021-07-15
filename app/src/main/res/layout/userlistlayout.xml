@@ -52,6 +52,12 @@
             </LinearLayout>
 
 
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:padding="17dp"
+                android:id="@+id/yesButton"/>
 
             <ImageView
                 android:layout_width="50dp"

@@ -583,4 +583,11 @@ public class FirebaseHelper {
     }
 
 
+    public void addFriend(String myUid, String myName, String friendUid, String friendName) {
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("UsersDB");
+        dataRef.child(friendUid).child("friend").child(myUid).setValue(myName);
+        dataRef.child(myUid).child("friend").child(friendUid).setValue(friendName);
+    }
+
+
 }
