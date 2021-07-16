@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -27,6 +28,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+        dataBinding true
     }
 }
 
@@ -55,6 +60,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'androidx.transition:transition:1.4.1'
     implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -62,7 +68,7 @@ dependencies {
 
     //For displaying user picture
     implementation 'com.squareup.picasso:picasso:2.71828'
-
+    implementation 'com.android.volley:volley:1.2.0'
     // Displaying of graph
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
@@ -78,4 +84,6 @@ dependencies {
     // to get circular profile pictures
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    // Places extension Google Maps
+    implementation 'com.google.android.libraries.places:places:2.4.0'
 }

@@ -70,9 +70,6 @@ public class Video extends AppCompatActivity implements AdapterView.OnItemSelect
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                if (customAdapter != null) {
-//                    customAdapter.filter(query, videoNotFound, all);
-//                }
                 return true;
             }
 

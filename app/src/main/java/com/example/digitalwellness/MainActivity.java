@@ -47,6 +47,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
+import com.google.common.collect.Maps;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this, stepTracker, stepTracker.getTransitionName());
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
-                    myPermissions.requestPermission();
+                    myPermissions.requestPermission(1001);
                 } else {
                     Intent intent = new Intent(MainActivity.this, StepTracker.class);
                     startActivity(intent, options.toBundle());
@@ -245,6 +246,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        distanceTracker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getLocationPermission());
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
+                    myPermissions.requestPermission(1002);
+                } else {
+                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -307,13 +321,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        MyPreference myPreference = new MyPreference(MainActivity.this, "permissions");
         if (myPermissions.checkActivityRecognitionCode(requestCode)) {
             if (grantResults[0] == 0) {
                 myPermissions.displayServiceDialog();
             } else {
-                int count = myPreference.getPhysicalActivityValue();
-                myPreference.setPhysicalActivityValue(++count);
-                Toast.makeText(getApplicationContext(), myPermissions.getRationale(), Toast.LENGTH_LONG).show();
+                int count = myPreference.getValue(requestCode);
+                myPreference.setValue(requestCode, ++count);
+                System.out.println();
+                Toast.makeText(getApplicationContext(), myPermissions.getRationale(requestCode), Toast.LENGTH_LONG).show();
+            }
+        } else if (myPermissions.checkLocationPermissionCode(requestCode)) {
+            if (grantResults[0] == 0) {
+                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(intent);
+            } else {
+                int count = myPreference.getValue(requestCode);
+                myPreference.setValue(requestCode, ++count);
+                Toast.makeText(getApplicationContext(), myPermissions.getRationale(requestCode), Toast.LENGTH_LONG).show();
             }
         }
     }

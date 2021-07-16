@@ -72,8 +72,13 @@ public class MyPreference {
      *
      * @return A value corresponding to the number of times.
      */
-    public int getPhysicalActivityValue() {
-        return this.preferences.getInt("physical_activity", -1);
+    public int getValue(int code) {
+        if (code == 10) {
+            return this.preferences.getInt("physical_activity", -1);
+        } else if (code == 11) {
+            return this.preferences.getInt("location_permission", -1);
+        }
+        return -1;
     }
 
     /**
@@ -81,8 +86,12 @@ public class MyPreference {
      *
      * @param value The value to be updated.
      */
-    public void setPhysicalActivityValue(int value) {
-        this.preferences.edit().putInt("physical_activity", value).apply();
+    public void setValue(int code, int value) {
+        if (code == 10) {
+            this.preferences.edit().putInt("physical_activity", value).apply();
+        } else if (code == 11) {
+            this.preferences.edit().putInt("location_permission", value).apply();
+        }
     }
 
     /**

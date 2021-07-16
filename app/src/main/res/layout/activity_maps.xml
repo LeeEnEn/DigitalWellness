@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/distance_tracker_view">
+
+    <RelativeLayout
+        android:id="@+id/distance_progress_layout"
+        android:layout_width="match_parent"
+        android:layout_height="360dp" >
+
+        <ProgressBar
+            android:id="@+id/distance_progress"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:indeterminate="false"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/shape"
+            android:rotation="270"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/current_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/current_distance"
+            android:fontFamily="sans-serif-black"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/distance_covered"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif-black"
+            android:textSize="25sp"
+            android:layout_below="@+id/current_distance" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/meters"
+            android:layout_below="@id/distance_covered"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/show_maps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_maps"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/distance_progress_layout"
+        android:layout_marginTop="20dp"
+        android:textAllCaps="false"/>
+
+    <fragment
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        tools:context=".MapsActivity" />
+
+    <!-- Needs to be placed after fragment -->
+    <Spinner
+        android:id="@+id/map_spinner"
+        android:layout_width="125dp"
+        android:layout_height="45dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

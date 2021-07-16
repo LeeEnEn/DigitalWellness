@@ -27,4 +27,8 @@
     <string name="seven_days">7 days</string>
     <string name="all_time">All time</string>
     <string name="zero">0</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="current_distance">Current distance</string>
+    <string name="show_maps">View distance travelled \non Google Maps</string>
+    <string name="meters">meters</string>
 </resources>

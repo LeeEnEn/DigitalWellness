@@ -29,16 +29,19 @@ public class Splash extends Activity {
         MyPreference myPreference = new MyPreference(this, "permissions");
         MyPreference friendsPreference = new MyPreference(this, "friends");
 
-        // User is logged in.
-        if (firebase.isLoggedIn()) {
-            // Start screen time services.
-            if (myPreference.getScreenService()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(new Intent(Splash.this, ScreenTimeService.class));
-                } else {
-                    startService(new Intent(Splash.this, ScreenTimeService.class));
+        boolean networkAvailable = CheckNetwork.isInternetAvailable(this);
+
+        if (networkAvailable) {
+            // User is logged in.
+            if (firebase.isLoggedIn()) {
+                // Start screen time services.
+                if (myPreference.getScreenService()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(new Intent(Splash.this, ScreenTimeService.class));
+                    } else {
+                        startService(new Intent(Splash.this, ScreenTimeService.class));
+                    }
                 }
-            }
 
             /*Set<String> set = new HashSet<>();
             try {
@@ -51,14 +54,21 @@ public class Splash extends Activity {
 
             }*/
 
-            MyAlarms myAlarms = new MyAlarms(this);
-            myAlarms.startDailyUpdates();
-            // Fetch data, for graph creation.
-            firebase.getData(this, new Intent(this, MainActivity.class));
+                MyAlarms myAlarms = new MyAlarms(this);
+                myAlarms.startDailyUpdates();
+                // Fetch data, for graph creation.
+                firebase.getData(this, new Intent(this, MainActivity.class));
+            } else {
+                toStartMenu();
+            }
         } else {
-            // User is not logged in, send to login page.
-            Intent intent = new Intent(this, StartMenu.class);
-            startActivity(intent);
+            toStartMenu();
         }
+    }
+
+    private void toStartMenu() {
+        // User is not logged in, send to login page.
+        Intent intent = new Intent(this, StartMenu.class);
+        startActivity(intent);
     }
 }
