@@ -94,7 +94,7 @@ public class StepTracker extends AppCompatActivity {
 
         Button sevenDay = (Button) findViewById(R.id.step_seven_days);
         Button allTime = (Button) findViewById(R.id.step_all_time);
-
+stepProgress.setProgress(10000);
         sevenDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

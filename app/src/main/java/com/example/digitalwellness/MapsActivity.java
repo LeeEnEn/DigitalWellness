@@ -1,18 +1,24 @@
 package com.example.digitalwellness;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -59,24 +65,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private ActivityMapsBinding binding;
     private boolean toggleText = true;
-    private boolean toggleStart = true;
+    private boolean toggleStart = false;
     private boolean isMapFullScreen = false;
     private Button moreDetailsButton;
     private Button startTrackingButton;
     private CameraPosition cameraPosition;
     private EditText editText;
     private FusedLocationProviderClient fusedLocationClient;
+    private GoogleMap mMap;
     private Location lastKnownLocation;
     private Location mLocation;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
+    private Polyline polyline;
     private PolylineOptions polylineOptions;
     private SupportMapFragment mapFragment;
     private Spinner spinner;
     private TextView distanceCovered;
-
-    private static GoogleMap mMap;
-    private static Polyline polyline;
 
     private long distance = 0L;
     private long userDistanceInput = 0L;
@@ -109,12 +114,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        boolean isNetworkAvailable = CheckNetwork.isInternetAvailable(this);
-
-        if (!isNetworkAvailable) {
-
-        }
 
         // Initialize variables.
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -193,8 +192,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         mLocation = location;
                         if (distance == userDistanceInput) {
                             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                            long[] pattern = {0, 500, 500};
-                            vibrator.vibrate(pattern, -1);
+                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                            Toast.makeText(getApplicationContext(),
+                                    "Congratulations! You have reached your target of " + userDistanceInput
+                                            + " meters!", Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -225,49 +226,54 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 if (toggleText) {
-                    String userInput = editText.getText().toString();
-                    // Check if there is a valid input.
-                    if (!userInput.isEmpty()) {
-                        int validInt = Integer.parseInt(userInput);
+                    if (isGpsEnabled() && isNetworkAvailable()) {
+                        String userInput = editText.getText().toString();
+                        // Check if there is a valid input.
+                        if (!userInput.isEmpty()) {
+                            int validInt = Integer.parseInt(userInput);
 
-                        if (validInt != 0) {
-                            userDistanceInput = validInt;
-                            // Hide edit text view.
-                            editText.setVisibility(View.GONE);
-                            // Show maps button.
-                            moreDetailsButton.setVisibility(View.VISIBLE);
-                            // Change button text.
-                            startTrackingButton.setText(R.string.stop);
-                            // Change values to fit user's input.
-                            progressBar.setMax(validInt);
-                            progressBar.setProgress(0);
-                            distance = 0L;
-                            distanceCovered.setText(String.valueOf(distance));
+                            if (validInt != 0) {
+                                getCurrentLocation();
+                                userDistanceInput = validInt;
+                                // Hide edit text view.
+                                editText.setVisibility(View.GONE);
+                                // Show maps button.
+                                moreDetailsButton.setVisibility(View.VISIBLE);
+                                // Change button text.
+                                startTrackingButton.setText(R.string.stop);
+                                // Change values to fit user's input.
+                                progressBar.setMax(validInt);
+                                progressBar.setProgress(0);
+                                distance = 0L;
+                                distanceCovered.setText(String.valueOf(distance));
 
-                            // Remove markings on map.
-                            mMap.clear();
-                            polyline.remove();
-                            coordinates.clear();
+                                // Remove markings on map.
+                                mMap.clear();
+                                if (polyline != null) {
+                                    polyline.remove();
+                                }
+                                coordinates.clear();
 
-                            toggleStart = true;
-                            toggleText = !toggleText;
-
-                            getCurrentLocation();
+                                toggleStart = true;
+                                toggleText = !toggleText;
+                                hideKeyboard(MapsActivity.this, editText);
+                                getCurrentLocation();
+                            } else {
+                                Toast.makeText(getApplicationContext(),
+                                        "There is no target distance or \ndistance is zero!",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         } else {
                             Toast.makeText(getApplicationContext(),
                                     "There is no target distance or \ndistance is zero!",
                                     Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(),
-                                "There is no target distance or \ndistance is zero!",
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.enable_location_network, Toast.LENGTH_LONG).show();
                     }
                 } else {
                     // Show edit text view.
                     editText.setVisibility(View.VISIBLE);
-                    // Hide maps button.
-//                    moreDetailsButton.setVisibility(View.GONE);
                     // Change button text.
                     startTrackingButton.setText(R.string.start);
                     toggleStart = false;
@@ -336,6 +342,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return super.onOptionsItemSelected(item);
     }
 
+    // Brings user back to activity if map is in full screen.
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (isMapFullScreen) {
+                changeView();
+            } else {
+                return super.onKeyDown(keyCode, event);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the given location is of the same lat and long. Returns true if it is the same,
+     * false otherwise.
+     * @param object The location to be compared with.
+     * @return A boolean corresponding to the result.
+     */
     @Override
     public boolean equals(Object object) {
         if (object instanceof LatLng) {
@@ -351,6 +376,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onDestroy();
     }
 
+    /**
+     * Maximizes and minimizes the Google Maps window, as well as changing visibility of certain
+     * views.
+     */
     private void changeView() {
         // Remove map and spinner from view.
         mapFragment.getView().setVisibility(View.GONE);
@@ -366,9 +395,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * location will be set in Singapore.
      */
     private void getCurrentLocation() {
-        boolean isNetworkAvailable = CheckNetwork.isInternetAvailable(MapsActivity.this);
-
-        if (isNetworkAvailable) {
+        if (isNetworkAvailable()) {
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
@@ -450,5 +477,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         fusedLocationClient.requestLocationUpdates(locationRequest,
                 locationCallback,
                 Looper.getMainLooper());
+    }
+
+    private boolean isNetworkAvailable() {
+        return CheckNetwork.isInternetAvailable(this);
+    }
+
+    private boolean isGpsEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public void hideKeyboard(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

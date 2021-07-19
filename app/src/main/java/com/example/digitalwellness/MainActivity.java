@@ -61,25 +61,24 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout mDrawerLayout;
+
     private ActionBarDrawerToggle mToggle;
-    private NavigationView navView;
-    private int keyCount = 0;
-    private MyPermissions myPermissions;
-    private MyPreference myPreference;
+    private ArrayList<MyModel> modeArrayList;
+    private ActionBar actionBar;
+    private CardView stepTracker;
+    private DrawerLayout mDrawerLayout;
     private FirebaseHelper firebaseHelper;
-    private TextView userdisplay;
     private ImageView profileButton, userPic;
     private MyAlarms myAlarms;
-    private ActionBar actionBar;
+    private MyAdapter myAdapter;
+    private MyPermissions myPermissions;
+    private MyPreference myPreference;
+    private NavigationView navView;
     private String url;
-
+    private TextView userdisplay;
     private ViewPager viewPager;
 
-    private ArrayList<MyModel> modeArrayList;
-
-    private MyAdapter myAdapter;
-
+    private int keyCount = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        CardView stepTracker = (CardView) findViewById(R.id.stepsTracker);
+        stepTracker = (CardView) findViewById(R.id.stepsTracker);
         CardView screenTracker = (CardView) findViewById(R.id.screenTracker);
         CardView distanceTracker = (CardView) findViewById(R.id.distanceTracker);
 
@@ -232,31 +231,14 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getActivityRecognition());
-
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        MainActivity.this, stepTracker, stepTracker.getTransitionName());
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
-                    myPermissions.requestPermission(1001);
-                } else {
-                    Intent intent = new Intent(MainActivity.this, StepTracker.class);
-                    startActivity(intent, options.toBundle());
-                }
+                checkStepPermission();
             }
         });
 
         distanceTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getLocationPermission());
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
-                    myPermissions.requestPermission(1002);
-                } else {
-                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                    startActivity(intent);
-                }
+                checkDistancePermission();
             }
         });
 
@@ -265,8 +247,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if(id == R.id.stepDrawer) {
-                    Intent i = new Intent(MainActivity.this, StepTracker.class);
-                    startActivity(i);
+                    checkStepPermission();
                 } else if(id == R.id.screenDrawer) {
                     Intent i = new Intent(MainActivity.this, ScreenTimeTracker.class);
                     startActivity(i);
@@ -292,6 +273,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, FocusMode.class));
                 } else if (id == R.id.profile_image) {
                     startActivity(new Intent(MainActivity.this, UserProfile.class));
+                } else if (id == R.id.distance_tracker) {
+                    checkDistancePermission();
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -479,5 +462,28 @@ public class MainActivity extends AppCompatActivity {
         usersdRef.addListenerForSingleValueEvent(eventListener);
     }
 
+    private void checkStepPermission() {
+        int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getActivityRecognition());
 
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                MainActivity.this, stepTracker, stepTracker.getTransitionName());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
+            myPermissions.requestPermission(1001);
+        } else {
+            Intent intent = new Intent(MainActivity.this, StepTracker.class);
+            startActivity(intent, options.toBundle());
+        }
+    }
+
+    private void checkDistancePermission() {
+        int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getLocationPermission());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
+            myPermissions.requestPermission(1002);
+        } else {
+            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+            startActivity(intent);
+        }
+    }
 }
