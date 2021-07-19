@@ -1,5 +1,6 @@
 package com.example.digitalwellness;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentSender;
 import android.graphics.Color;
@@ -7,6 +8,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +43,7 @@ import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Cap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -53,22 +58,28 @@ import java.util.List;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private ActivityMapsBinding binding;
-    private boolean toggleScreenSize = true;
-    private Button moreDetails;
+    private boolean toggleText = true;
+    private boolean toggleStart = true;
+    private boolean isMapFullScreen = false;
+    private Button moreDetailsButton;
+    private Button startTrackingButton;
     private CameraPosition cameraPosition;
+    private EditText editText;
     private FusedLocationProviderClient fusedLocationClient;
-    private GoogleMap mMap;
     private Location lastKnownLocation;
     private Location mLocation;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private PolylineOptions polylineOptions;
-    private Polyline polyline;
     private SupportMapFragment mapFragment;
     private Spinner spinner;
     private TextView distanceCovered;
 
+    private static GoogleMap mMap;
+    private static Polyline polyline;
+
     private long distance = 0L;
+    private long userDistanceInput = 0L;
 
     private final LatLng DEFAULT_LOCATION = new LatLng(1.3521, 103.8198);
     private LatLng mCurrentLocation;
@@ -79,7 +90,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private final String DEFAULT_MARKER_TITLE = "Singapore";
     private final String CURRENT_POSITION_TITLE = "You are here!";
-    private final String STARTING_POSITION_TITLE = "Start";
+    private final String STARTING_POSITION_TITLE = "Starting location";
     private final String[] options = {"Normal", "Satellite", "Terrain"};
 
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -99,11 +110,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        boolean isNetworkAvailable = CheckNetwork.isInternetAvailable(this);
+
+        if (!isNetworkAvailable) {
+
+        }
+
         // Initialize variables.
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        polylineOptions = new PolylineOptions().width(10).color(Color.BLUE);
-        moreDetails = (Button) findViewById(R.id.show_maps);
+        moreDetailsButton = (Button) findViewById(R.id.show_maps);
+        startTrackingButton = (Button) findViewById(R.id.distance_start);
         distanceCovered = (TextView) findViewById(R.id.distance_covered);
+        editText = (EditText) findViewById(R.id.distance_edit_text);
+
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.distance_progress);
 
         // Display back button.
         ActionBar actionBar = getSupportActionBar();
@@ -141,9 +161,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         spinner.setAdapter(adapter);
         spinner.setVisibility(View.GONE);
 
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.distance_progress);
-
-
         // Get user's location every few seconds.
         locationCallback = new LocationCallback() {
             @Override
@@ -155,14 +172,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // Update UI with location data
                     // ...
                     mCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    if (!mTemp.equals(mCurrentLocation)) {
+                    if (!mTemp.equals(mCurrentLocation) && toggleStart) {
                         mMap.clear();
                         mMap.addMarker(new MarkerOptions().position(mStartingLocation).title(STARTING_POSITION_TITLE));
                         mMap.addMarker(new MarkerOptions().position(mCurrentLocation).title(CURRENT_POSITION_TITLE));
                         coordinates.add(mCurrentLocation);
                         // Redraw line whenever there's a change in location.
-                        polyline.remove();
-                        polyline = mMap.addPolyline(polylineOptions.addAll(coordinates));
+                        coordinates.add(mCurrentLocation);
+                        polyline = mMap.addPolyline(new PolylineOptions()
+                                .width(10)
+                                .color(Color.BLUE)
+                                .addAll(coordinates));
                         distance += mLocation.distanceTo(location);
                         // Update text.
                         distanceCovered.setText(String.valueOf(distance));
@@ -171,6 +191,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // Set temp to current location.
                         mTemp = mCurrentLocation;
                         mLocation = location;
+                        if (distance == userDistanceInput) {
+                            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            long[] pattern = {0, 500, 500};
+                            vibrator.vibrate(pattern, -1);
+                        }
                     }
                 }
             }
@@ -182,14 +207,72 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         mapFragment.getView().setVisibility(View.GONE);
 
-        moreDetails.setOnClickListener(new View.OnClickListener() {
+        moreDetailsButton.setVisibility(View.GONE);
+        moreDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Set map and spinner to be visible.
                 mapFragment.getView().setVisibility(View.VISIBLE);
                 spinner.setVisibility(View.VISIBLE);
                 Toast.makeText(getApplicationContext(), "Tap once to minimize the map.", Toast.LENGTH_LONG).show();
-                moreDetails.setVisibility(View.GONE);
+                moreDetailsButton.setVisibility(View.GONE);
+                startTrackingButton.setVisibility(View.GONE);
+                isMapFullScreen = true;
+            }
+        });
+
+        startTrackingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (toggleText) {
+                    String userInput = editText.getText().toString();
+                    // Check if there is a valid input.
+                    if (!userInput.isEmpty()) {
+                        int validInt = Integer.parseInt(userInput);
+
+                        if (validInt != 0) {
+                            userDistanceInput = validInt;
+                            // Hide edit text view.
+                            editText.setVisibility(View.GONE);
+                            // Show maps button.
+                            moreDetailsButton.setVisibility(View.VISIBLE);
+                            // Change button text.
+                            startTrackingButton.setText(R.string.stop);
+                            // Change values to fit user's input.
+                            progressBar.setMax(validInt);
+                            progressBar.setProgress(0);
+                            distance = 0L;
+                            distanceCovered.setText(String.valueOf(distance));
+
+                            // Remove markings on map.
+                            mMap.clear();
+                            polyline.remove();
+                            coordinates.clear();
+
+                            toggleStart = true;
+                            toggleText = !toggleText;
+
+                            getCurrentLocation();
+                        } else {
+                            Toast.makeText(getApplicationContext(),
+                                    "There is no target distance or \ndistance is zero!",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(),
+                                "There is no target distance or \ndistance is zero!",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    // Show edit text view.
+                    editText.setVisibility(View.VISIBLE);
+                    // Hide maps button.
+//                    moreDetailsButton.setVisibility(View.GONE);
+                    // Change button text.
+                    startTrackingButton.setText(R.string.start);
+                    toggleStart = false;
+                    toggleText = !toggleText;
+                }
             }
         });
     }
@@ -215,11 +298,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                ViewGroup.LayoutParams params = mapFragment.getView().getLayoutParams();
 //                mapFragment.getView().setLayoutParams(params);
 
-                // Remove map and spinner from view.
-                mapFragment.getView().setVisibility(View.GONE);
-                spinner.setVisibility(View.GONE);
-                // Add button back to view.
-                moreDetails.setVisibility(View.VISIBLE);
+                changeView();
             }
         });
 
@@ -247,9 +326,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            (new Handler()).postDelayed(this::finish, 500);
-
+            if (isMapFullScreen) {
+                changeView();
+            } else {
+                onBackPressed();
+                (new Handler()).postDelayed(this::finish, 500);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -269,6 +351,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onDestroy();
     }
 
+    private void changeView() {
+        // Remove map and spinner from view.
+        mapFragment.getView().setVisibility(View.GONE);
+        spinner.setVisibility(View.GONE);
+        // Add button back to view.
+        moreDetailsButton.setVisibility(View.VISIBLE);
+        startTrackingButton.setVisibility(View.VISIBLE);
+        isMapFullScreen = false;
+    }
+
     /**
      * Get user's current location if internet connection is available. Otherwise a default
      * location will be set in Singapore.
@@ -277,18 +369,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         boolean isNetworkAvailable = CheckNetwork.isInternetAvailable(MapsActivity.this);
 
         if (isNetworkAvailable) {
-            System.out.println("network available");
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    mStartingLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    mTemp = new LatLng(location.getLatitude(), location.getLongitude());
-                    mLocation = location;
-                    setMarker(mStartingLocation, CURRENT_POSITION_TITLE);
+                    if (location != null) {
+                        mStartingLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        mTemp = new LatLng(location.getLatitude(), location.getLongitude());
+                        mLocation = location;
+                        setMarker(mStartingLocation, CURRENT_POSITION_TITLE);
 
-                    coordinates.add(mStartingLocation);
-                    polylineOptions.addAll(coordinates);
-                    polyline = mMap.addPolyline(polylineOptions);
+                        coordinates.add(mStartingLocation);
+                        polylineOptions = new PolylineOptions().width(10).color(Color.BLUE).addAll(coordinates);
+                        polyline = mMap.addPolyline(polylineOptions);
+                    }
+
                 }
             });
         } else {
