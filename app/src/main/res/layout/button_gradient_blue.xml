@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:viewBindingIgnore="true">
     <corners android:radius="24dp" />
-    <solid android:color="#F00" />
+    <gradient
+        android:startColor="#99C2FF"
+        android:endColor="#3385FF"
+        android:centerColor="#4D94FF"
+        android:angle="360" />
     <size android:height="8dp" android:width="8dp" />
 </shape>

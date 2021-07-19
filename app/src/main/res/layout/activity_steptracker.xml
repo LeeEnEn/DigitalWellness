@@ -18,7 +18,7 @@
             android:layout_height="300dp"
             android:indeterminate="false"
             style="?android:attr/progressBarStyleHorizontal"
-            android:progressDrawable="@drawable/shape"
+            android:progressDrawable="@drawable/progress_bar_blue"
             android:rotation="270"
             android:layout_centerInParent="true"/>
 
@@ -64,21 +64,26 @@
     <LinearLayout
         android:id="@+id/step_button_panel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_centerInParent="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp" >
 
         <Button
             android:id="@+id/step_seven_days"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="@layout/button_gradient_blue"
+            android:layout_marginRight="10dp"
             android:text="@string/seven_days" />
 
         <Button
             android:id="@+id/step_all_time"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="@layout/button_gradient_blue"
+            android:layout_marginLeft="10dp"
             android:text="@string/all_time" />
 
     </LinearLayout>
