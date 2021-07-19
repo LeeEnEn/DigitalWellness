@@ -171,6 +171,7 @@ public class MyPreference {
             Calendar calendar = Calendar.getInstance();
             int day = calendar.get(Calendar.DAY_OF_WEEK);
             this.preferences.edit().putBoolean(String.valueOf(day), true).apply();
+            this.preferences.edit().putBoolean("Yesterday", true).apply();
         }
     }
 
