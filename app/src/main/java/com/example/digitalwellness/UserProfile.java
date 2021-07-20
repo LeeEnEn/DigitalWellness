@@ -42,7 +42,7 @@ public class UserProfile extends AppCompatActivity {
     private ImageView profileImage, changeImage;
     private FirebaseHelper firebaseHelper;
     private String url;
-    private TextView profileScreen;
+    private TextView profileScreen, numofFriends;
     private Uri imageUri;
 
     private static final int IMAGE_REQUEST = 2;
@@ -58,9 +58,11 @@ public class UserProfile extends AppCompatActivity {
         profileScreen = findViewById(R.id.profilescreen);
         firebaseHelper = new FirebaseHelper();
         changeImage = findViewById(R.id.changePicture);
+        numofFriends = (TextView) findViewById(R.id.friendNumber);
 
         getProfilePicture();
         loadData();
+        setFriendsNumber();
 
         changeImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,5 +213,31 @@ public class UserProfile extends AppCompatActivity {
                 }
             });
         }
+    }
+
+
+    private void setFriendsNumber() {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersdRef = rootRef.child("UsersDB").child(firebaseHelper.getUid()).child("friend");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int count = 0 ;
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                        count = count + 1;
+                    }
+
+                    numofFriends.setText(String.valueOf(count));
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        usersdRef.addListenerForSingleValueEvent(eventListener);
     }
 }

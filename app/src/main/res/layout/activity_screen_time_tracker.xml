@@ -1,81 +1,192 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScreenTimeTracker"
-    android:background="@drawable/background3"
+    tools:context=".UserProfile"
+    android:background="@drawable/background2"
+    android:orientation="vertical"
+    android:transitionName="shared_element_to_compose"
     android:id="@+id/screenLayout"
-    android:transitionName="shared_element_to_compose">
+    android:layout_gravity="center_horizontal">
 
-    <ProgressBar
-        android:id="@+id/progressBarToday"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="433dp"
-        android:layout_height="618dp"
-        android:layout_centerInParent="true"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="70"
-        android:progressDrawable="@drawable/progress_bar_red"
-        android:rotation="270"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498" />
+<LinearLayout
+    android:paddingTop="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
 
-    <TextView
-        android:id="@+id/displayStatus"
-        android:layout_width="wrap_content"
+    <!-- Ranking-->
+    <androidx.cardview.widget.CardView
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-smallcaps"
-        android:text="77%"
-        android:textSize="70sp"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        android:padding="10dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="20dp">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9"
+                    android:fontFamily="@font/roboto_medium_numbers"
+                    android:padding="15dp"
+                    android:text="Today's Usage"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:src="@drawable/info"
+                    android:padding="5dp"
+                    android:id="@+id/screeninfo">
+                </ImageView>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="15dp"
+                        android:text="1h 30 mins"
+                        android:textSize="30sp"
+                        android:id="@+id/durationtext"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/roboto_medium_numbers"/>
+
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="170dp"
+                    android:layout_height="76dp"
+                    android:layout_weight="1"
+                    android:paddingBottom="10dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
+
+
+
+    <!-- Daily Updates-->
+<LinearLayout
+android:paddingTop="10dp"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:gravity="center">
+<androidx.cardview.widget.CardView
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="328dp"
-        android:text="You have reached"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="of your screen time limit"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.565" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/moreDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="More Details"
-        android:background="@layout/loginbuttons"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.89" />
+            <TextView
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:fontFamily="@font/roboto_medium_numbers"
+                android:padding="15dp"
+                android:text="Today's Usage"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:src="@drawable/settings"
+                android:padding="5dp"
+                android:id="@+id/screensetting">
+            </ImageView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ProgressBar
+                android:id="@+id/progressBarToday"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="70"
+                android:progressDrawable="@drawable/progress_bar_red"
+                android:rotation="270"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.498" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="77%"
+                android:id="@+id/displayStatus"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                android:paddingBottom="10dp"
+                android:fontFamily="@font/roboto_medium_numbers">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:id="@+id/warning"
+                android:fontFamily="@font/roboto_medium_numbers"
+                android:text="You have exceeded your target by 777%"
+                android:paddingBottom="10dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+</LinearLayout>
+</LinearLayout>

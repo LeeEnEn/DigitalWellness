@@ -1,9 +1,11 @@
 package com.example.digitalwellness;
 
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView userdisplay;
     private ViewPager viewPager;
 
+
     private int keyCount = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -144,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        checkNumberFriendRequest();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("MainNotification", "Screen Notifications", NotificationManager.IMPORTANCE_DEFAULT);
@@ -368,9 +372,8 @@ public class MainActivity extends AppCompatActivity {
             managerCompat.notify(1, builder.build());
         } else if (id == R.id.friends) {
             startActivity(new Intent(MainActivity.this, UserList.class));
-        } else if (id == R.id.requests) {
-            startActivity(new Intent(MainActivity.this, FriendList.class));
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -392,8 +395,8 @@ public class MainActivity extends AppCompatActivity {
         myPreference = new MyPreference(this, firebaseHelper.getUid());
 
         long currentScreenTime = myPreference.getScreenTime(firebaseHelper.getCurrentDate());
-        Toast.makeText(MainActivity.this, String.valueOf(currentScreenTime), Toast.LENGTH_SHORT).show();
-        int hours = (int) (currentScreenTime/3600);
+        //Toast.makeText(MainActivity.this, String.valueOf(currentScreenTime), Toast.LENGTH_SHORT).show();
+        int hours = (int) (currentScreenTime / 3600);
         int minutes = (int) (currentScreenTime - (hours * 3600)) / 60;
 
         modeArrayList = new ArrayList<>();
@@ -410,37 +413,16 @@ public class MainActivity extends AppCompatActivity {
                 "2/2",
                 R.drawable.decrease));
 
-
         //setup adapter
         myAdapter = new MyAdapter(this, modeArrayList);
         //set adapter to view pager
         viewPager.setAdapter(myAdapter);
         //set default padding from left right
-        viewPager.setPadding(50,0,50,0);
+        viewPager.setPadding(50, 0, 50, 0);
 
     }
 
-    private void refreshCards() {
-        long currentScreenTime = myPreference.getScreenTime(firebaseHelper.getCurrentDate());
-        Toast.makeText(MainActivity.this, String.valueOf(currentScreenTime), Toast.LENGTH_SHORT).show();
-        int hours = (int) (currentScreenTime/3600);
-        int minutes = (int) (currentScreenTime - (hours * 3600)) / 60;
-
-        modeArrayList.set(0, new MyModel("Screen Time",
-                hours + "h " + minutes + "mins",
-                "",
-                "1/2",
-                R.drawable.increase));
-
-        modeArrayList.set(1, new MyModel("Screen Time",
-                hours + "h " + minutes + "mins",
-                "",
-                "1/2",
-                R.drawable.increase));
-
-    }
-
-    public void getProfilePicture()  {
+    public void getProfilePicture() {
         ArrayList<String> nameList = new ArrayList<>();
 
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
@@ -488,4 +470,73 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+
+
+    private int checkNumberFriendRequest() {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersdRef = rootRef.child("Requests").child(firebaseHelper.getUid());
+        final int[] count = {0};
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                        count[0] = count[0] + 1;
+                    }
+                    userdisplay.setText("You have " + count[0] + " new friend requests");
+                    setFriendAlert(count[0]);
+
+                    userdisplay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(MainActivity.this, FriendList.class));
+                        }
+                    });
+
+                } else {
+
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+
+        usersdRef.addListenerForSingleValueEvent(eventListener);
+        return count[0];
+    }
+
+    private void setFriendAlert(int numofFriends) {
+        AlertDialog.Builder builder
+                = new AlertDialog
+                .Builder(MainActivity.this);
+        builder.setMessage("You have " + numofFriends + " friend requests");
+        builder.setTitle("Friend Request Received");
+        builder.setPositiveButton(
+                "View Requests", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,
+                                        int which)
+                    {
+                        startActivity(new Intent(MainActivity.this, FriendList.class));
+                    }
+                });
+
+        builder.setNegativeButton("Ignore", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog,
+                                int which)
+            {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+
+            // Show the Alert Dialog box
+        alertDialog.show();
+
+
+    }
+
 }

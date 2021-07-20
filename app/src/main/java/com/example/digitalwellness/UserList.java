@@ -9,11 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.common.reflect.TypeToken;
@@ -30,12 +34,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class UserList extends AppCompatActivity implements recyclerAdapter.OnNoteListener{
+public class UserList extends AppCompatActivity implements recyclerAdapter.OnNoteListener, AdapterView.OnItemSelectedListener{
 
     private ArrayList<User> usersList;
     private ArrayList<String> friendList;
+    private ArrayList<User> friendAL;
+    private ArrayList<User> nonfriendAL;
     private RecyclerView recyclerView;
     private FirebaseHelper firebaseHelper;
+    private Spinner spinner;
+    private ImageView friendRequestButton;
+    String[] options = {"All", "Friends", "Not Friends"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +58,31 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
         setContentView(R.layout.activity_user_list);
         friendList = new ArrayList<>();
         usersList = new ArrayList<>();
+        friendAL = new ArrayList<>();
+        nonfriendAL = new ArrayList<>();
         recyclerView = findViewById(R.id.userList);
         firebaseHelper = new FirebaseHelper();
+        spinner = (Spinner) findViewById(R.id.userspinner);
         getFriendStatus();
+        spinner.setOnItemSelectedListener(this);
+
+        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item, options);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        friendRequestButton = (ImageView) findViewById(R.id.friendrequest);
+        spinner.setAdapter(aa);
+        setFriendButton();
+
+        friendRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(UserList.this, "No request available", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
-    private void setAdapter() {
-        recyclerAdapter adapter = new recyclerAdapter(usersList, this);
+    private void setAdapter(ArrayList<User> e) {
+        recyclerAdapter adapter = new recyclerAdapter(e, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -87,7 +113,8 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
                     setUserInfo(name, email, url, uid, friendList.contains(uid));
                     Log.d("User ID", name + " " + email);
                 }
-                setAdapter();
+                setAdapter(usersList);
+                getFriendsAL();
 
             }
             @Override
@@ -119,6 +146,17 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
         return friendList;
     }
 
+    public void getFriendsAL() {
+        for (User user: usersList) {
+            if (user.isFriend()) {
+                friendAL.add(user);
+            } else {
+                nonfriendAL.add(user);
+            }
+        }
+
+    }
+
     public void buildAlert(String title, String message) {
         AlertDialog.Builder builder
                 = new AlertDialog
@@ -144,5 +182,56 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
     @Override
     public void onNoteCLick(int position) {
         //Toast.makeText(this, usersList.get(position).getUid(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if(position == 0) {
+            setAdapter(usersList);
+        } else if (position == 1) {
+            setAdapter(friendAL);
+        } else if (position == 2) {
+            setAdapter(nonfriendAL);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+
+    private void setFriendButton() {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersdRef = rootRef.child("Requests").child(firebaseHelper.getUid());
+        final int[] count = {0};
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    friendRequestButton.setImageResource(R.drawable.friendrequest);
+
+                    for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                        count[0] = count[0] + 1;
+                    }
+
+                    friendRequestButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(UserList.this, FriendList.class));
+                        }
+                    });
+
+                } else {
+
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+
+        usersdRef.addListenerForSingleValueEvent(eventListener);
     }
 }

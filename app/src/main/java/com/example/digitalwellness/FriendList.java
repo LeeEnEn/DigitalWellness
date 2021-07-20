@@ -2,6 +2,8 @@ package com.example.digitalwellness;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +24,7 @@ public class FriendList extends AppCompatActivity implements FriendsAdapter.OnNo
     private ArrayList<Friend> friendList;
     private RecyclerView recyclerView;
     private FirebaseHelper firebaseHelper;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,9 @@ public class FriendList extends AppCompatActivity implements FriendsAdapter.OnNo
         firebaseHelper = new FirebaseHelper();
 
         getAllUsersDetails();
+
+        spinner = (Spinner) findViewById(R.id.userspinner);
+        spinner.setVisibility(View.GONE);
 
     }
 
