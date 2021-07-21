@@ -82,4 +82,8 @@ public class StepTrackerService extends Service {
     public int getPreviousTotalSteps() {
         return sensorSteps;
     }
+
+    public void resetNSteps() {
+        nStep = 0;
+    }
 }

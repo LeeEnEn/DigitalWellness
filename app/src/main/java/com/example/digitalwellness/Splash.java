@@ -47,7 +47,7 @@ public class Splash extends Activity {
                 firebase.getData();
                 firebase.createStreakData(Splash.this);
                 Intent intent = new Intent(Splash.this, MainActivity.class);
-                firebase.createDelay(1500, Splash.this, intent);
+                firebase.createDelay(2500, Splash.this, intent);
             } else {
                 toStartMenu();
             }

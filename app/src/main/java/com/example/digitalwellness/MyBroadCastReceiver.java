@@ -39,10 +39,12 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
                 Intent serviceIntent = new Intent(context, StepTrackerService.class);
                 context.stopService(serviceIntent);
                 context.startService(serviceIntent);
+                stepService.resetNSteps();
             } else {
                 StepTracker stepTracker = new StepTracker();
                 steps = stepTracker.getSteps();
                 previousTotalSteps = stepTracker.getPreviousTotalSteps();
+                stepTracker.resetNStep();
             }
             update(steps, previousTotalSteps);
             // Restart alarm.

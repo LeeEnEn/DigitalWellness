@@ -421,7 +421,7 @@ public class FirebaseHelper {
     public void setIsUpdated(boolean bool) {
         isUpdated = bool;
         DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference("User")
+                .getReference("Users")
                 .child(uid)
                 .child("Streak");
 
@@ -436,6 +436,8 @@ public class FirebaseHelper {
             }
         }
         ytd = getCurrentDate();
+
+        streakCircles[getCurrentDay() - 1] = true;
 
         reference.child("isUpdated").setValue(bool);
         reference.child("StreakCount").setValue(streakCount);
