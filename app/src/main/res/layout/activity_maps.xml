@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/distance_tracker_view">
+    android:id="@+id/distance_tracker_view"
+    android:transitionName="shared_element_to_compose">
 
     <RelativeLayout
         android:id="@+id/distance_progress_layout"

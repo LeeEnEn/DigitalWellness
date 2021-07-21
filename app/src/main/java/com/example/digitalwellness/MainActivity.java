@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private String url;
     private TextView userdisplay;
     private ViewPager viewPager;
+    private CardView distanceTracker;
 
 
     private int keyCount = 0;
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         stepTracker = (CardView) findViewById(R.id.stepsTracker);
         CardView screenTracker = (CardView) findViewById(R.id.screenTracker);
-        CardView distanceTracker = (CardView) findViewById(R.id.distanceTracker);
+        distanceTracker = (CardView) findViewById(R.id.distanceTracker);
 
         userdisplay = (TextView) findViewById(R.id.textView5);
         firebaseHelper = new FirebaseHelper();
@@ -261,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.profile_image) {
                     startActivity(new Intent(MainActivity.this, UserProfile.class));
                 } else if (id == R.id.distance_tracker) {
-                    checkDistancePermission();
+                    //checkDistancePermission();
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -445,11 +446,13 @@ public class MainActivity extends AppCompatActivity {
     private void checkDistancePermission() {
         int permission = ContextCompat.checkSelfPermission(MainActivity.this, myPermissions.getLocationPermission());
 
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                MainActivity.this, distanceTracker, distanceTracker.getTransitionName());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && permission != PackageManager.PERMISSION_GRANTED) {
             myPermissions.requestPermission(1002);
         } else {
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-            startActivity(intent);
+            startActivity(intent, options.toBundle());
         }
     }
 

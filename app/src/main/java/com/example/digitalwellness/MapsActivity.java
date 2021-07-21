@@ -104,7 +104,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.distance_tracker_view);
+        transitionBuilder.applyTransition();
+
         super.onCreate(savedInstanceState);
+
+
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
