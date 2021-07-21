@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView userdisplay;
     private ViewPager viewPager;
     private CardView distanceTracker;
+    private CardView friendsCard;
 
 
     private int keyCount = 0;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         stepTracker = (CardView) findViewById(R.id.stepsTracker);
         CardView screenTracker = (CardView) findViewById(R.id.screenTracker);
         distanceTracker = (CardView) findViewById(R.id.distanceTracker);
+        friendsCard = (CardView) findViewById(R.id.friendscard);
 
         userdisplay = (TextView) findViewById(R.id.textView5);
         firebaseHelper = new FirebaseHelper();
@@ -166,6 +168,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        friendsCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        MainActivity.this, friendsCard, friendsCard.getTransitionName());
+
+                Intent intent = new Intent(MainActivity.this, UserList.class);
+                startActivity(intent, options.toBundle());
             }
         });
 
@@ -354,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
             managerCompat.notify(1, builder.build());
         } else if (id == R.id.friends) {
-            startActivity(new Intent(MainActivity.this, UserList.class));
+            startActivity(new Intent(MainActivity.this, FriendList.class));
         }
 
         return super.onOptionsItemSelected(item);

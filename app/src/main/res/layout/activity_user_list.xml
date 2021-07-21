@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UserList"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    android:transitionName="shared_element_to_compose"
+    android:id="@+id/userlistlayout">
 
     <LinearLayout
         android:id="@+id/linearLayout2"

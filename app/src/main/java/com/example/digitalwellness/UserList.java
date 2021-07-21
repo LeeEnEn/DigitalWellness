@@ -55,6 +55,10 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
         }
 
         super.onCreate(savedInstanceState);
+
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.userlistlayout);
+        transitionBuilder.applyTransition();
+
         setContentView(R.layout.activity_user_list);
         friendList = new ArrayList<>();
         usersList = new ArrayList<>();

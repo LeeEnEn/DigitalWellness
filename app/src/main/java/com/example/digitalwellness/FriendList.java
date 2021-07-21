@@ -29,6 +29,10 @@ public class FriendList extends AppCompatActivity implements FriendsAdapter.OnNo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        TransitionBuilder transitionBuilder = new TransitionBuilder(this, R.id.userlistlayout);
+        transitionBuilder.applyTransition();
+
         setContentView(R.layout.activity_user_list);
         firebaseHelper = new FirebaseHelper();
         friendList = new ArrayList<>();
