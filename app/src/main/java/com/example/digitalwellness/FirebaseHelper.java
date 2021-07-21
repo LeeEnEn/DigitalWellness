@@ -3,8 +3,8 @@ package com.example.digitalwellness;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,11 +46,19 @@ public class FirebaseHelper {
     private final int RANGE = 7;
 
     private static String[] axis = null;
-    private static ArrayList<BarEntry> steps;
-    private static ArrayList<BarEntry> screen;
+    private static String[] allTimeAxis = null;
+    private static ArrayList<BarEntry> sevenDaySteps;
+    private static ArrayList<BarEntry> sevenDayScreen;
+    private static ArrayList<BarEntry> allTimeSteps;
+    private static ArrayList<BarEntry> allTimeScreen;
 
     private static String uid;
     private static long stepCount;
+    private static long streakCount;
+    private static boolean[] streakCircles;
+    private static boolean isUpdated;
+    private static String ytd = null;
+
     /**
      * Public constructor.
      */
@@ -76,7 +84,7 @@ public class FirebaseHelper {
                             // Sign in success, update UI with the signed-in user's information
                             // ref.push().child(date.toString()).setValue("Account created under: " + email);
                             updateProfile(name, "Account created!", activity);
-                            createBasicData(activity);
+                            createDailyData();
                             createStreakData(activity);
                             uid = task.getResult().getUser().getUid();
                             setDetailsNoPicture(name, email);
@@ -91,34 +99,27 @@ public class FirebaseHelper {
                 });
     }
 
-    /**
-     * Create basic data when user first creates an account.
-     */
-    public void createBasicData(Context context) {
-        FirebaseHelper firebase = new FirebaseHelper();
-        DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference("Users")
-                .child(firebase.getUid())
-                .child(firebase.getCurrentDate());
-        reference.child("Steps").setValue(0);
-        reference.child("Screen").setValue(0);
-
-        // Reset streak when it is a Sunday
-        if (firebase.getCurrentDay() == 1) {
-            MyPreference myPreference = new MyPreference(context, "Streak");
-            for (int i = 1; i < 8; i++) {
-                myPreference.setStreak(String.valueOf(i), false);
-            }
-        }
-    }
-
     public void createDailyData() {
         String date = getCurrentDate();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users")
                 .child(uid)
+                .child("Data")
                 .child(date);
         reference.child(KEY_STEP).setValue(0);
         reference.child(KEY_SCREEN).setValue(0);
+
+        Calendar calendar = Calendar.getInstance();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(uid)
+                .child("Streak");
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            for (int i = 1; i < 8; i++) {
+                ref.child(String.valueOf(i)).setValue(false);
+            }
+        }
+        ref.child("isUpdated").setValue(false);
     }
 
 
@@ -168,17 +169,58 @@ public class FirebaseHelper {
         dataRef.setValue(uid);
     }
 
+    public void createDelay(int duration, Activity activity, Intent intent) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                activity.startActivity(intent);
+            }
+        }, duration);
+    }
 
     public void createStreakData(Context context) {
-        MyPreference myPreference = new MyPreference(context, "Streak");
-        if (!myPreference.isDataCreated()) {
-            for (int i = 1; i < 8; i++) {
-                myPreference.setStreak(String.valueOf(i), false);
-            }
-            myPreference.setStreak("Yesterday", false);
-            myPreference.dataCreated();
+        if (uid == null) {
+            uid = new FirebaseHelper().getUid();
         }
+
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(uid)
+                .child("Streak");
+
+        reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (!task.getResult().exists()) {
+                        reference.child("StreakCount").setValue(0);
+                        reference.child("Yesterday").setValue("");
+                        reference.child("isUpdated").setValue(false);
+                        streakCount = 0;
+                        isUpdated = false;
+                        streakCircles = new boolean[7];
+                        for (int i = 1; i < 8; i++) {
+                            reference.child(String.valueOf(i)).setValue(false);
+                            streakCircles[i - 1] = false;
+                        }
+                    } else {
+                        streakCount = (long) task.getResult().child("StreakCount").getValue();
+                        ytd = (String) task.getResult().child("Yesterday").getValue();
+                        isUpdated = (boolean) task.getResult().child("isUpdated").getValue();
+                        streakCircles = new boolean[7];
+                        for (int i = 1; i < 8; i++) {
+                            streakCircles[i - 1] = (boolean) task.getResult().child(String.valueOf(i)).getValue();
+                        }
+                    }
+
+                }
+                System.out.println("streak done");
+            }
+        });
     }
+
+
 
     /**
      * Returns an array of string which corresponds to the current day of the week.
@@ -186,33 +228,25 @@ public class FirebaseHelper {
      * @return An array of string which corresponds to the current day of the week.
      */
     public String[] getAxis() {
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        if (axis == null) {
+            Calendar calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-        switch (day) {
-            case Calendar.SUNDAY:
-                axis = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-                break;
-            case Calendar.MONDAY:
-                axis = new String[]{"Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon"};
-                break;
-            case Calendar.TUESDAY:
-                axis = new String[]{"Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"};
-                break;
-            case Calendar.WEDNESDAY:
-                axis = new String[]{"Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed"};
-                break;
-            case Calendar.THURSDAY:
-                axis = new String[]{"Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thu"};
-                break;
-            case Calendar.FRIDAY:
-                axis = new String[]{"Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"};
-                break;
-            case Calendar.SATURDAY:
-                axis = new String[]{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-                break;
+            axis = new String[7];
+
+            for (int i = 7; i > 0; i--) {
+                calendar.set(Calendar.DAY_OF_WEEK, (day + i) % 7);
+                axis[i - 1] = (calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+            }
         }
         return axis;
+    }
+
+    public String[] getAllTimeAxis() {
+        if (allTimeSteps.size() == sevenDaySteps.size()) {
+            return axis;
+        }
+        return allTimeAxis;
     }
 
 
@@ -254,13 +288,12 @@ public class FirebaseHelper {
 
     /**
      * Get data of the past seven days and store it in an array.
-     *
-     * @param activity Calling activity.
-     * @param intent The intent to be called after.
      */
-    public void getData(Activity activity, Intent intent) {
-        steps = new ArrayList<>();
-        screen = new ArrayList<>();
+    public void getData() {
+        sevenDaySteps = new ArrayList<>();
+        sevenDayScreen = new ArrayList<>();
+        allTimeSteps = new ArrayList<>();
+        allTimeScreen = new ArrayList<>();
 
         if (uid == null) {
             uid = new FirebaseHelper().getUid();
@@ -268,62 +301,147 @@ public class FirebaseHelper {
 
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Users")
-                .child(uid);
+                .child(uid)
+                .child("Data");
 
-        ref.limitToLast(7).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
                     DataSnapshot snapshot = task.getResult();
+                    int midPoint = 0;
+                    int lastPoint = 0;
+                    int totalEntries = (int) snapshot.getChildrenCount();
 
-                    long entriesToAdd = RANGE - snapshot.getChildrenCount();
+                    if (totalEntries > 7) {
+                        allTimeAxis = new String[totalEntries];
+                        if (totalEntries % 2 == 0) {
+                            if (totalEntries / 2 % 2 == 0) {
+                                midPoint = totalEntries / 2;
+                            } else {
+                                midPoint = totalEntries / 2 - 1;
+                            }
+                            lastPoint = totalEntries - 2;
+                        } else {
+                            midPoint = totalEntries / 2 + 1;
+                            lastPoint = totalEntries - 1;
+                        }
+                    } else {
+                        allTimeAxis = new String[7];
+                    }
+
+                    long entriesToAdd = RANGE - totalEntries;
                     int counter = 0;
+                    int entryNo = 0;
                     int i = 0;
                     int j = 0;
-
+                    // If there is less than 7 entries, add more.
                     while (entriesToAdd > 0) {
-                        steps.add(new BarEntry(i, 0));
-                        screen.add(new BarEntry(j, 0));
+                        sevenDaySteps.add(new BarEntry(j, 0));
+                        sevenDayScreen.add(new BarEntry(i, 0));
+                        allTimeSteps.add(new BarEntry(j, 0));
+                        allTimeScreen.add(new BarEntry(i, 0));
                         i++;
                         j++;
                         counter += 2;
                         entriesToAdd--;
                     }
+                    // If there is more than 7 entries.
+                    if (entriesToAdd < 0) {
+                        entriesToAdd = Math.abs(entriesToAdd) * 2;
+                    }
 
                     for (DataSnapshot snap: snapshot.getChildren()) {
                         for (DataSnapshot s: snap.getChildren()) {
-                            if (counter == 13) {
-                                stepCount = (long) s.getValue();
-                            }
                             if (counter % 2 == 0) {
-                                screen.add(new BarEntry(i, (Long) s.getValue()));
+                                if (counter >= entriesToAdd) {
+                                    sevenDayScreen.add(new BarEntry(i - (int) (entriesToAdd/2), (Long) s.getValue()));
+                                }
+                                allTimeScreen.add(new BarEntry(i, (Long) s.getValue()));
                                 i++;
                             } else {
-                                steps.add(new BarEntry(j, (Long) s.getValue()));
+                                if (counter >= entriesToAdd) {
+                                    sevenDaySteps.add(new BarEntry(j - (int) (entriesToAdd/2), (Long) s.getValue()));
+                                }
+                                allTimeSteps.add(new BarEntry(j, (Long) s.getValue()));
                                 j++;
                             }
                             counter++;
                         }
+                        if (entryNo == 0) {
+                            allTimeAxis[entryNo] = snap.getKey();
+                        } else if (entryNo == midPoint || entryNo == lastPoint) {
+                            allTimeAxis[entryNo] = snap.getKey();
+                        } else {
+                            allTimeAxis[entryNo] = "";
+                        }
+                        entryNo++;
                     }
-                    activity.startActivity(intent);
-                    System.out.println("data loaded");
                 }
             }
         });
     }
 
-    public ArrayList<BarEntry> getSteps() {
-        return steps;
+    public ArrayList<BarEntry> getSevenDaySteps() {
+        return sevenDaySteps;
     }
 
-    public ArrayList<BarEntry> getScreen() {
-        return screen;
+    public ArrayList<BarEntry> getSevenDayScreen() {
+        return sevenDayScreen;
+    }
+
+    public ArrayList<BarEntry> getAllTimeSteps() {
+        return allTimeSteps;
+    }
+
+    public ArrayList<BarEntry> getAllTimeScreen() {
+        return allTimeScreen;
     }
 
     public long getStepCount() {
         return stepCount;
     }
 
+    public boolean[] getStreakCircles() {
+        return streakCircles;
+    }
+
+    public long getStreakCount() {
+        return streakCount;
+    }
+
+    public String getYtd() {
+        return ytd;
+    }
+
+    public boolean isUpdated() {
+        return isUpdated;
+    }
+
+    public void setIsUpdated(boolean bool) {
+        isUpdated = bool;
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference("User")
+                .child(uid)
+                .child("Streak");
+
+
+        if (ytd == null) {
+            streakCount = 1;
+        } else {
+            if (ytd.equals(getPreviousDate())) {
+                streakCount++;
+            } else {
+                streakCount = 1;
+            }
+        }
+        ytd = getCurrentDate();
+
+        reference.child("isUpdated").setValue(bool);
+        reference.child("StreakCount").setValue(streakCount);
+        reference.child("Yesterday").setValue(ytd);
+        reference.child(String.valueOf(getCurrentDay())).setValue(true);
+    }
     /**
      * Returns a database reference corresponding to current user's step of the day.
      *
@@ -333,6 +451,7 @@ public class FirebaseHelper {
         return FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(uid)
+                .child("Data")
                 .child(date)
                 .child(KEY_STEP);
     }
@@ -344,6 +463,7 @@ public class FirebaseHelper {
         return FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(uid)
+                .child("Data")
                 .child(date)
                 .child(KEY_SCREEN);
     }
@@ -400,7 +520,9 @@ public class FirebaseHelper {
                             MyAlarms myAlarms = new MyAlarms(activity);
                             myAlarms.startDailyUpdates();
                             createStreakData(activity);
-                            getData(activity, new Intent(activity, MainActivity.class));
+                            getData();
+                            Intent intent = new Intent(activity, MainActivity.class);
+                            createDelay(1000, activity, intent);
                         } else {
                             Toast.makeText(activity, "Username and password does not match!", Toast.LENGTH_LONG).show();
                             // ref.push().child(date.toString()).setValue(username + " entered a wrong password ");
@@ -430,7 +552,6 @@ public class FirebaseHelper {
         } else {
             FirebaseHelper.name = name;
             createAccount(username, password, name, activity);
-
         }
     }
 
@@ -506,6 +627,7 @@ public class FirebaseHelper {
         FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(uid)
+                .child("Data")
                 .child(date)
                 .child(KEY_STEP)
                 .setValue(value);

@@ -1,6 +1,5 @@
 package com.example.digitalwellness;
 
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,15 +9,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +24,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.app.NotificationCompat;
@@ -36,28 +31,16 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
-import com.google.common.collect.Maps;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -288,22 +271,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadStreak() {
         ImageView[] array = new ImageView[7];
-        array[0] = findViewById(R.id.sunday_circle);
-        array[1] = findViewById(R.id.monday_circle);
-        array[2] = findViewById(R.id.tuesday_circle);
-        array[3] = findViewById(R.id.wednesday_circle);
-        array[4] = findViewById(R.id.thursday_circle);
-        array[5] = findViewById(R.id.friday_circle);
-        array[6] = findViewById(R.id.saturday_circle);
+        array[6] = findViewById(R.id.sunday_circle);
+        array[0] = findViewById(R.id.monday_circle);
+        array[1] = findViewById(R.id.tuesday_circle);
+        array[2] = findViewById(R.id.wednesday_circle);
+        array[3] = findViewById(R.id.thursday_circle);
+        array[4] = findViewById(R.id.friday_circle);
+        array[5] = findViewById(R.id.saturday_circle);
 
-        MyPreference myPreference = new MyPreference(this, "Streak");
-        for (int i = 1; i < 8; i++) {
-            if (myPreference.getStreak(String.valueOf(i))) {
-                array[i-1].setImageResource(R.drawable.filled_circle);
+        for (int i = 0; i < 7; i++) {
+            if (firebaseHelper.getStreakCircles()[i]) {
+                array[i].setImageResource(R.drawable.filled_circle);
             }
         }
         TextView textView = (TextView) findViewById(R.id.streak_value);
-        textView.setText(String.valueOf(myPreference.getStreakCount()));
+        textView.setText(String.valueOf(firebaseHelper.getStreakCount()));
     }
 
     @Override
@@ -535,8 +517,6 @@ public class MainActivity extends AppCompatActivity {
 
             // Show the Alert Dialog box
         alertDialog.show();
-
-
     }
 
 }

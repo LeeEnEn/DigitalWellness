@@ -1,9 +1,6 @@
 package com.example.digitalwellness;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -13,33 +10,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.github.mikephil.charting.charts.BarChart;
-import com.google.android.material.transition.platform.MaterialContainerTransform;
-
-import com.github.mikephil.charting.data.BarEntry;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.transition.platform.MaterialArcMotion;
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 
 public class StepTracker extends AppCompatActivity {
 
@@ -84,22 +62,19 @@ public class StepTracker extends AppCompatActivity {
         stepProgress.setProgress(step);
         stepView.setText(String.valueOf(nSteps));
 
-        System.out.println(stepCountDatabase + " db steps");
-        System.out.println(step + " final step");
-        System.out.println(stepCountPref + " local");
-
         // Plot chart.
         MyCharts myCharts = new MyCharts(this);
-        firebase.getSteps().get(6).setY(step);
-        myCharts.showStepGraph(firebase.getSteps(), firebase.getAxis());
+//        firebase.getSteps().get(6).setY(step);
+        myCharts.showStepGraph(firebase.getSevenDaySteps(), firebase.getAxis());
 
         Button sevenDay = (Button) findViewById(R.id.step_seven_days);
         Button allTime = (Button) findViewById(R.id.step_all_time);
-stepProgress.setProgress(10000);
+
         sevenDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // show 7 day chart
+                myCharts.showStepGraph(firebase.getSevenDaySteps(), firebase.getAxis());
             }
         });
 
@@ -107,6 +82,8 @@ stepProgress.setProgress(10000);
             @Override
             public void onClick(View v) {
                 // show all time chart
+                myCharts.showStepGraph(firebase.getAllTimeSteps(), firebase.getAllTimeAxis());
+
             }
         });
         // Start tracker.
@@ -128,8 +105,10 @@ stepProgress.setProgress(10000);
                 stepView.setText(String.valueOf(nSteps));
                 // Goal reached, update streak.
                 if (nSteps >= 10) {
-                    MyPreference streakPref = new MyPreference(StepTracker.this, "Streak");
-                    streakPref.updateStreak();
+                    FirebaseHelper firebase = new FirebaseHelper();
+                    if (!firebase.isUpdated()) {
+                        firebase.setIsUpdated(true);
+                    }
                 }
             }
 

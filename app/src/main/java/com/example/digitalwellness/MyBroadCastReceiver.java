@@ -4,11 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Calendar;
-
 public class MyBroadCastReceiver extends BroadcastReceiver {
 
     private Context context;
@@ -71,6 +66,8 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
 
         MyPreference streakPref = new MyPreference(context, "Streak");
         streakPref.setStreak("isUpdated", false);
+
+
 
         firebase.createDailyData();
     }

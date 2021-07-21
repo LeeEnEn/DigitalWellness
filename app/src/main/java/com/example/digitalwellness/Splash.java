@@ -4,19 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
-
-import com.google.gson.Gson;
-
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 
 public class Splash extends Activity {
@@ -57,7 +44,10 @@ public class Splash extends Activity {
                 MyAlarms myAlarms = new MyAlarms(this);
                 myAlarms.startDailyUpdates();
                 // Fetch data, for graph creation.
-                firebase.getData(this, new Intent(this, MainActivity.class));
+                firebase.getData();
+                firebase.createStreakData(Splash.this);
+                Intent intent = new Intent(Splash.this, MainActivity.class);
+                firebase.createDelay(1500, Splash.this, intent);
             } else {
                 toStartMenu();
             }

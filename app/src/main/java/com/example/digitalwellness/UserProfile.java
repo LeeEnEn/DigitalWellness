@@ -1,11 +1,5 @@
 package com.example.digitalwellness;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -20,6 +14,11 @@ import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,7 +77,7 @@ public class UserProfile extends AppCompatActivity {
             public void onClick(View view)
             {
                 String title = "How Leadership Is Calculated";
-                String message = "The leadership board is calculated based according to all the users in this application. The leadership board ranks" +
+                String message = "The leadership board is calculated based according to all the users in this application. The leadership board ranks " +
                         "users with the highest number of steps taken in each day";
                 buildAlert(title, message);
             }

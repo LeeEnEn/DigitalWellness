@@ -122,8 +122,10 @@ public class StartMenu extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(),"Welcome back, " + firebaseHelper.getUser().getDisplayName(),Toast. LENGTH_SHORT).show();
                 MyAlarms myAlarms = new MyAlarms(StartMenu.this);
                 myAlarms.startDailyUpdates();
+                firebaseHelper.getData();
+                firebaseHelper.createStreakData(StartMenu.this);
                 Intent intent = new Intent(StartMenu.this, MainActivity.class);
-                startActivity(intent);
+                firebaseHelper.createDelay(1000, StartMenu.this, intent);
             }
 
             @Override
@@ -248,7 +250,7 @@ public class StartMenu extends AppCompatActivity {
                             MyAlarms myAlarms = new MyAlarms(StartMenu.this);
                             myAlarms.startDailyUpdates();
                             firebaseHelper.updateProfile(user.getDisplayName(), "Account created!", StartMenu.this);
-                            firebaseHelper.createBasicData(StartMenu.this);
+                            firebaseHelper.createDailyData();
                             firebaseHelper.createStreakData(StartMenu.this);
                             Intent intent = new Intent(StartMenu.this, MainActivity.class);
                             startActivity(intent);

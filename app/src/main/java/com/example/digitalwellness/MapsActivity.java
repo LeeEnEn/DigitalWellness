@@ -227,13 +227,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 if (toggleText) {
                     if (isGpsEnabled() && isNetworkAvailable()) {
+                        getCurrentLocation();
                         String userInput = editText.getText().toString();
                         // Check if there is a valid input.
                         if (!userInput.isEmpty()) {
                             int validInt = Integer.parseInt(userInput);
 
                             if (validInt != 0) {
-                                getCurrentLocation();
+
                                 userDistanceInput = validInt;
                                 // Hide edit text view.
                                 editText.setVisibility(View.GONE);
@@ -257,7 +258,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 toggleStart = true;
                                 toggleText = !toggleText;
                                 hideKeyboard(MapsActivity.this, editText);
-                                getCurrentLocation();
+
                             } else {
                                 Toast.makeText(getApplicationContext(),
                                         "There is no target distance or \ndistance is zero!",
@@ -396,6 +397,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void getCurrentLocation() {
         if (isNetworkAvailable()) {
+            System.out.println("Getting location");
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
@@ -408,6 +410,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         coordinates.add(mStartingLocation);
                         polylineOptions = new PolylineOptions().width(10).color(Color.BLUE).addAll(coordinates);
                         polyline = mMap.addPolyline(polylineOptions);
+                    } else {
+                        setMarker(DEFAULT_LOCATION, DEFAULT_MARKER_TITLE);
                     }
 
                 }

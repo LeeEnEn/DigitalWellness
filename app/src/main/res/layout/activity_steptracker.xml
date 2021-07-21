@@ -68,7 +68,7 @@
         android:orientation="horizontal"
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="20dp" >
+        android:layout_marginTop="25dp" >
 
         <Button
             android:id="@+id/step_seven_days"
@@ -76,6 +76,7 @@
             android:layout_height="match_parent"
             android:background="@layout/button_gradient_blue"
             android:layout_marginRight="10dp"
+            android:textAllCaps="false"
             android:text="@string/seven_days" />
 
         <Button
@@ -84,6 +85,7 @@
             android:layout_height="match_parent"
             android:background="@layout/button_gradient_blue"
             android:layout_marginLeft="10dp"
+            android:textAllCaps="false"
             android:text="@string/all_time" />
 
     </LinearLayout>
