@@ -157,17 +157,19 @@ public class MainActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                System.out.println("page scrolled pos " + position);
+                System.out.println("page scrolled offset " + positionOffset);
+                System.out.println("page scrolled pixel " + positionOffsetPixels);
             }
 
             @Override
             public void onPageSelected(int position) {
-
+                System.out.println("page selected " + position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                System.out.println("page s s c " + state);
             }
         });
 
@@ -405,9 +407,17 @@ public class MainActivity extends AppCompatActivity {
                 "1/2",
                 R.drawable.increase));
 
+        int steps;
+
+        if (new MyPreference(MainActivity.this, "Service").getService()) {
+            steps = new StepTrackerService().getSteps();
+        } else {
+            steps = new StepTracker().getSteps();
+        }
+
         modeArrayList.add(new MyModel("Steps Taken Today",
-                String.valueOf(hours) + "h " + String.valueOf(minutes) + "mins",
-                "5% increament",
+                String.valueOf(steps) + " Steps",
+                "",
                 "2/2",
                 R.drawable.decrease));
 

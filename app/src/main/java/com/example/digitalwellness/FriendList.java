@@ -1,11 +1,15 @@
 package com.example.digitalwellness;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +38,11 @@ public class FriendList extends AppCompatActivity implements FriendsAdapter.OnNo
         transitionBuilder.applyTransition();
 
         setContentView(R.layout.activity_user_list);
+
+        // Display back button.
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         firebaseHelper = new FirebaseHelper();
         friendList = new ArrayList<>();
         recyclerView = findViewById(R.id.userList);
@@ -87,5 +96,16 @@ public class FriendList extends AppCompatActivity implements FriendsAdapter.OnNo
     @Override
     public void onNoteCLick(int position) {
 
+    }
+
+    // Enables back button to be usable. Brings user back one page.
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            (new Handler()).postDelayed(this::finish, 500);
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

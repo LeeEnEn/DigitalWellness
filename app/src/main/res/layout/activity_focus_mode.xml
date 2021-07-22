@@ -1,48 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/background3"
     android:id="@+id/focusLayout"
     android:transitionName="shared_element_to_compose">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background3">
-
         <TextView
             android:id="@+id/countdownclock"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0.4"
             android:text="Focus Mode\nExpire Time"
             android:textAlignment="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="150dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintBottom_toTopOf="@+id/fragment_createalarm_timePicker"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
             android:fontFamily="sans-serif-black"
             android:textSize="30sp"
             android:textColor="@android:color/white"/>
 
         <TimePicker
             android:id="@+id/fragment_createalarm_timePicker"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="208dp"
-            android:layout_weight="0.6"
-            android:timePickerMode="spinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:timePickerMode="spinner" />
 
         <Button
             android:id="@+id/fragment_createalarm_scheduleAlarm"
@@ -50,12 +33,7 @@
             android:layout_height="51dp"
             android:layout_gravity="center"
             android:layout_marginBottom="216dp"
-            android:background="@layout/loginbuttons"
-            android:text="Start Focus Mode"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_createalarm_timePicker"
-            app:layout_constraintVertical_bias="0.545" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:background="@layout/button_gradient_red"
+            android:text="Start Focus Mode"/>
+
 </LinearLayout>

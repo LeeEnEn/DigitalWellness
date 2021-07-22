@@ -383,6 +383,9 @@ public class FirebaseHelper {
                                 if (counter >= entriesToAdd) {
                                     sevenDaySteps.add(new BarEntry(j - (int) (entriesToAdd/2), (Long) s.getValue()));
                                 }
+                                if (j * 2 == totalEntries) {
+                                    stepCount = (Long) s.getValue();
+                                }
                                 allTimeSteps.add(new BarEntry(j, (Long) s.getValue()));
                                 j++;
                             }

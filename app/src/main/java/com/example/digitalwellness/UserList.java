@@ -1,6 +1,8 @@
 package com.example.digitalwellness;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,8 +13,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -64,6 +68,11 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
         transitionBuilder.applyTransition();
 
         setContentView(R.layout.activity_user_list);
+
+        // Display back button.
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         friendList = new ArrayList<>();
         usersList = new ArrayList<>();
         friendAL = new ArrayList<>();
@@ -273,5 +282,16 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
         };
 
         usersdRef.addListenerForSingleValueEvent(eventListener);
+    }
+
+    // Enables back button to be usable. Brings user back one page.
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            (new Handler()).postDelayed(this::finish, 500);
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
