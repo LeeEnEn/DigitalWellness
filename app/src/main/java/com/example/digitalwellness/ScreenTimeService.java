@@ -18,17 +18,30 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class ScreenTimeService extends Service {
 
     private BroadcastReceiver screenTimeBroadcastReceiver;
     private String NOTIFICATION_CHANNEL_ID = "1234";
     private String channelName = "STS";
+    private int NUM_OF_SECONDS_PER_DAY;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
         super.onCreate();
+
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        MyPreference myPreference = new MyPreference(this, firebaseHelper.getUid());
+
+        NUM_OF_SECONDS_PER_DAY = myPreference.getScreenLimit();
+        NUM_OF_SECONDS_PER_DAY = NUM_OF_SECONDS_PER_DAY * 60 * 60;
+
+        long currenttime = myPreference.getScreenTime(firebaseHelper.getCurrentDate());
+        long progress = (currenttime * 100) / NUM_OF_SECONDS_PER_DAY;
+
 
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "STS00";
@@ -62,7 +75,11 @@ public class ScreenTimeService extends Service {
             manager.createNotificationChannel(channel);
         }
 
-        buildNotification();
+        if (progress < 100) {
+            buildNotification();
+        } else {
+            buildWarningNotification();
+        }
 
     }
 
@@ -85,13 +102,24 @@ public class ScreenTimeService extends Service {
         return START_STICKY;
     }
 
-    public void buildNotification() {
+    public void buildWarningNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Screen Limit");
-        builder.setContentTitle("This is a notification");
-        builder.setContentText("This is a message");
-        builder.setSmallIcon(R.drawable.digitalwellnesslogo);
+        builder.setContentTitle("Screen Limit");
+        builder.setContentText("You have exceeded your screen usage timing. We strongly encourage you to take a break.");
+        builder.setSmallIcon(R.drawable.heart);
         builder.setAutoCancel(true);
 
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(ScreenTimeService.this);
+        managerCompat.notify(1, builder.build());
     }
+    public void buildNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Screen Limit");
+        builder.setContentTitle("Screen Limit");
+        builder.setContentText("Your screen usage is within your limits :)\nDo take a break once in awhile");
+        builder.setSmallIcon(R.drawable.heart);
+        builder.setAutoCancel(true);
 
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(ScreenTimeService.this);
+        managerCompat.notify(1, builder.build());
+    }
 }
