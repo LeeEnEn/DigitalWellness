@@ -41,7 +41,7 @@ public class UserProfile extends AppCompatActivity {
     private ImageView profileImage, changeImage;
     private FirebaseHelper firebaseHelper;
     private String url;
-    private TextView profileScreen, numofFriends;
+    private TextView profileScreen, numofFriends, profileName;
     private Uri imageUri;
 
     private static final int IMAGE_REQUEST = 2;
@@ -58,6 +58,8 @@ public class UserProfile extends AppCompatActivity {
         firebaseHelper = new FirebaseHelper();
         changeImage = findViewById(R.id.changePicture);
         numofFriends = (TextView) findViewById(R.id.friendNumber);
+        profileName = (TextView) findViewById(R.id.profileName);
+        profileName.setText(firebaseHelper.getUser().getDisplayName());
 
         getProfilePicture();
         loadData();

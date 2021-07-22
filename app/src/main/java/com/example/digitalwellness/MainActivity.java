@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private CardView distanceTracker;
     private CardView friendsCard;
-
+    private boolean FRIEND_REQUEST;
 
     private int keyCount = 0;
 
@@ -371,7 +371,12 @@ public class MainActivity extends AppCompatActivity {
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
             managerCompat.notify(1, builder.build());
         } else if (id == R.id.friends) {
-            startActivity(new Intent(MainActivity.this, FriendList.class));
+
+            if (!FRIEND_REQUEST) {
+                Toast.makeText(this, "No requests available", Toast.LENGTH_SHORT).show();
+            } else {
+                startActivity(new Intent(MainActivity.this, FriendList.class));
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -492,6 +497,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    FRIEND_REQUEST = true;
                     for(DataSnapshot ds : dataSnapshot.getChildren()) {
                         count[0] = count[0] + 1;
                     }
@@ -506,6 +512,10 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                 } else {
+
+                    FRIEND_REQUEST = false;
+
+
 
                 }
             }
