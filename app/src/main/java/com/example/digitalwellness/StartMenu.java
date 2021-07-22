@@ -125,7 +125,7 @@ public class StartMenu extends AppCompatActivity {
                 firebaseHelper.getData();
                 firebaseHelper.createStreakData(StartMenu.this);
                 Intent intent = new Intent(StartMenu.this, MainActivity.class);
-                firebaseHelper.createDelay(1000, StartMenu.this, intent);
+                firebaseHelper.createDelay(2500, StartMenu.this, intent);
             }
 
             @Override
@@ -253,7 +253,7 @@ public class StartMenu extends AppCompatActivity {
                             firebaseHelper.createDailyData();
                             firebaseHelper.createStreakData(StartMenu.this);
                             Intent intent = new Intent(StartMenu.this, MainActivity.class);
-                            startActivity(intent);
+                            firebaseHelper.createDelay(2500, StartMenu.this, intent);
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

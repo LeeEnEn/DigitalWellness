@@ -109,6 +109,9 @@ public class StepTracker extends AppCompatActivity {
                         firebase.setIsUpdated(true);
                     }
                 }
+                System.out.println(sensorSteps + " ss");
+                System.out.println(nSteps + " ns");
+                System.out.println(prevTotal + " prev");
             }
 
             @Override

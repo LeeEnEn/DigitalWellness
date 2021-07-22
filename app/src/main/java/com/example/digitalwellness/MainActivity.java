@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         array[5] = findViewById(R.id.saturday_circle);
 
         for (int i = 0; i < 7; i++) {
-            if (firebaseHelper.getStreakCircles()[i]) {
+            if (firebaseHelper.getStreakCircles(i)) {
                 array[i].setImageResource(R.drawable.filled_circle);
             }
         }

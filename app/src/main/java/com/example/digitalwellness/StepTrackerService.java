@@ -62,9 +62,14 @@ public class StepTrackerService extends Service {
                 nStep = sensorSteps + step - prevTotal;
 
                 if (nStep >= 10) {
-                    MyPreference streakPref = new MyPreference(StepTrackerService.this, "Streak");
-                    streakPref.updateStreak();
+                    FirebaseHelper firebase = new FirebaseHelper();
+                    if (!firebase.isUpdated()) {
+                        firebase.setIsUpdated(true);
+                    }
                 }
+                System.out.println(sensorSteps + " ss");
+                System.out.println(nStep + " ns");
+                System.out.println(prevTotal + " prev");
             }
 
             @Override

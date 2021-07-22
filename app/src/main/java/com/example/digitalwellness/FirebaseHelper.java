@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -200,17 +201,17 @@ public class FirebaseHelper {
                         streakCount = 0;
                         isUpdated = false;
                         streakCircles = new boolean[7];
-                        for (int i = 1; i < 8; i++) {
+                        for (int i = 0; i < 7; i++) {
                             reference.child(String.valueOf(i)).setValue(false);
-                            streakCircles[i - 1] = false;
+                            streakCircles[i] = false;
                         }
                     } else {
                         streakCount = (long) task.getResult().child("StreakCount").getValue();
                         ytd = (String) task.getResult().child("Yesterday").getValue();
                         isUpdated = (boolean) task.getResult().child("isUpdated").getValue();
                         streakCircles = new boolean[7];
-                        for (int i = 1; i < 8; i++) {
-                            streakCircles[i - 1] = (boolean) task.getResult().child(String.valueOf(i)).getValue();
+                        for (int i = 0; i < 7; i++) {
+                            streakCircles[i] = (boolean) task.getResult().child(String.valueOf(i)).getValue();
                         }
                     }
 
@@ -261,8 +262,8 @@ public class FirebaseHelper {
     }
 
     public int getCurrentDay() {
-        Calendar calendar = Calendar.getInstance();
-        return calendar.get(Calendar.DAY_OF_WEEK);
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        return calendar.get(Calendar.DAY_OF_WEEK) - 2;
     }
 
     /**
@@ -402,8 +403,8 @@ public class FirebaseHelper {
         return stepCount;
     }
 
-    public boolean[] getStreakCircles() {
-        return streakCircles;
+    public boolean getStreakCircles(int pos) {
+        return streakCircles[pos];
     }
 
     public long getStreakCount() {
@@ -425,7 +426,6 @@ public class FirebaseHelper {
                 .child(uid)
                 .child("Streak");
 
-
         if (ytd == null) {
             streakCount = 1;
         } else {
@@ -437,8 +437,7 @@ public class FirebaseHelper {
         }
         ytd = getCurrentDate();
 
-        streakCircles[getCurrentDay() - 1] = true;
-
+        streakCircles[getCurrentDay()] = true;
         reference.child("isUpdated").setValue(bool);
         reference.child("StreakCount").setValue(streakCount);
         reference.child("Yesterday").setValue(ytd);
@@ -524,10 +523,9 @@ public class FirebaseHelper {
                             createStreakData(activity);
                             getData();
                             Intent intent = new Intent(activity, MainActivity.class);
-                            createDelay(1000, activity, intent);
+                            createDelay(2500, activity, intent);
                         } else {
                             Toast.makeText(activity, "Username and password does not match!", Toast.LENGTH_LONG).show();
-                            // ref.push().child(date.toString()).setValue(username + " entered a wrong password ");
                         }
                     }
                 });

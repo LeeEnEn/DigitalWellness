@@ -107,7 +107,7 @@
 
                                 <LinearLayout
                                     android:id="@+id/sunday"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="40dp"
                                     android:layout_height="match_parent"
                                     android:orientation="vertical"
                                     android:layout_marginStart="5dp">
@@ -128,7 +128,7 @@
                                 </LinearLayout>
                                 <LinearLayout
                                     android:id="@+id/monday"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="40dp"
                                     android:layout_height="match_parent"
                                     android:orientation="vertical"
                                     android:layout_toEndOf="@+id/sunday">
@@ -149,7 +149,7 @@
                                 </LinearLayout>
                                 <LinearLayout
                                     android:id="@+id/tuesday"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="40dp"
                                     android:layout_height="match_parent"
                                     android:orientation="vertical"
                                     android:layout_toEndOf="@id/monday">
@@ -171,7 +171,7 @@
                                 </LinearLayout>
                                 <LinearLayout
                                     android:id="@+id/wednesday"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="40dp"
                                     android:layout_height="match_parent"
                                     android:orientation="vertical"
                                     android:layout_toEndOf="@+id/tuesday">
@@ -193,7 +193,7 @@
                                 </LinearLayout>
                                 <LinearLayout
                                     android:id="@+id/thursday"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="40dp"
                                     android:layout_height="match_parent"
                                     android:orientation="vertical"
                                     android:layout_toEndOf="@+id/wednesday">
@@ -215,7 +215,7 @@
                                 </LinearLayout>
                                 <LinearLayout
                                     android:id="@+id/friday"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="40dp"
                                     android:layout_height="match_parent"
                                     android:orientation="vertical"
                                     android:layout_toEndOf="@+id/thursday">
@@ -237,7 +237,7 @@
                                 </LinearLayout>
                                 <LinearLayout
                                     android:id="@+id/saturday"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="40dp"
                                     android:layout_height="match_parent"
                                     android:orientation="vertical"
                                     android:layout_toEndOf="@+id/friday">
