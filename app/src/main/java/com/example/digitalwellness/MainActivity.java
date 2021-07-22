@@ -256,7 +256,9 @@ public class MainActivity extends AppCompatActivity {
                     // Update steps when user logs out
                     StepTracker stepTracker = new StepTracker();
                     // Update to firebase.
+                    MyPreference screenPref = new MyPreference(MainActivity.this, firebaseHelper.getUid());
                     firebaseHelper.updateSteps(firebaseHelper.getCurrentDate(), stepTracker.getSteps());
+                    firebaseHelper.updateScreen(firebaseHelper.getCurrentDate(), screenPref.getScreenTime(firebaseHelper.getCurrentDate()));
                     // Update local database.
                     String key = firebaseHelper.getCurrentDate() + firebaseHelper.getUid();
                     MyPreference myPreference = new MyPreference(MainActivity.this, "Steps");

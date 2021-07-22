@@ -123,9 +123,8 @@ public class StartMenu extends AppCompatActivity {
                 MyAlarms myAlarms = new MyAlarms(StartMenu.this);
                 myAlarms.startDailyUpdates();
                 firebaseHelper.getData();
-                firebaseHelper.createStreakData(StartMenu.this);
                 Intent intent = new Intent(StartMenu.this, MainActivity.class);
-                firebaseHelper.createDelay(2500, StartMenu.this, intent);
+                firebaseHelper.createStreakData(StartMenu.this, intent);
             }
 
             @Override
@@ -251,9 +250,8 @@ public class StartMenu extends AppCompatActivity {
                             myAlarms.startDailyUpdates();
                             firebaseHelper.updateProfile(user.getDisplayName(), "Account created!", StartMenu.this);
                             firebaseHelper.createDailyData();
-                            firebaseHelper.createStreakData(StartMenu.this);
                             Intent intent = new Intent(StartMenu.this, MainActivity.class);
-                            firebaseHelper.createDelay(2500, StartMenu.this, intent);
+                            firebaseHelper.createStreakData(StartMenu.this, intent);
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

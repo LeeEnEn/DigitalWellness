@@ -85,11 +85,11 @@ public class FirebaseHelper {
                             // Sign in success, update UI with the signed-in user's information
                             // ref.push().child(date.toString()).setValue("Account created under: " + email);
                             updateProfile(name, "Account created!", activity);
-                            createDailyData();
-                            createStreakData(activity);
+                            createBasicData();
                             uid = task.getResult().getUser().getUid();
                             setDetailsNoPicture(name, email);
-                            activity.startActivity(new Intent(activity, Login.class));
+                            Intent intent = new Intent(activity, Login.class);
+                            createStreakData(activity, intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             // Log.w("Failure", "createUserWithEmail:failure", task.getException());
@@ -100,8 +100,27 @@ public class FirebaseHelper {
                 });
     }
 
+    private void createBasicData() {
+        String date = getCurrentDate();
+
+        if (uid == null) {
+            uid = new FirebaseHelper().getUid();
+        }
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("Data")
+                .child(date);
+        reference.child(KEY_STEP).setValue(0);
+        reference.child(KEY_SCREEN).setValue(0);
+    }
     public void createDailyData() {
         String date = getCurrentDate();
+
+        if (uid == null) {
+            uid = new FirebaseHelper().getUid();
+        }
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users")
                 .child(uid)
                 .child("Data")
@@ -115,12 +134,12 @@ public class FirebaseHelper {
                 .getReference("Users")
                 .child(uid)
                 .child("Streak");
+
         if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
             for (int i = 1; i < 8; i++) {
                 ref.child(String.valueOf(i)).setValue(false);
             }
         }
-        ref.child("isUpdated").setValue(false);
     }
 
 
@@ -180,7 +199,7 @@ public class FirebaseHelper {
         }, duration);
     }
 
-    public void createStreakData(Context context) {
+    public void createStreakData(Context context, Intent intent) {
         if (uid == null) {
             uid = new FirebaseHelper().getUid();
         }
@@ -214,7 +233,7 @@ public class FirebaseHelper {
                             streakCircles[i] = (boolean) task.getResult().child(String.valueOf(i)).getValue();
                         }
                     }
-
+                    context.startActivity(intent);
                 }
                 System.out.println("streak done");
             }
@@ -520,10 +539,9 @@ public class FirebaseHelper {
                             // ref.push().child(date.toString()).setValue(username + " has logged in.");
                             MyAlarms myAlarms = new MyAlarms(activity);
                             myAlarms.startDailyUpdates();
-                            createStreakData(activity);
                             getData();
                             Intent intent = new Intent(activity, MainActivity.class);
-                            createDelay(2500, activity, intent);
+                            createStreakData(activity, intent);
                         } else {
                             Toast.makeText(activity, "Username and password does not match!", Toast.LENGTH_LONG).show();
                         }

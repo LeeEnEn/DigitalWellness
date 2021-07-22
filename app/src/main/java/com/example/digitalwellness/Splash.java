@@ -45,9 +45,8 @@ public class Splash extends Activity {
                 myAlarms.startDailyUpdates();
                 // Fetch data, for graph creation.
                 firebase.getData();
-                firebase.createStreakData(Splash.this);
                 Intent intent = new Intent(Splash.this, MainActivity.class);
-                firebase.createDelay(2500, Splash.this, intent);
+                firebase.createStreakData(Splash.this, intent);
             } else {
                 toStartMenu();
             }
