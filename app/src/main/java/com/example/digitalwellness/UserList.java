@@ -207,6 +207,7 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
                 startActivity(mIntent);
             }
         } else if (MODE == 1) {
+            Toast.makeText(this, friendAL.get(position).getUid(), Toast.LENGTH_SHORT).show();
             mBundle.putString("name", friendAL.get(position).getUsername());
             mBundle.putString("uid", friendAL.get(position).getUid());
             mBundle.putString("url", friendAL.get(position).getUrl());

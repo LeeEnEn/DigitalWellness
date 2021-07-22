@@ -433,10 +433,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                url = dataSnapshot.getValue().toString();
-                Log.d("User ID", "profile:" + url);
-                Picasso.get().load(url).into(userPic);
-
+                if (dataSnapshot != null) {
+                    url = dataSnapshot.getValue().toString();
+                    Log.d("User ID", "profile:" + url);
+                    Picasso.get().load(url).into(userPic);
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}

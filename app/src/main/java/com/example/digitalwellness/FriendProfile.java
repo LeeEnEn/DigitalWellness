@@ -9,8 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -81,38 +84,47 @@ public class FriendProfile extends AppCompatActivity {
 
             }
         };
-
         usersdRef.addListenerForSingleValueEvent(eventListener);
     }
 
     private void setDataDisplay(String uid) {
+
+
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference usersdRef = rootRef.child("Users")
+        DatabaseReference usersdRef = rootRef
+                .child("Users")
                 .child(uid)
-                .child("Data");
+                .child("Data")
+                .child(firebaseHelper.getPreviousDate());
+
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int screen = 0;
-                int steps = 0;
-
-                if (dataSnapshot.exists()) {
-                    for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                        
+                long steps = 0 ;
+                long screen = 0 ;
+                if (dataSnapshot != null) {
+                    for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                        if (ds.getKey().equals("Screen")) {
+                            screen = (long) ds.getValue();
+                        } else if (ds.getKey().equals("Steps")) {
+                            steps = (long) ds.getValue();
+                        }
                     }
-                    profileScreen.setText(String.valueOf(screen));
-                    profileSteps.setText(String.valueOf(steps));
                 }
+
+                Log.e("testing", String.valueOf(screen) + String.valueOf(steps));
+
+                profileSteps.setText(steps + " steps");
+
+                int hours = (int) (screen / 3600);
+                int minutes = (int) (screen - (hours * 3600)) / 60;
+
+                profileScreen.setText(hours + "h " + minutes + "mins");
             }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         };
-
         usersdRef.addListenerForSingleValueEvent(eventListener);
-
     }
 
 }
