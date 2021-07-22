@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -45,6 +46,9 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
     private Spinner spinner;
     private ImageView friendRequestButton;
     String[] options = {"All", "Friends", "Not Friends"};
+    private int MODE = 0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +189,33 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
 
     @Override
     public void onNoteCLick(int position) {
+
+        Intent mIntent = new Intent(this, FriendProfile.class);
+        Bundle mBundle = new Bundle();
+        /*
+            Your method to enter the friend profile should be here.
+         */
+
+        if (MODE == 0) {
+            if (friendAL.contains(usersList.get(position))) {
+                //userList
+                Toast.makeText(this, usersList.get(position).getUid(), Toast.LENGTH_SHORT).show();
+                mBundle.putString("name", usersList.get(position).getUsername());
+                mBundle.putString("uid", usersList.get(position).getUid());
+                mBundle.putString("url", usersList.get(position).getUrl());
+                mIntent.putExtras(mBundle);
+                startActivity(mIntent);
+            }
+        } else if (MODE == 1) {
+            mBundle.putString("name", friendAL.get(position).getUsername());
+            mBundle.putString("uid", friendAL.get(position).getUid());
+            mBundle.putString("url", friendAL.get(position).getUrl());
+            mIntent.putExtras(mBundle);
+            startActivity(mIntent);
+        }
+
+
+
         //Toast.makeText(this, usersList.get(position).getUid(), Toast.LENGTH_SHORT).show();
     }
 
@@ -192,10 +223,14 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(position == 0) {
             setAdapter(usersList);
+            MODE = 0;
+
         } else if (position == 1) {
             setAdapter(friendAL);
+            MODE = 1;
         } else if (position == 2) {
             setAdapter(nonfriendAL);
+            MODE = 2;
         }
     }
 

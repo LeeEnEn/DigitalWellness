@@ -90,6 +90,7 @@
 
         <activity android:name=".FriendList"/>
 
+        <activity android:name=".FriendProfile"/>
         <receiver
             android:name=".MyBroadCastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
