@@ -66,6 +66,10 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
 
         if (usersList.get(position).isFriend()) {
             holder.friendStatus.setImageResource(R.drawable.friend);
+
+
+
+
         } else {
             holder.friendStatus.setImageResource(R.drawable.addfriend);
         }
@@ -85,6 +89,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
                             "https://st2.depositphotos.com/1009634/7235/v/600/depositphotos_72350117-stock-illustration-no-user-profile-picture-hand.jpg");
                 }
             });
+
         }
 
     }
