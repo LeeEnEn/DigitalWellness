@@ -164,43 +164,15 @@ public class MyPreference {
         this.preferences.edit().putBoolean("service", bool).apply();
     }
 
-    public void updateStreak() {
-        boolean isUpdated = this.preferences.getBoolean("isUpdated", false);
-        boolean ytd = this.preferences.getBoolean("Yesterday", false);
-
-        if (!isUpdated) {
-            int streakCount  = 0;
-            if (ytd) {
-                streakCount = this.preferences.getInt("streak_count", 0);
-            }
-            // Update streak count
-            this.preferences.edit().putInt("streak_count", ++streakCount).apply();
-            this.preferences.edit().putBoolean("isUpdated", true).apply();
-            // Update streak circles.
-            Calendar calendar = Calendar.getInstance();
-            int day = calendar.get(Calendar.DAY_OF_WEEK);
-            this.preferences.edit().putBoolean(String.valueOf(day), true).apply();
-            this.preferences.edit().putBoolean("Yesterday", true).apply();
-        }
-    }
-
-    public int getStreakCount() {
-        return this.preferences.getInt("streak_count", 0);
-    }
-
-    public boolean getStreak(String day) {
-        return this.preferences.getBoolean(day, false);
-    }
-
     public void setStreak(String day, boolean val) {
         this.preferences.edit().putBoolean(day, val).apply();
     }
 
-    public boolean isDataCreated() {
-        return this.preferences.getBoolean("isCreated", false);
+    public void setNSteps(int val) {
+        this.preferences.edit().putInt("nSteps", val).apply();
     }
 
-    public void dataCreated() {
-        this.preferences.edit().putBoolean("isCreated", true).apply();
+    public int getNSteps() {
+        return this.preferences.getInt("nSteps", 0);
     }
 }

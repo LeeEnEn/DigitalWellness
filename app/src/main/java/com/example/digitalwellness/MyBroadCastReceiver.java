@@ -65,6 +65,7 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
 
         MyPreference stepPref = new MyPreference(context, "Steps");
         stepPref.setPreviousTotalStepCount(prevTotalSteps);
+        stepPref.setNSteps(0);
 
         MyPreference streakPref = new MyPreference(context, "Streak");
         streakPref.setStreak("isUpdated", false);

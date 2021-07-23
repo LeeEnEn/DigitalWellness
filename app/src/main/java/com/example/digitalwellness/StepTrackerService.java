@@ -67,9 +67,7 @@ public class StepTrackerService extends Service {
                         firebase.setIsUpdated(true);
                     }
                 }
-                System.out.println(sensorSteps + " ss");
-                System.out.println(nStep + " ns");
-                System.out.println(prevTotal + " prev");
+                myPreference.setNSteps(nStep);
             }
 
             @Override

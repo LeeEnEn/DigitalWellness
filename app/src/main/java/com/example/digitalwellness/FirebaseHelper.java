@@ -54,8 +54,8 @@ public class FirebaseHelper {
     private static ArrayList<BarEntry> allTimeScreen;
 
     private static String uid;
-    private static long stepCount;
-    private static long streakCount;
+    private static long stepCount = 0;
+    private static long streakCount = 0;
     private static boolean[] streakCircles;
     private static boolean isUpdated;
     private static String ytd = null;
@@ -332,6 +332,7 @@ public class FirebaseHelper {
                     int midPoint = 0;
                     int lastPoint = 0;
                     int totalEntries = (int) snapshot.getChildrenCount();
+                    long entriesToAdd = RANGE - totalEntries;
 
                     if (totalEntries > 7) {
                         allTimeAxis = new String[totalEntries];
@@ -347,10 +348,10 @@ public class FirebaseHelper {
                             lastPoint = totalEntries - 1;
                         }
                     } else {
+                        totalEntries = RANGE;
                         allTimeAxis = new String[7];
                     }
 
-                    long entriesToAdd = RANGE - totalEntries;
                     int counter = 0;
                     int entryNo = 0;
                     int i = 0;
@@ -368,7 +369,7 @@ public class FirebaseHelper {
                     }
                     // If there is more than 7 entries.
                     if (entriesToAdd < 0) {
-                        entriesToAdd = Math.abs(entriesToAdd) * 2;
+                        entriesToAdd = Math.abs(entriesToAdd * 2);
                     }
 
                     for (DataSnapshot snap: snapshot.getChildren()) {
@@ -383,7 +384,7 @@ public class FirebaseHelper {
                                 if (counter >= entriesToAdd) {
                                     sevenDaySteps.add(new BarEntry(j - (int) (entriesToAdd/2), (Long) s.getValue()));
                                 }
-                                if (j * 2 == totalEntries) {
+                                if (j == totalEntries - 1) {
                                     stepCount = (Long) s.getValue();
                                 }
                                 allTimeSteps.add(new BarEntry(j, (Long) s.getValue()));

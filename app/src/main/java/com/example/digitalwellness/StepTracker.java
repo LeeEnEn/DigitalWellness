@@ -64,7 +64,7 @@ public class StepTracker extends AppCompatActivity {
 
         // Plot chart.
         MyCharts myCharts = new MyCharts(this);
-        firebase.getSevenDaySteps().get(6).setY(step);
+        firebase.getSevenDaySteps().get(6).setY(myPreference.getNSteps());
         myCharts.showStepGraph(firebase.getSevenDaySteps(), firebase.getAxis());
 
         Button sevenDay = (Button) findViewById(R.id.step_seven_days);
@@ -74,7 +74,7 @@ public class StepTracker extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // show 7 day chart
-                firebase.getSevenDaySteps().get(6).setY(step);
+                firebase.getSevenDaySteps().get(6).setY(nSteps);
                 myCharts.showStepGraph(firebase.getSevenDaySteps(), firebase.getAxis());
             }
         });
@@ -84,7 +84,7 @@ public class StepTracker extends AppCompatActivity {
             public void onClick(View v) {
                 // show all time chart
                 int size = firebase.getAllTimeSteps().size();
-                firebase.getSevenDaySteps().get(size - 1).setY(step);
+                firebase.getAllTimeSteps().get(size - 1).setY(nSteps);
                 myCharts.showStepGraph(firebase.getAllTimeSteps(), firebase.getAllTimeAxis());
             }
         });
@@ -97,6 +97,7 @@ public class StepTracker extends AppCompatActivity {
         SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         int prevTotal = myPreference.getPreviousTotalStepCount();
+
 
         SensorEventListener eventListener = new SensorEventListener() {
             @Override
@@ -112,9 +113,7 @@ public class StepTracker extends AppCompatActivity {
                         firebase.setIsUpdated(true);
                     }
                 }
-                System.out.println(sensorSteps + " ss");
-                System.out.println(nSteps + " ns");
-                System.out.println(prevTotal + " prev");
+                myPreference.setNSteps(nSteps);
             }
 
             @Override

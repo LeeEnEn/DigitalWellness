@@ -84,12 +84,13 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         stepTracker = (CardView) findViewById(R.id.stepsTracker);
         CardView screenTracker = (CardView) findViewById(R.id.screenTracker);
@@ -105,6 +106,11 @@ public class MainActivity extends AppCompatActivity {
         profileButton = findViewById(R.id.profileButton);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
+        MyPreference stepPref = new MyPreference(MainActivity.this, "Steps");
+
+        if (firebaseHelper.getStepCount() != 0) {
+            stepPref.setNSteps((int) firebaseHelper.getStepCount());
+        }
 
         /**
          * Setting Email and Name on Navigation View
@@ -217,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         screenTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -266,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
                     MyPreference myPreference = new MyPreference(MainActivity.this, "Steps");
                     myPreference.setCurrentStepCount(key, stepTracker.getSteps());
                     myPreference.setPreviousTotalStepCount(stepTracker.getPreviousTotalSteps());
+                    myPreference.setNSteps(0);
                     // Logs user out.
                     firebaseHelper.logoutUser();
                     // Send user back to start menu page
@@ -413,14 +419,7 @@ public class MainActivity extends AppCompatActivity {
                 "1/2",
                 R.drawable.increase));
 
-        int steps = new MyPreference(MainActivity.this, "Steps")
-                .getCurrentStepCount(firebaseHelper.getCurrentDate() + firebaseHelper.getUid());
-
-        if (new MyPreference(MainActivity.this, "Service").getService()) {
-            steps = Math.max(steps, new StepTrackerService().getSteps());
-        } else {
-            steps = Math.max(steps, new StepTracker().getSteps());
-        }
+        int steps = new MyPreference(MainActivity.this, "Steps").getNSteps();
 
         modeArrayList.add(new MyModel("Steps Taken Today",
                 String.valueOf(steps) + " Steps",
