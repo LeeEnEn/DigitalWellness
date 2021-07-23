@@ -103,7 +103,7 @@ public class StepTracker extends AppCompatActivity {
                 stepProgress.setProgress(nSteps);
                 stepView.setText(String.valueOf(nSteps));
                 // Goal reached, update streak.
-                if (nSteps >= 10) {
+                if (nSteps >= 100) {
                     FirebaseHelper firebase = new FirebaseHelper();
                     if (!firebase.isUpdated()) {
                         firebase.setIsUpdated(true);

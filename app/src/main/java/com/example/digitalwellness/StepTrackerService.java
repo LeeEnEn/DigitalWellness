@@ -61,7 +61,7 @@ public class StepTrackerService extends Service {
                 sensorSteps = (int) event.values[0];
                 nStep = sensorSteps + step - prevTotal;
 
-                if (nStep >= 10) {
+                if (nStep >= 100) {
                     FirebaseHelper firebase = new FirebaseHelper();
                     if (!firebase.isUpdated()) {
                         firebase.setIsUpdated(true);
