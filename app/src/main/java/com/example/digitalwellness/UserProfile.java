@@ -41,8 +41,9 @@ public class UserProfile extends AppCompatActivity {
     private ImageView profileImage, changeImage;
     private FirebaseHelper firebaseHelper;
     private String url;
-    private TextView profileScreen, numofFriends, profileName;
+    private TextView profileScreen, numofFriends, profileName, profileSteps;
     private Uri imageUri;
+    private MyPreference myPreference;
 
     private static final int IMAGE_REQUEST = 2;
 
@@ -60,10 +61,21 @@ public class UserProfile extends AppCompatActivity {
         numofFriends = (TextView) findViewById(R.id.friendNumber);
         profileName = (TextView) findViewById(R.id.profileName);
         profileName.setText(firebaseHelper.getUser().getDisplayName());
-
+        profileSteps = (TextView) findViewById(R.id.profilesteps);
         getProfilePicture();
         loadData();
         setFriendsNumber();
+
+        int steps = new MyPreference(UserProfile.this, "Steps")
+                .getCurrentStepCount(firebaseHelper.getCurrentDate() + firebaseHelper.getUid());
+
+        if (new MyPreference(UserProfile.this, "Service").getService()) {
+            steps = Math.max(steps, new StepTrackerService().getSteps());
+        } else {
+            steps = Math.max(steps, new StepTracker().getSteps());
+        }
+
+        profileSteps.setText(String.valueOf(steps) + " steps");
 
         changeImage.setOnClickListener(new View.OnClickListener() {
             @Override
