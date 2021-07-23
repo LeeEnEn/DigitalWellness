@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
     private int keyCount = 0;
 
+    private static int pos = 0;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,19 +159,17 @@ public class MainActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                System.out.println("page scrolled pos " + position);
-                System.out.println("page scrolled offset " + positionOffset);
-                System.out.println("page scrolled pixel " + positionOffsetPixels);
+
             }
 
             @Override
             public void onPageSelected(int position) {
-                System.out.println("page selected " + position);
+                pos = position;
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                System.out.println("page s s c " + state);
+
             }
         });
 
@@ -413,12 +413,13 @@ public class MainActivity extends AppCompatActivity {
                 "1/2",
                 R.drawable.increase));
 
-        int steps;
+        int steps = new MyPreference(MainActivity.this, "Steps")
+                .getCurrentStepCount(firebaseHelper.getCurrentDate() + firebaseHelper.getUid());
 
         if (new MyPreference(MainActivity.this, "Service").getService()) {
-            steps = new StepTrackerService().getSteps();
+            steps = Math.max(steps, new StepTrackerService().getSteps());
         } else {
-            steps = new StepTracker().getSteps();
+            steps = Math.max(steps, new StepTracker().getSteps());
         }
 
         modeArrayList.add(new MyModel("Steps Taken Today",
@@ -433,7 +434,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(myAdapter);
         //set default padding from left right
         viewPager.setPadding(50, 0, 50, 0);
-
+        // Set view to be where it left off.
+        viewPager.setCurrentItem(pos);
     }
 
     public void getProfilePicture() {

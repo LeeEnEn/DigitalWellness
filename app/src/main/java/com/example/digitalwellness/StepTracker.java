@@ -64,6 +64,7 @@ public class StepTracker extends AppCompatActivity {
 
         // Plot chart.
         MyCharts myCharts = new MyCharts(this);
+        firebase.getSevenDaySteps().get(6).setY(step);
         myCharts.showStepGraph(firebase.getSevenDaySteps(), firebase.getAxis());
 
         Button sevenDay = (Button) findViewById(R.id.step_seven_days);
@@ -73,6 +74,7 @@ public class StepTracker extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // show 7 day chart
+                firebase.getSevenDaySteps().get(6).setY(step);
                 myCharts.showStepGraph(firebase.getSevenDaySteps(), firebase.getAxis());
             }
         });
@@ -81,8 +83,9 @@ public class StepTracker extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // show all time chart
+                int size = firebase.getAllTimeSteps().size();
+                firebase.getSevenDaySteps().get(size - 1).setY(step);
                 myCharts.showStepGraph(firebase.getAllTimeSteps(), firebase.getAllTimeAxis());
-
             }
         });
         // Start tracker.
