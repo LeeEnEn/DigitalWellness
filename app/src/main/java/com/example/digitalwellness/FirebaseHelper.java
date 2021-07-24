@@ -466,6 +466,16 @@ public class FirebaseHelper {
         reference.child("Yesterday").setValue(ytd);
         reference.child(String.valueOf(getCurrentDay())).setValue(true);
     }
+
+    public void resetSteak() {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(uid)
+                .child("Streak")
+                .child("isUpdated");
+
+        ref.setValue(false);
+    }
     /**
      * Returns a database reference corresponding to current user's step of the day.
      *

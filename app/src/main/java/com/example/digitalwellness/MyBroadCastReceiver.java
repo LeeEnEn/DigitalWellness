@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MyBroadCastReceiver extends BroadcastReceiver {
 
     private Context context;
@@ -62,15 +65,11 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
 
         firebase.updateSteps(prevDate, step);
         firebase.updateScreen(prevDate, screen);
+        firebase.resetSteak();
 
         MyPreference stepPref = new MyPreference(context, "Steps");
         stepPref.setPreviousTotalStepCount(prevTotalSteps);
         stepPref.setNSteps(0);
-
-        MyPreference streakPref = new MyPreference(context, "Streak");
-        streakPref.setStreak("isUpdated", false);
-
-
 
         firebase.createDailyData();
     }
