@@ -138,7 +138,6 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
             public void onCancelled(DatabaseError databaseError) {}
         };
         usersdRef.addListenerForSingleValueEvent(eventListener);
-
     }
 
     public ArrayList<String> getFriendStatus() {
@@ -280,7 +279,6 @@ public class UserList extends AppCompatActivity implements recyclerAdapter.OnNot
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         };
-
         usersdRef.addListenerForSingleValueEvent(eventListener);
     }
 

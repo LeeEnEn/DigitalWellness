@@ -35,9 +35,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
 
     public class FriendViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView nameTxt;
+        private TextView nameTxt, emailTxt;
         private ImageView profilePicture, yesButton, noButton;
         FriendsAdapter.OnNoteListener onNoteListener;
+
 
         public FriendViewHolder(final View view, FriendsAdapter.OnNoteListener onNoteListener) {
             super(view);
@@ -45,6 +46,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
             profilePicture = view.findViewById(R.id.userlistpicutre);
             yesButton = view.findViewById(R.id.yesButton);
             noButton = view.findViewById(R.id.friendStatus);
+            emailTxt = view.findViewById(R.id.emaillist);
 
             this.onNoteListener = onNoteListener;
             view.setOnClickListener(this);
@@ -67,6 +69,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
     public void onBindViewHolder(@NonNull FriendsAdapter.FriendViewHolder holder, int position) {
         String name = friendList.get(position).getName();
         holder.nameTxt.setText(name);
+        holder.emailTxt.setText(" ");
         Picasso.get().load(friendList.get(position).getUrl()).into(holder.profilePicture);
         Picasso.get().load(R.drawable.tick).into(holder.yesButton);
         Picasso.get().load(R.drawable.cross).into(holder.noButton);
