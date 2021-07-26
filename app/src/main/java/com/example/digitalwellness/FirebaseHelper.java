@@ -114,6 +114,7 @@ public class FirebaseHelper {
         reference.child(KEY_STEP).setValue(0);
         reference.child(KEY_SCREEN).setValue(0);
     }
+
     public void createDailyData() {
         String date = getCurrentDate();
 
@@ -467,7 +468,7 @@ public class FirebaseHelper {
         reference.child(String.valueOf(getCurrentDay())).setValue(true);
     }
 
-    public void resetSteak() {
+    public void setNotUpdated() {
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(uid)

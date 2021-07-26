@@ -4,9 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 public class MyBroadCastReceiver extends BroadcastReceiver {
 
     private Context context;
@@ -34,6 +31,8 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
             int steps;
             int previousTotalSteps;
 
+            StepTracker stepTracker = new StepTracker();
+
             if (servicePref.getService()) {
                 StepTrackerService stepService = new StepTrackerService();
                 steps = stepService.getSteps();
@@ -44,11 +43,11 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
                 context.startService(serviceIntent);
                 stepService.resetNSteps();
             } else {
-                StepTracker stepTracker = new StepTracker();
                 steps = stepTracker.getSteps();
                 previousTotalSteps = stepTracker.getPreviousTotalSteps();
-                stepTracker.resetNStep();
             }
+
+            stepTracker.resetNStep();
             update(steps, previousTotalSteps);
             // Restart alarm.
             MyAlarms myAlarms = new MyAlarms(context);
@@ -65,7 +64,7 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
 
         firebase.updateSteps(prevDate, step);
         firebase.updateScreen(prevDate, screen);
-        firebase.resetSteak();
+        firebase.setNotUpdated();
 
         MyPreference stepPref = new MyPreference(context, "Steps");
         stepPref.setPreviousTotalStepCount(prevTotalSteps);
