@@ -3,13 +3,16 @@ package com.example.digitalwellness;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +32,7 @@ public class LockedActivity extends AppCompatActivity {
     private ImageView backdoor;
     final int MILLIS_PER_HOUR = 3600000;
     private HomeKeyLocker mHomeKeyLocker;
+    private Button exitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,35 @@ public class LockedActivity extends AppCompatActivity {
 
         long toTime = getIntent().getLongExtra("calendar", 0);
         setClock(toTime - currentTime.getTimeInMillis());
+
+        exitButton = (Button) findViewById(R.id.exitButton);
+
+        exitButton.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+
+                if (doubleBackToExitPressedOnce) {
+                    NotificationManager mNotificationManager = (NotificationManager) LockedActivity.this.getSystemService(NOTIFICATION_SERVICE);
+                    Toast.makeText(LockedActivity.this,"Focus Mode will now turn off",Toast.LENGTH_SHORT).show();
+                    mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
+                    finish();
+                }
+
+                doubleBackToExitPressedOnce = true;
+                Toast.makeText(LockedActivity.this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce=false;
+                    }
+                }, 2000);
+
+
+            }
+        });
+
     }
 
     public void setClock(long duration) {

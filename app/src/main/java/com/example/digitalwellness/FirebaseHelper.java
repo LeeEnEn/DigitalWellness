@@ -316,7 +316,7 @@ public class FirebaseHelper {
         allTimeSteps = new ArrayList<>();
         allTimeScreen = new ArrayList<>();
 
-        if (uid == null) {
+        if (uid.equals(null)) {
             uid = new FirebaseHelper().getUid();
         }
 

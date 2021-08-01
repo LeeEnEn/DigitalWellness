@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,6 +37,8 @@ public class FocusMode extends AppCompatActivity {
     private TimePicker timePicker;
     FirebaseHelper firebaseHelper;
 
+
+
     @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +61,6 @@ public class FocusMode extends AppCompatActivity {
         //Log.i(TAG, "Countdown Started");
         timePicker = (TimePicker) findViewById(R.id.fragment_createalarm_timePicker);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-
 
         confirmAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,10 +105,10 @@ public class FocusMode extends AppCompatActivity {
         Intent intent = new Intent(this, AlarmBroadcastManager.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-        Toast.makeText(getApplicationContext(),"Focus Mode is enabled. You will not receive any notifications until " +
+        /*Toast.makeText(getApplicationContext(),"Focus Mode is enabled. You will not receive any notifications until " +
                 String.valueOf(timePicker.getHour()) +
                         String.valueOf(timePicker.getMinute()),
-                Toast.LENGTH_SHORT).show();
+                Toast.LENGTH_SHORT).show();*/
     }
 
     @Override
