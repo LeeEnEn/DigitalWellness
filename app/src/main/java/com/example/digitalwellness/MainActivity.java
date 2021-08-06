@@ -46,7 +46,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private ActionBarDrawerToggle mToggle;
     private ArrayList<MyModel> modeArrayList;
     private ActionBar actionBar;
@@ -285,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.profile_image) {
                     startActivity(new Intent(MainActivity.this, UserProfile.class));
                 } else if (id == R.id.distance_tracker) {
-                    //checkDistancePermission();
+                    checkDistancePermission();
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return true;

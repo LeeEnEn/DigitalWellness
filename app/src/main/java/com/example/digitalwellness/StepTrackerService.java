@@ -9,15 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-
-import java.util.Calendar;
 
 public class StepTrackerService extends Service {
 
@@ -25,7 +17,6 @@ public class StepTrackerService extends Service {
     private static int sensorSteps;
 
     private int step;
-    private FirebaseHelper firebase;
     private MyPreference myPreference;
 
     @Nullable
@@ -38,7 +29,7 @@ public class StepTrackerService extends Service {
     public void onCreate() {
         System.out.println("Service started");
 
-        firebase = new FirebaseHelper();
+        FirebaseHelper firebase = new FirebaseHelper();
         myPreference = new MyPreference(getApplicationContext(), "Steps");
         step = Math.max((int) firebase.getStepCount(),
                 myPreference.getCurrentStepCount(firebase.getCurrentDate() + firebase.getUid()));

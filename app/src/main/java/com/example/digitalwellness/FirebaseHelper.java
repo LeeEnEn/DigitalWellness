@@ -744,5 +744,26 @@ public class FirebaseHelper {
         dataRef.child(myUid).child("friend").child(friendUid).setValue(friendName);
     }
 
+    public void checkForMissedDays() {
+        String ytd = getPreviousDate();
 
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(uid)
+                .child("Streak");
+
+        reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    String shouldBeYtd = (String) task.getResult().child("Yesterday").getValue();
+                    if (shouldBeYtd != null) {
+                        if (!shouldBeYtd.equals(ytd)) {
+                            reference.child("StreakCount").setValue(0);
+                        }
+                    }
+                }
+            }
+        });
+    }
 }

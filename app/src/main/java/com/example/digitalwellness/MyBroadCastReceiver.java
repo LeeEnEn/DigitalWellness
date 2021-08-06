@@ -71,6 +71,7 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
         stepPref.setCurrentStepCount(prevDate + firebase.getUid(), step);
         stepPref.setNSteps(0);
 
+        firebase.checkForMissedDays();
         firebase.createDailyData();
     }
 }
