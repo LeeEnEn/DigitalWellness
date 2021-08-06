@@ -68,6 +68,7 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
 
         MyPreference stepPref = new MyPreference(context, "Steps");
         stepPref.setPreviousTotalStepCount(prevTotalSteps);
+        stepPref.setCurrentStepCount(prevDate + firebase.getUid(), step);
         stepPref.setNSteps(0);
 
         firebase.createDailyData();

@@ -40,7 +40,8 @@ public class StepTrackerService extends Service {
 
         firebase = new FirebaseHelper();
         myPreference = new MyPreference(getApplicationContext(), "Steps");
-        step = Math.max((int) firebase.getStepCount(), myPreference.getCurrentStepCount(firebase.getCurrentDate()));
+        step = Math.max((int) firebase.getStepCount(),
+                myPreference.getCurrentStepCount(firebase.getCurrentDate() + firebase.getUid()));
 
         startTracker();
     }

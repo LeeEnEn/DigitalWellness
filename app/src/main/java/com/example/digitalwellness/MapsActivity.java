@@ -1,8 +1,10 @@
 package com.example.digitalwellness;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Color;
@@ -93,6 +95,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private List<LatLng> coordinates = new ArrayList<>();
 
+    private final String WARNING_MESSAGE = "Are you sure you want to start a new instance? All markings will be removed.";
     private final String DEFAULT_MARKER_TITLE = "Singapore";
     private final String CURRENT_POSITION_TITLE = "You are here!";
     private final String STARTING_POSITION_TITLE = "Starting location";
@@ -109,8 +112,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         transitionBuilder.applyTransition();
 
         super.onCreate(savedInstanceState);
-
-
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -240,7 +241,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             int validInt = Integer.parseInt(userInput);
 
                             if (validInt != 0) {
-
                                 userDistanceInput = validInt;
                                 // Hide edit text view.
                                 editText.setVisibility(View.GONE);
@@ -279,12 +279,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Toast.makeText(getApplicationContext(), R.string.enable_location_network, Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    // Show edit text view.
-                    editText.setVisibility(View.VISIBLE);
-                    // Change button text.
-                    startTrackingButton.setText(R.string.start);
-                    toggleStart = false;
-                    toggleText = !toggleText;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                    builder.setTitle("Warning");
+                    builder.setMessage(WARNING_MESSAGE);
+                    builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Show edit text view.
+                            editText.setVisibility(View.VISIBLE);
+                            // Change button text.
+                            startTrackingButton.setText(R.string.start);
+                            toggleStart = false;
+                            toggleText = !toggleText;
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing.
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
             }
         });
